@@ -17,7 +17,7 @@ type CarouselItemProps = {
 const CarouselItem = (props: CarouselItemProps) => {
     return (
         <View style={{flex: 1}}>
-            <ImageBackground source={props.item.image} style={{flex: 1, flexDirection: 'row', paddingTop: 60, marginBottom: 40}}>
+            <ImageBackground source={props.item.image} style={{flex: 1, flexDirection: 'row', justifyContent: 'center', paddingTop: 60, marginBottom: 40}}>
                 <LogoCustom color="#fff"  />
             </ImageBackground>
             <View style={{paddingHorizontal: 20}}>

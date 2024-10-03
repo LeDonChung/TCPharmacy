@@ -61,7 +61,7 @@ export const StartScreen = () => {
                         isCarousel.current.snapToNext();
                     }
                 }}/>
-                <ButtonCustom buttonStyle={[styles.buttonStyle, {backgroundColor: '#fff'}]} textStyle={{color: '#000'}} title="Bỏ qua" onPress={() => console.log('hi')}/>
+                <ButtonCustom buttonStyle={[styles.buttonStyle, {backgroundColor: '#fff'}]} textStyle={{color: '#000'}} title="Bỏ qua" onPress={() => navigation.reset({index: 0, routes: [{ name: 'inapp' as never }]})}/>
             </View>
         </View>
     );

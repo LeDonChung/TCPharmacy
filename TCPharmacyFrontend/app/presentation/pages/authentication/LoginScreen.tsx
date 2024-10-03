@@ -38,18 +38,22 @@ export const LoginScreen = () => {
                 />
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <IconAnt name="close" size={30} color="#000" />
-                    <LogoCustom color={Colors.primary} />
+                    <View style={{flex: 1}}>
+                        <LogoCustom color={Colors.primary} />
+                    </View>
                 </View>
                 <View style={{ flex: 9 }}>
-                    <Text style={[GlobalStyles.textStyle, { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 50 }]}> Vui lòng nhập số điện thoại </Text>
-                    <TextInput style={[GlobalStyles.textStyle, { textAlign: 'center', fontSize: 24, fontWeight: 'bold' }]} placeholder="0000 0000 0000" />
+                    <View style={{ flex: 2 }}>
+                        <Text style={[GlobalStyles.textStyle, { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 50 }]}> Vui lòng nhập số điện thoại </Text>
+                        <TextInput style={[GlobalStyles.textStyle, { textAlign: 'center', fontSize: 24, fontWeight: 'bold' }]} placeholder="0000 0000 0000" />
+                    </View>
 
-                    <View style={{ flex: 1, alignItems: 'center', marginTop: 350 }}>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
                         <ButtonCustom buttonStyle={{ borderRadius: 30, paddingVertical: 15, width: '100%' }} title="Tiếp tục" onPress={() => {
                             setModalVisible(!modalVisible);
                         }} />
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <View style={{ flex: 1, height: 1, backgroundColor: '#D3D3D3', }} />
                             <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription, marginVertical: 35, marginHorizontal: 15 }]}>hoặc đăng nhập bằng</Text>
                             <View style={{ flex: 1, height: 1, backgroundColor: '#D3D3D3', }} />
