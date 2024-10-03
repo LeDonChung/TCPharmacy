@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native"
 import { Pressable, SafeAreaView, Text } from "react-native"
+import React from "react"
 
 export const OTPScreen = () => {
     const navigation = useNavigation()

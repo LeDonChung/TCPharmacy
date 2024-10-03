@@ -2,6 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { AuthenticationNavigation } from "./AuthenticationNavigation";
 import { InAppNavigation } from "./InAppNavigation";
+import React from "react";
 const Stack = createStackNavigator();
 export const AppNavigation = () => {
     return (

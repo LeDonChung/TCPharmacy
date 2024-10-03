@@ -5,6 +5,7 @@ import { HomeScreen } from "../pages/inapp/HomeScreen";
 import { ConsultScreen } from "../pages/inapp/ConsultScreen";
 import { CartScreen } from "../pages/inapp/CartScreen";
 import { AccountScreen } from "../pages/inapp/AccountScreen";
+import React from "react"
 
 const Tab = createBottomTabNavigator();
 

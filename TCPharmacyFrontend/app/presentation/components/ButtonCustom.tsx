@@ -1,6 +1,19 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Colors } from "../styles/Colors"
+import React from "react"
 
+/**
+ * ButtonCustomProps
+ * Lưu ý những props nào không có dấu ? là bắt buộc phải truyền vào
+ * @param title: string | any - Tiêu đề của button
+ * @param onPress: () => void | any - Hàm xử lý khi click vào button
+ * @param leadingIcon?: any - Icon ở trước text
+ * @param trailingIcon?: any - Icon ở sau text
+ * @param buttonStyle?: any - Style của button
+ * @param textStyle?: any - Style của text
+ * @param iconStyle?: any - Style của icon
+ * @returns 
+ */
 type ButtonCustomProps = {
     title: string | any, 
     onPress : () => void | any, 
