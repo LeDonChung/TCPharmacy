@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { StartScreen } from "../pages/authentication/StartScreen"
 import { LoginScreen } from "../pages/authentication/LoginScreen"
 import { OTPScreen } from "../pages/authentication/OTPScreen"
+import React from "react"
 const Stack = createStackNavigator()
 export const AuthenticationNavigation = () => {
     return (
