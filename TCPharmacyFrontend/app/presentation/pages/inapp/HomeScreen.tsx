@@ -15,6 +15,8 @@ import { FlatList } from "react-native";
 import { MenuItem } from "../../components/MenuItem";
 import Carousel from "react-native-snap-carousel";
 import { BannerCustom } from "../../components/BannerCustom";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 const menus = [
     {
         id: 'menu1',
@@ -62,29 +64,30 @@ const menus = [
 
 ]
 export const HomeScreen = () => {
-    useEffect(() => {
-        const backAction = () => {
-            Alert.alert(
-                "Thoát!",
-                "Bạn có chắc chắn muốn thoát?",
-                [
-                    {
-                        text: "Không",
-                        onPress: () => null,
-                        style: "cancel"
-                    },
-                    { text: "Chắc chắn", onPress: () => BackHandler.exitApp() }
-                ]
-            );
-            return true;
-        };
+    const navigation = useNavigation();
+    // useEffect(() => {
+    //     const backAction = () => {
+    //         Alert.alert(
+    //             "Thoát!",
+    //             "Bạn có chắc chắn muốn thoát?",
+    //             [
+    //                 {
+    //                     text: "Không",
+    //                     onPress: () => null,
+    //                     style: "cancel"
+    //                 },
+    //                 { text: "Chắc chắn", onPress: () => BackHandler.exitApp() }
+    //             ]
+    //         );
+    //         return true;
+    //     };
 
-        const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-        );
-        return () => backHandler.remove();
-    }, []);
+    //     const backHandler = BackHandler.addEventListener(
+    //         "hardwareBackPress",
+    //         backAction
+    //     );
+    //     return () => backHandler.remove();
+    // }, []);
     const drawer = useRef(null);
     const closeDrawer = () => {
         (drawer.current as DrawerLayout | null)?.closeDrawer();
@@ -136,10 +139,12 @@ export const HomeScreen = () => {
                         <View style={{ borderTopRightRadius: 30, borderTopLeftRadius: 30, marginHorizontal: -15, marginTop: -30, backgroundColor: Colors.secondary }}>
                             <View style={{ paddingHorizontal: 15, paddingVertical: 30 }}>
                                 <Text style={[GlobalStyles.textStyle]}>Xin chào, <Text style={{ fontWeight: 'bold' }}>ĐÔN CHỦNG</Text></Text>
-                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                                <TouchableOpacity style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10 }} onPress={() => {
+                                    navigation.navigate('bonusNavigation' as never);
+                                }} >
                                     <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
                                     <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', marginStart: 10 }]}>494 điểm thưởng</Text>
-                                </View>
+                                </TouchableOpacity>
                             </View>
 
                             {/** Start Menu Component */}

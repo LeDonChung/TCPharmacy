@@ -4,6 +4,7 @@ import { AuthenticationNavigation } from "./AuthenticationNavigation";
 import { InAppNavigation } from "./InAppNavigation";
 import React from "react";
 import { AccountNavigation } from "./AccountNavigation";
+import { BonusNavigation } from "./BonusNavigation";
 const Stack = createStackNavigator();
 export const AppNavigation = () => {
     return (
@@ -11,8 +12,7 @@ export const AppNavigation = () => {
             <NavigationContainer>
                     <Stack.Navigator screenOptions={{headerShown: false}}>
                         <Stack.Screen name="authentication" component={AuthenticationNavigation} />
-                        <Stack.Screen name="inapp" component={InAppNavigation} />
-                        <Stack.Screen name="account" component={AccountNavigation} />
+                        <Stack.Screen name="inapp" component={InAppNavigation} /> 
                     </Stack.Navigator>
             </NavigationContainer>
         </>

@@ -11,12 +11,14 @@ import menus from "../../domain/models/Menu"
 import { ButtonCustom } from "./ButtonCustom"
 import IconF5 from "react-native-vector-icons/FontAwesome5"
 import { Dimensions } from 'react-native';
+import { useNavigation } from "@react-navigation/native"
 
 const screenWidth = Dimensions.get('window').width;
 type DrawScreenLayoutProps = {
     onClose: () => void
 }
 export const DrawScreenLayout = (props: DrawScreenLayoutProps) => {
+    const navigation = useNavigation();
     const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
     const toggleSection = (sectionId: string) => {
@@ -41,7 +43,7 @@ export const DrawScreenLayout = (props: DrawScreenLayoutProps) => {
                 renderItem={({ item }) => {
                     if (isSectionExpanded(item.parentId)) {
                         return (
-                            <TouchableOpacity style={{padding: 10, marginHorizontal: 15, marginVertical: 1, backgroundColor: '#ECF0FB', borderTopLeftRadius: 10, borderTopRightRadius: 10}} onPress={item.onPress}>
+                            <TouchableOpacity onPress={item.onPress} style={{padding: 10, marginHorizontal: 15, marginVertical: 1, backgroundColor: '#ECF0FB', borderTopLeftRadius: 10, borderTopRightRadius: 10}} >
                                 <Text style={[GlobalStyles.textStyle, { paddingVertical: 10 }]}>{item.name}</Text>
                             </TouchableOpacity>
                         )

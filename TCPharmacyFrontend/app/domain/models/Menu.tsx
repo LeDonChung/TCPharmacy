@@ -7,6 +7,15 @@ const menus = [
         parentId: null
     },
     {
+        id: 'menu100',
+        name: 'Điểm thưởng',
+        menuItem: [],
+        onPress: () => {
+            console.log('hi')
+        },
+        parentId: null
+    },
+    {
         id: 'menu02',
         name: 'Thực phẩm chức năng',
         menuItem: [

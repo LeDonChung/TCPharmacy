@@ -8,8 +8,8 @@ export const AccountScreen = () => {
     return (
         <>
             <SafeAreaView>
-                <Text> AccountScreen </Text> 
-                <Text onPress={() => {console.log('hi') ;navigation.navigate('account' as never);}}> QRScreen </Text>
+                <Text> AccountScreen </Text>  
+                <Text onPress={() => {console.log('hi') ;navigation.navigate('accountMavigation' as never);}}> QRScreen </Text>
             </SafeAreaView>
         </>
     )
