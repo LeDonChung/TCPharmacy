@@ -4,8 +4,9 @@ import IconF5 from "react-native-vector-icons/FontAwesome5";
 import { HomeScreen } from "../pages/inapp/HomeScreen";
 import { ConsultScreen } from "../pages/inapp/ConsultScreen";
 import { CartScreen } from "../pages/inapp/CartScreen";
-import { AccountScreen } from "../pages/inapp/AccountScreen";
+import { AccountScreen } from "../pages/inapp/account/AccountScreen"; 
 import React from "react"
+import { AccountNavigation } from "./AccountNavigation";
 
 const Tab = createBottomTabNavigator();
 

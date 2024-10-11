@@ -1,11 +1,11 @@
 import { SafeAreaView, Text } from "react-native"
 import React from "react"
 
-export const AccountScreen = () => {
+export const MyQrScreen = () => {
     return (
         <>
             <SafeAreaView>
-                <Text> AccountScreen </Text>
+                <Text> MyQrScreen </Text>
             </SafeAreaView>
         </>
     )
