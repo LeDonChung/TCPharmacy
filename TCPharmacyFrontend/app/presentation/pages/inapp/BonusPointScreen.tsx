@@ -1,17 +1,63 @@
-import { Image, Text, TouchableOpacity, View } from "react-native"
-import React from "react"
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native"
+import React, { useState } from "react"
 import { ScrollView } from "react-native-gesture-handler"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { GlobalStyles } from "../../styles/GlobalStyles"
 import { Colors } from "../../styles/Colors"
 import { ButtonCustom } from "../../components/ButtonCustom"
 import IconF from "react-native-vector-icons/FontAwesome5"
+import { ItemChangePoint } from "../../components/ItemChangePoint"
 
-const products = [
-    
+const data = [
+    {
+        id: 1,
+        name: "Mặt nạ Banobagi Stem Cell Vitamin Mask Whitening And Moisture hỗ trợ cấp ẩm và dưỡng sáng da (30g)",
+        price: 28000,
+        point: 1500,
+        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00041_bbc8b94616.jpg"
+    },
+    {
+        id: 2,
+        name: "Mặt nạ Banobagi stem cell vitamin mask whitening & tone up hỗ trợ cấp ẩm, dưỡng sáng da và nâng tông (30g)",
+        price: 1000,
+        point: 1500,
+        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00036_f81526ba97.jpg"
+    },
+    {
+        id: 3,
+        name: "Mặt nạ Banobagi stem cell vitamin mask whitening & relaxing revital làm dịu và giảm viêm da (30g)",
+        price: 28000,
+        point: 1500,
+        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00016_1e5a798909.jpg"
+    },
+    {
+        id: 4,
+        name: "Mặt nạ Banobagi Stem Cell Vitamin Mask Whitening & Aqua Hydrating cấp ẩm cho da, sáng màu da (30g)",
+        price: 28000,
+        point: 1500,
+        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00046_c3aa8d101d.jpg"
+    },    
+    {
+        id: 5,
+        name: "Mặt nạ Banobagi stem cell vitamin mask whitening & relaxing revital làm dịu và giảm viêm da (30g)",
+        price: 28000,
+        point: 1500,
+        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00031_448a440a49.jpg"
+    },
+    {
+        id: 6,
+        name: "Mặt nạ Banobagi Stem Cell Vitamin Mask Whitening & Aqua Hydrating cấp ẩm cho da, sáng màu da (30g)",
+        price: 28000,
+        point: 1500,
+        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00025_00386132d2.jpg"
+    }
 ]
 
 export const BonusPointScreen = () => {
+    
+
+    const [products, setProducts] = useState(data)
+
     return (
         <ScrollView>
             <SafeAreaView style={{ backgroundColor: Colors.primary }}>
@@ -92,8 +138,8 @@ export const BonusPointScreen = () => {
                 </View>
 
 
-                <View style={{ height: 630, backgroundColor: "#fff" }}>
-                    <View style={{ height: 120, marginHorizontal: 15 }}>
+                <View style={{ backgroundColor: "#fff" }}>
+                    <View style={{ height: 120, paddingHorizontal: 15, backgroundColor: 'rgba(0, 0, 0, 0.07)', }}>
                         <View
                             style={{
                                 height: 40, justifyContent: 'space-between',
@@ -111,7 +157,7 @@ export const BonusPointScreen = () => {
                             Tích điểm đổi quà với giá 1.000 đồng.
                         </Text>
 
-                        <View style={{ flexDirection: 'row', height: 60,justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', height: 60, justifyContent: 'space-between', alignItems: 'center' }}>
                             <ButtonCustom title={"1.500 điểm"}
                                 buttonStyle={{ width: "32%", height: 40, borderRadius: 30, backgroundColor: "#fff", borderWidth: 2, borderColor: Colors.primary, margin: 0, paddingHorizontal: -5 }}
                                 textStyle={{ fontSize: 13, fontWeight: 'bold', color: Colors.primary, width: "65%" }}
@@ -130,8 +176,18 @@ export const BonusPointScreen = () => {
                         </View>
                     </View>
 
-                    <View style={{height: 500}}>
-
+                    <View style={{
+                        backgroundColor: 'rgba(0, 0, 0, 0.07)',width: "100%",
+                        justifyContent: 'space-between'
+                    }}>
+                        <FlatList
+                            numColumns={2}
+                            data={products}
+                            renderItem={({ item }) => (
+                                <ItemChangePoint props={item} />
+                            )}
+                            keyExtractor={(item) => item.id.toString()}
+                        />
                     </View>
                 </View>
             </SafeAreaView>

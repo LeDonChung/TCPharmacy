@@ -6,7 +6,7 @@ const Stack = createStackNavigator();
 export const BonusNavigation = () => {
     return (
         <>
-            <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Navigator screenOptions={{headerShown: false, cardStyle: {flex: 1}}}>
                 <Stack.Screen name="bonusPoint" component={BonusPointScreen} />
             </Stack.Navigator>
         </>
