@@ -63,6 +63,15 @@ const menus = [
     { id: '8', icon: null, title: '', onPress: () => { } }
 
 ]
+
+const purchasedProducts = [
+    {
+        id: 1,
+        image: require(),
+        price: 100000,
+        orderDate: '10/07/2024',
+    }
+]
 export const HomeScreen = () => {
     const navigation = useNavigation();
     // useEffect(() => {
@@ -88,6 +97,7 @@ export const HomeScreen = () => {
     //     );
     //     return () => backHandler.remove();
     // }, []);
+
     const drawer = useRef(null);
     const closeDrawer = () => {
         (drawer.current as DrawerLayout | null)?.closeDrawer();
@@ -183,6 +193,18 @@ export const HomeScreen = () => {
                                 <BannerCustom />
                             </View>
                             {/** End Banner Carousel Component */}
+
+                            {/** Start Purchased Product Component */}
+                            <View style={{paddingHorizontal: 15}}>
+                                <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18}]}>Mua lại nhanh chóng</Text>
+                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary}]}>Xem tất cả</Text>
+                                </View>
+                                <View>
+                                    
+                                </View>
+                            </View>
+                            {/** End Purchased Product Component */}
                         </View>
                         {/** End Body  Component*/}
                     </SafeAreaView>
