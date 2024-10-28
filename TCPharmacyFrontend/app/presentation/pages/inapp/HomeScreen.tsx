@@ -403,6 +403,36 @@ const productsInit = [
     }
 ];
 
+
+const policiesInit = [
+    {
+        id: "policy1",
+        logo: require('./../../../../assets/icon/policy/ic_policy_1.png'),
+        title: 'Thuốc chính hãng',
+        des: "đa dạng và chuyên sâu"
+    },
+    {
+        id: "policy2",
+        logo: require('./../../../../assets/icon/policy/ic_policy_2.png'),
+        title: 'Đổi trả trong 30 ngày',
+        des: "kể từ ngày mua hàng"
+
+    },
+    {
+        id: "policy3",
+        logo: require('./../../../../assets/icon/policy/ic_policy_3.png'),
+        title: 'Cam kết 100%',
+        des: "chất lượng sản phẩm"
+
+    },
+    {
+        id: "policy4",
+        logo: require('./../../../../assets/icon/policy/ic_policy_4.png'),
+        title: 'Miễn phí vận chuyển',
+        des: "theo chính sách giao hàng"
+
+    }
+]
 export const HomeScreen = () => {
     const navigation = useNavigation();
     // useEffect(() => {
@@ -447,6 +477,8 @@ export const HomeScreen = () => {
     const [indexSuggestion, setIndexSuggestion] = useState(0);
 
     const [products, setProducts] = useState(productsInit);
+
+    const [policies, setPolicies] = useState(policiesInit);
     return (
         <>
             <DrawerLayout
@@ -574,8 +606,7 @@ export const HomeScreen = () => {
                                             return (
                                                 <MenuItem
                                                     styleIcon={{ flex: 0 }}
-                                                    styleTitle={{ flex: 0, paddingRight: 60, fontWeight: 'bold', fontSize: 16 }}
-
+                                                    styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
                                                     styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70 }}
                                                     icon={item.icon}
                                                     title={item.title}
@@ -722,13 +753,36 @@ export const HomeScreen = () => {
                                                 />
                                             )
                                         }}
+                                        nestedScrollEnabled
                                         keyExtractor={(item) => item.id + ''}
                                         horizontal={true}
                                         showsHorizontalScrollIndicator={false}
                                     />
                                 </View>
                             </View>
-                            {/** End Product By Subject Component */}
+                            {/** End Suggestion Component */}
+
+                            {/** Start Policy*/}
+                            <View style={{ marginHorizontal: 15, marginBottom: 20 }}>
+                                <FlatList
+                                    data={policies}
+                                    renderItem={({ item }) => {
+                                        return <View style={{justifyContent: 'center', alignItems: 'center', width: '50%', marginVertical: 10}}>
+                                                <Image source={item?.logo}/>
+                                                <Text style={[GlobalStyles.textStyle, {fontWeight: 'bold', textAlign: 'center', marginVertical: 10}]}>
+                                                    {item?.title}
+                                                </Text>
+                                                <Text style={[GlobalStyles.textStyle, {color: Colors.textDecription, textAlign: 'center', fontSize: 14}]}>
+                                                    {item?.des}
+                                                </Text>
+                                            </View>
+                                    }}
+                                    keyExtractor={(item) => item.id}
+                                    nestedScrollEnabled
+                                    numColumns={2}
+                                />
+                            </View>
+                            {/** End Policy*/}
                         </View>
                         {/** End Body  Component*/}
                     </SafeAreaView>
