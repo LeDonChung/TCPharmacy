@@ -21,6 +21,7 @@ import { PurchasedProduct } from "../../components/PurchasedProductItem";
 import { Dimensions } from "react-native";
 import { CarouselCustom } from "../../components/CarouselCustom";
 import { ButtonCustom } from "../../components/ButtonCustom";
+import { ProductCustom } from "../../components/ProductCustom";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
 const menus = [
@@ -199,7 +200,238 @@ const categoryProductBySubjects = [
         "id": "category3",
         "title": "Người cao tuổi"
     }
-    
+
+]
+
+const categorySuggestion = [
+    {
+        "id": "category1",
+        "title": "Tìm kiếm nhiều"
+    },
+    {
+        "id": "category2",
+        "title": "Sản phẩm mới"
+    },
+    {
+        "id": "category3",
+        "title": "Vitamin tổng hợp"
+    }
+]
+
+const productsInit = [
+    {
+        id: 1,
+        images: [
+            require('./../../../../assets/products/1.webp'),
+            require('./../../../../assets/products/2.webp'),
+        ],
+        price: 300000,
+        unit: 'Hộp',
+        specifications: 'Hộp 60 viên',
+        category: 'Vitamin',
+        desShort: 'Bột điện giải vị chanh dây Kamizol giúp cung cấp năng lượng và chất điện giải cho cơ thể.',
+        name: 'Bột điện giải vị chanh dây Kamizol Sports Drink Powder 25g (5 gói)',
+        brand: 'Kamizol',
+        star: 4.5,
+        reviews: 100,
+        discount: 20,
+        des: ''
+    },
+    {
+        id: 2,
+        images: [
+            require('./../../../../assets/products/3.webp'),
+        ],
+        price: 250000,
+        unit: 'Chai',
+        specifications: 'Chai 500ml',
+        category: 'Thực phẩm chức năng',
+        desShort: 'Nước uống bổ sung Collagen vị dâu Berry giúp da căng mịn và giảm nếp nhăn.',
+        name: 'Nước uống bổ sung Collagen Berry Drink 500ml',
+        brand: 'Berry Collagen',
+        star: 4.7,
+        reviews: 220,
+        discount: 15,
+        des: ''
+    },
+    {
+        id: 3,
+        images: [
+            require('./../../../../assets/products/2.webp'),
+            require('./../../../../assets/products/1.webp'),
+            require('./../../../../assets/products/3.webp'),
+        ],
+        price: 180000,
+        unit: 'Tuýp',
+        specifications: 'Tuýp 100g',
+        category: 'Chăm sóc da',
+        desShort: 'Kem dưỡng ẩm Vitamin E cung cấp độ ẩm và phục hồi da khô ráp.',
+        name: 'Kem dưỡng ẩm Vitamin E Moisturizing Cream 100g',
+        brand: 'Natural Care',
+        star: 4.3,
+        reviews: 150,
+        discount: 10,
+        des: ''
+    },
+    {
+        id: 4,
+        images: [
+            require('./../../../../assets/products/4.webp'),
+            require('./../../../../assets/products/2.webp'),
+        ],
+        price: 120000,
+        unit: 'Lọ',
+        specifications: 'Lọ 30 viên',
+        category: 'Vitamin',
+        desShort: 'Viên uống bổ sung vitamin D3 giúp hỗ trợ sức khỏe xương và tăng cường miễn dịch.',
+        name: 'Viên uống bổ sung vitamin D3 30 viên',
+        brand: 'Health Plus',
+        star: 4.6,
+        reviews: 180,
+        discount: 5,
+        des: ''
+    },
+    {
+        id: 5,
+        images: [
+            require('./../../../../assets/products/1.webp'),
+            require('./../../../../assets/products/2.webp'),
+            require('./../../../../assets/products/3.webp'),
+            require('./../../../../assets/products/4.webp'),
+        ],
+        price: 400000,
+        unit: 'Hộp',
+        specifications: 'Hộp 120 viên',
+        category: 'Dược mỹ phẩm',
+        desShort: 'Viên uống trắng da Beauty Skin giúp cải thiện độ sáng da và giảm sạm nám.',
+        name: 'Viên uống trắng da Beauty Skin Complex 120 viên',
+        brand: 'BeautyPro',
+        star: 4.8,
+        reviews: 300,
+        discount: 25,
+        des: ''
+    },
+    {
+        id: 6,
+        images: [
+            require('./../../../../assets/products/1.webp'),
+            require('./../../../../assets/products/4.webp'),
+        ],
+        price: 150000,
+        unit: 'Lọ',
+        specifications: 'Lọ 50 viên',
+        category: 'Chăm sóc sức khỏe',
+        desShort: 'Viên bổ sung Omega-3 giúp hỗ trợ sức khỏe tim mạch và mắt.',
+        name: 'Viên dầu cá Omega-3 50 viên',
+        brand: 'Heart Health',
+        star: 4.4,
+        reviews: 120,
+        discount: 10,
+        des: ''
+    },
+    {
+        id: 7,
+        images: [
+            require('./../../../../assets/products/1.webp'),
+        ],
+        price: 210000,
+        unit: 'Tuýp',
+        specifications: 'Tuýp 150ml',
+        category: 'Chăm sóc da',
+        desShort: 'Gel rửa mặt Gentle Cleanser làm sạch sâu và duy trì độ ẩm cho da.',
+        name: 'Gel rửa mặt Gentle Cleanser 150ml',
+        brand: 'PureSkin',
+        star: 4.2,
+        reviews: 75,
+        discount: 5,
+        des: ''
+    },
+    {
+        id: 8,
+        images: [
+            require('./../../../../assets/products/2.webp'),
+            require('./../../../../assets/products/3.webp'),
+        ],
+        price: 320000,
+        unit: 'Lọ',
+        specifications: 'Lọ 90 viên',
+        category: 'Vitamin',
+        desShort: 'Viên bổ sung vitamin tổng hợp cho nam giới, giúp tăng cường sức khỏe và sinh lực.',
+        name: 'Vitamin tổng hợp cho nam 90 viên',
+        brand: 'Men’s Health',
+        star: 4.6,
+        reviews: 200,
+        discount: 20,
+        des: ''
+    },
+    {
+        id: 9,
+        images: [
+            require('./../../../../assets/products/1.webp'),
+            require('./../../../../assets/products/2.webp'),
+        ],
+        price: 190000,
+        unit: 'Gói',
+        specifications: 'Gói 30g',
+        category: 'Thực phẩm chức năng',
+        desShort: 'Bột protein vị vani giúp cung cấp năng lượng và protein cho cơ thể.',
+        name: 'Bột protein vị vani 30g',
+        brand: 'FitPro',
+        star: 4.1,
+        reviews: 80,
+        discount: 15,
+        des: ''
+    },
+    {
+        id: 10,
+        images: [
+            require('./../../../../assets/products/1.webp'),
+            require('./../../../../assets/products/2.webp'),
+            require('./../../../../assets/products/3.webp'),
+        ],
+        price: 500000,
+        unit: 'Hộp',
+        specifications: 'Hộp 100 viên',
+        category: 'Dược mỹ phẩm',
+        desShort: 'Viên uống chống lão hóa với chiết xuất thiên nhiên, giúp duy trì vẻ tươi trẻ cho làn da.',
+        name: 'Viên uống chống lão hóa 100 viên',
+        brand: 'Youthful',
+        star: 4.9,
+        reviews: 320,
+        discount: 30,
+        des: ''
+    }
+];
+
+
+const policiesInit = [
+    {
+        id: "policy1",
+        logo: require('./../../../../assets/icon/policy/ic_policy_1.png'),
+        title: 'Thuốc chính hãng',
+        des: "đa dạng và chuyên sâu"
+    },
+    {
+        id: "policy2",
+        logo: require('./../../../../assets/icon/policy/ic_policy_2.png'),
+        title: 'Đổi trả trong 30 ngày',
+        des: "kể từ ngày mua hàng"
+
+    },
+    {
+        id: "policy3",
+        logo: require('./../../../../assets/icon/policy/ic_policy_3.png'),
+        title: 'Cam kết 100%',
+        des: "chất lượng sản phẩm"
+
+    },
+    {
+        id: "policy4",
+        logo: require('./../../../../assets/icon/policy/ic_policy_4.png'),
+        title: 'Miễn phí vận chuyển',
+        des: "theo chính sách giao hàng"
+
+    }
 ]
 export const HomeScreen = () => {
     const navigation = useNavigation();
@@ -209,7 +441,7 @@ export const HomeScreen = () => {
     //             "Thoát!",
     //             "Bạn có chắc chắn muốn thoát?",
     //             [
-    //                 {
+    //                 { 
     //                     text: "Không",
     //                     onPress: () => null,
     //                     style: "cancel"
@@ -240,7 +472,13 @@ export const HomeScreen = () => {
     const [categoryProductBySubject, setCategoryProductBySubject] = useState(categoryProductBySubjects);
 
     const [indexSubject, setIndexSubject] = useState(0);
+
+    const [sugg, setSugg] = useState(categorySuggestion);
     const [indexSuggestion, setIndexSuggestion] = useState(0);
+
+    const [products, setProducts] = useState(productsInit);
+
+    const [policies, setPolicies] = useState(policiesInit);
     return (
         <>
             <DrawerLayout
@@ -368,8 +606,7 @@ export const HomeScreen = () => {
                                             return (
                                                 <MenuItem
                                                     styleIcon={{ flex: 0 }}
-                                                    styleTitle={{ flex: 0, paddingRight: 60, fontWeight: 'bold', fontSize: 16 }}
-
+                                                    styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
                                                     styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70 }}
                                                     icon={item.icon}
                                                     title={item.title}
@@ -402,47 +639,48 @@ export const HomeScreen = () => {
                             {/** End Info */}
 
                             {/** Start Brand Component */}
-                            <View style={{marginHorizontal: 15}}>
+                            <View style={{ marginHorizontal: 15 }}>
                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Thương hiệu yêu thích</Text>
-                                    <View style={{marginHorizontal: -15, marginVertical: 20}}>
-                                        <CarouselCustom
-                                            data={brandFavorite}
-                                            layout="default"
-                                            pagination={false}
-                                            renderItem={({item}) => {
-                                                return (
-                                                    <TouchableOpacity style={{flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 10, backgroundColor: '#fff', borderRadius: 10, margin: 10}}>
-                                                        <Image source={item.image} resizeMode="contain" style={{width: 150, height: 150, marginVertical: 20}} />
-                                                        <View style={{borderWidth: 1, borderColor: Colors.desciption, borderRadius: 10, paddingHorizontal: 20, paddingVertical: 5}}>
-                                                            <Image source={item.logo} resizeMode="contain" style={{width: 100}} />
-                                                        </View>
-                                                        <Text style={[GlobalStyles.textStyle, {fontWeight: 'bold', fontSize: 18, color: Colors.primary, marginVertical: 10}]}>Giảm đến {item.discount}%</Text>
-                                                    </TouchableOpacity>
-                                                )
-                                            }}
-                                            vertical={false}
-                                            itemWidth={250}
-                                            sliderWidth={SLIDER_WIDTH}
-                                        />
-                                    </View>
+                                <View style={{ marginHorizontal: -15, marginVertical: 20 }}>
+                                    <CarouselCustom
+                                        data={brandFavorite}
+                                        layout="default"
+                                        pagination={false}
+                                        renderItem={({ item }) => {
+                                            return (
+                                                <TouchableOpacity style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 10, backgroundColor: '#fff', borderRadius: 10, margin: 10 }}>
+                                                    <Image source={item.image} resizeMode="contain" style={{ width: 150, height: 150, marginVertical: 20 }} />
+                                                    <View style={{ borderWidth: 1, borderColor: Colors.desciption, borderRadius: 10, paddingHorizontal: 20, paddingVertical: 5 }}>
+                                                        <Image source={item.logo} resizeMode="contain" style={{ width: 100 }} />
+                                                    </View>
+                                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, color: Colors.primary, marginVertical: 10 }]}>Giảm đến {item.discount}%</Text>
+                                                </TouchableOpacity>
+                                            )
+                                        }}
+                                        vertical={false}
+                                        itemWidth={250}
+                                        sliderWidth={SLIDER_WIDTH}
+                                    />
+                                </View>
                             </View>
                             {/** End Brand Component */}
 
                             {/** Start Product By Subject Component */}
-                            <View style={{marginHorizontal: 15}}>
+                            <View style={{ marginHorizontal: 15 }}>
                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Sản phẩm theo đối tượng</Text>
-                                <View>
+                                <View style={{ marginVertical: 20 }}>
                                     <FlatList
                                         nestedScrollEnabled
                                         data={categoryProductBySubject}
-                                        scrollEnabled={false}
                                         horizontal={true}
                                         renderItem={
                                             ({ item, index }) => {
                                                 return (
-                                                    <View style={{borderWidth: 1, borderColor: '#7B848F', borderRadius: 20, marginRight: 20}}>
-                                                        <Text style={[GlobalStyles.textStyle, {fontWeight: 'bold', paddingHorizontal: 5, paddingVertical: 10}]}>{item.title}</Text>
-                                                    </View>
+                                                    <TouchableOpacity
+                                                        onPress={() => { setIndexSubject(index) }}
+                                                        style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
+                                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
+                                                    </TouchableOpacity>
                                                 )
                                             }
 
@@ -452,31 +690,99 @@ export const HomeScreen = () => {
                                         }
                                     />
                                 </View>
-                                    <View style={{marginHorizontal: -15, marginVertical: 20}}>
-                                        <CarouselCustom
-                                            data={brandFavorite}
-                                            layout="default"
-                                            pagination={false}
-                                            renderItem={({item}) => {
-                                                return (
-                                                    <TouchableOpacity style={{flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 10, backgroundColor: '#fff', borderRadius: 10, margin: 10}}>
-                                                        <Image source={item.image} resizeMode="contain" style={{width: 150, height: 150, marginVertical: 20}} />
-                                                        <View style={{borderWidth: 1, borderColor: Colors.desciption, borderRadius: 10, paddingHorizontal: 20, paddingVertical: 5}}>
-                                                            <Image source={item.logo} resizeMode="contain" style={{width: 100}} />
-                                                        </View>
-                                                        <Text style={[GlobalStyles.textStyle, {fontWeight: 'bold', fontSize: 18, color: Colors.primary, marginVertical: 10}]}>Giảm đến {item.discount}%</Text>
-                                                    </TouchableOpacity>
-                                                )
-                                            }}
-                                            vertical={false}
-                                            itemWidth={250}
-                                            sliderWidth={SLIDER_WIDTH}
-                                        />
-                                    </View>
+                                <View style={{ marginVertical: 20 }}>
+                                    <FlatList
+                                        data={products}
+                                        renderItem={({ item }) => {
+                                            return (
+                                                <ProductCustom 
+                                                    image={item.images[0]}
+                                                    title={item.name}
+                                                    salePrice={item.price}
+                                                    unit={item.unit}
+                                                    specifications={item.specifications}
+                                                    onPress={() => { console.log(item.name) }}
+                                                />
+                                            )
+                                        }}
+                                        keyExtractor={(item) => item.id + ''}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                    />
+                                </View>
                             </View>
                             {/** End Product By Subject Component */}
 
+                            {/** Start Suggestion Component */}
+                            <View style={{ marginHorizontal: 15 }}>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Sản phẩm theo đối tượng</Text>
+                                <View style={{ marginVertical: 20 }}>
+                                    <FlatList
+                                        nestedScrollEnabled
+                                        data={sugg}
+                                        horizontal={true}
+                                        renderItem={
+                                            ({ item, index }) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        onPress={() => { setIndexSuggestion(index) }}
+                                                        style={{ borderWidth: 1, borderColor: index == indexSuggestion ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
+                                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSuggestion ? Colors.primary : '#000' }]}>{item.title}</Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
 
+                                        }
+                                        keyExtractor={
+                                            (item) => item.id
+                                        }
+                                    />
+                                </View>
+                                <View style={{ marginVertical: 20 }}>
+                                    <FlatList
+                                        data={products}
+                                        renderItem={({ item }) => {
+                                            return (
+                                                <ProductCustom 
+                                                    image={item.images[0]}
+                                                    title={item.name}
+                                                    salePrice={item.price}
+                                                    unit={item.unit}
+                                                    specifications={item.specifications}
+                                                    onPress={() => { console.log(item.name) }}
+                                                />
+                                            )
+                                        }}
+                                        nestedScrollEnabled
+                                        keyExtractor={(item) => item.id + ''}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                    />
+                                </View>
+                            </View>
+                            {/** End Suggestion Component */}
+
+                            {/** Start Policy*/}
+                            <View style={{ marginHorizontal: 15, marginBottom: 20 }}>
+                                <FlatList
+                                    data={policies}
+                                    renderItem={({ item }) => {
+                                        return <View style={{justifyContent: 'center', alignItems: 'center', width: '50%', marginVertical: 10}}>
+                                                <Image source={item?.logo}/>
+                                                <Text style={[GlobalStyles.textStyle, {fontWeight: 'bold', textAlign: 'center', marginVertical: 10}]}>
+                                                    {item?.title}
+                                                </Text>
+                                                <Text style={[GlobalStyles.textStyle, {color: Colors.textDecription, textAlign: 'center', fontSize: 14}]}>
+                                                    {item?.des}
+                                                </Text>
+                                            </View>
+                                    }}
+                                    keyExtractor={(item) => item.id}
+                                    nestedScrollEnabled
+                                    numColumns={2}
+                                />
+                            </View>
+                            {/** End Policy*/}
                         </View>
                         {/** End Body  Component*/}
                     </SafeAreaView>
