@@ -14,42 +14,42 @@ const data = [
         name: "Mặt nạ Banobagi Stem Cell Vitamin Mask Whitening And Moisture hỗ trợ cấp ẩm và dưỡng sáng da (30g)",
         price: 28000,
         point: 1500,
-        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00041_bbc8b94616.jpg"
+        image: "./../../../assets/imgBonusPointsScreen/product1.png"
     },
     {
         id: 2,
         name: "Mặt nạ Banobagi stem cell vitamin mask whitening & tone up hỗ trợ cấp ẩm, dưỡng sáng da và nâng tông (30g)",
         price: 1000,
         point: 1500,
-        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00036_f81526ba97.jpg"
+        image: "./../../../assets/imgBonusPointsScreen/product2.png"
     },
     {
         id: 3,
         name: "Mặt nạ Banobagi stem cell vitamin mask whitening & relaxing revital làm dịu và giảm viêm da (30g)",
         price: 28000,
         point: 1500,
-        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00016_1e5a798909.jpg"
+        image: "./../../../assets/imgBonusPointsScreen/product3.png"
     },
     {
         id: 4,
         name: "Mặt nạ Banobagi Stem Cell Vitamin Mask Whitening & Aqua Hydrating cấp ẩm cho da, sáng màu da (30g)",
         price: 28000,
         point: 1500,
-        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00046_c3aa8d101d.jpg"
+        image: "./../../../assets/imgBonusPointsScreen/product4.png"
     },    
     {
         id: 5,
         name: "Mặt nạ Banobagi stem cell vitamin mask whitening & relaxing revital làm dịu và giảm viêm da (30g)",
         price: 28000,
         point: 1500,
-        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/128x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00031_448a440a49.jpg"
+        image: "./../../../assets/imgBonusPointsScreen/product5.png"
     },
     {
         id: 6,
         name: "Mặt nạ Banobagi Stem Cell Vitamin Mask Whitening & Aqua Hydrating cấp ẩm cho da, sáng màu da (30g)",
         price: 28000,
         point: 1500,
-        image: "https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_00025_00386132d2.jpg"
+        image: "../../../assets/imgBonusPointsScreen/product6.png"
     }
 ]
 
@@ -184,7 +184,7 @@ export const BonusPointScreen = () => {
                             numColumns={2}
                             data={products}
                             renderItem={({ item }) => (
-                                <ItemChangePoint props={item} />
+                                <ItemChangePoint item={item} />
                             )}
                             keyExtractor={(item) => item.id.toString()}
                         />
