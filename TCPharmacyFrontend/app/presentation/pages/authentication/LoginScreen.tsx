@@ -19,7 +19,7 @@ export const LoginScreen = () => {
             <SafeAreaView style={[GlobalStyles.container, styles.container]}>
                 <ModalCustom
                     modalVisible={modalVisible}
-                    setModalVisible={setModalVisible}
+                    setModalVisible={setModalVisible} 
                     content={
                         <View style={{ width: '100%', height: 450, justifyContent: 'space-between', alignItems: 'center' }}>
                             <Image style={{ width: 160 }} resizeMode="contain" source={require('./../../../../assets/login_sms.png')} />

@@ -10,7 +10,7 @@ import { Colors } from "../../styles/Colors";
 import IconE from "react-native-vector-icons/Entypo";
 import IconF from "react-native-vector-icons/FontAwesome";
 import IconFE from "react-native-vector-icons/Feather";
-import { TextInput } from "react-native-paper";
+import IconAD from "react-native-vector-icons/AntDesign";
 import { FlatList } from "react-native";
 import { MenuItem } from "../../components/MenuItem";
 import Carousel from "react-native-snap-carousel";
@@ -22,6 +22,9 @@ import { Dimensions } from "react-native";
 import { CarouselCustom } from "../../components/CarouselCustom";
 import { ButtonCustom } from "../../components/ButtonCustom";
 import { ProductCustom } from "../../components/ProductCustom";
+import { ModalCustom } from "../../components/ModalCustom";
+import { TextInput } from "react-native-paper";
+import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
 const menus = [
@@ -479,6 +482,14 @@ export const HomeScreen = () => {
     const [products, setProducts] = useState(productsInit);
 
     const [policies, setPolicies] = useState(policiesInit);
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const [productChoose, setProductChoose] = useState(productsInit[0]);
+
+    const formatPrice = (price: number) => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
     return (
         <>
             <DrawerLayout
@@ -696,13 +707,13 @@ export const HomeScreen = () => {
                                         data={products}
                                         renderItem={({ item }) => {
                                             return (
-                                                <ProductCustom 
+                                                <ProductCustom
                                                     image={item.images[0]}
                                                     title={item.name}
                                                     salePrice={item.price}
                                                     unit={item.unit}
                                                     specifications={item.specifications}
-                                                    onPress={() => { console.log(item.name) }}
+                                                    onPress={() => { () => { setProductChoose(item); setModalVisible(true) } }}
                                                 />
                                             )
                                         }}
@@ -744,13 +755,13 @@ export const HomeScreen = () => {
                                         data={products}
                                         renderItem={({ item }) => {
                                             return (
-                                                <ProductCustom 
+                                                <ProductCustom
                                                     image={item.images[0]}
                                                     title={item.name}
                                                     salePrice={item.price}
                                                     unit={item.unit}
                                                     specifications={item.specifications}
-                                                    onPress={() => { console.log(item.name) }}
+                                                    onPress={() => { setProductChoose(item); setModalVisible(true); }}
                                                 />
                                             )
                                         }}
@@ -768,15 +779,15 @@ export const HomeScreen = () => {
                                 <FlatList
                                     data={policies}
                                     renderItem={({ item }) => {
-                                        return <View style={{justifyContent: 'center', alignItems: 'center', width: '50%', marginVertical: 10}}>
-                                                <Image source={item?.logo}/>
-                                                <Text style={[GlobalStyles.textStyle, {fontWeight: 'bold', textAlign: 'center', marginVertical: 10}]}>
-                                                    {item?.title}
-                                                </Text>
-                                                <Text style={[GlobalStyles.textStyle, {color: Colors.textDecription, textAlign: 'center', fontSize: 14}]}>
-                                                    {item?.des}
-                                                </Text>
-                                            </View>
+                                        return <View style={{ justifyContent: 'center', alignItems: 'center', width: '50%', marginVertical: 10 }}>
+                                            <Image source={item?.logo} />
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', textAlign: 'center', marginVertical: 10 }]}>
+                                                {item?.title}
+                                            </Text>
+                                            <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription, textAlign: 'center', fontSize: 14 }]}>
+                                                {item?.des}
+                                            </Text>
+                                        </View>
                                     }}
                                     keyExtractor={(item) => item.id}
                                     nestedScrollEnabled
@@ -789,6 +800,12 @@ export const HomeScreen = () => {
                     </SafeAreaView>
                 </ScrollView>
 
+                {
+                    productChoose && <ChooseProductToCartModalCustom
+                        productChoose={productChoose}
+                        visible={modalVisible}
+                        setModalVisible={setModalVisible} />
+                }
             </DrawerLayout>
 
         </>
