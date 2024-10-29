@@ -6,6 +6,7 @@ import { Colors } from "../../styles/Colors"
 import { GlobalStyles } from "../../styles/GlobalStyles"
 import IconF5 from "react-native-vector-icons/FontAwesome5"
 import IconF from "react-native-vector-icons/Feather"
+import { TextInput } from "react-native-paper"
 
 const messageList = [{
     id: 1,
@@ -68,19 +69,48 @@ export const ConsultScreen = () => {
         return `${day}/${month}/${year}`;
     };
 
+
+
     return (
         <>
-            <SafeAreaView>
-                <View style={{ height: 70, width: '100%', backgroundColor: Colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent:"space-between" }}>
+            <SafeAreaView style={{flex: 1}}>
+                <View style={{ height: 70, width: '100%', backgroundColor: Colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                     <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => { navigation.goBack() }}>
                         <IconF5 name="chevron-left" size={35} style={{ color: Colors.secondary }} />
                     </TouchableOpacity>
                     <Text style={[GlobalStyles.textStyle, { fontSize: 20, fontWeight: '700', color: Colors.secondary, textAlign: 'center' }]}>
                         Dược sĩ TC Parmacy
                     </Text>
-                    <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => {  }}>
+                    <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => { }}>
                         <IconF name="phone-call" size={35} style={{ color: Colors.secondary }} />
                     </TouchableOpacity>
+                </View>
+
+
+                <View style={{
+                    height: 80, width: '100%', position: "absolute",
+                    bottom: 0, backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15 }}>
+                        <IconF5 name="camera" size={30} style={{ color: "#000" }} />
+                    </TouchableOpacity>
+                    <TextInput
+                        value={message}
+                        onChangeText={setMessage}
+                        placeholder="Gửi thắc mắc"
+                        placeholderTextColor="gray"
+                        style={[GlobalStyles.textStyle, { backgroundColor: '#EBF0F4', width: "70%", height: 60, flexDirection: 'row', alignItems: 'center', borderRadius: 10 }]}
+                        left={<TextInput.Icon icon={() => <IconF5 name="smile" size={30} color="gray" />} />}  // Biểu tượng bên trái
+                    />
+
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15 }}
+                        onPress={() => {
+                            sendMessage();
+                        }}>
+                        <IconF name="send" size={30} style={{ color: Colors.desciption }} />
+                    </TouchableOpacity>
+
                 </View>
             </SafeAreaView>
         </>
