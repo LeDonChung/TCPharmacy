@@ -692,6 +692,7 @@ export const HomeScreen = () => {
                                 </View>
                                 <View style={{ marginVertical: 20 }}>
                                     <FlatList
+                                        nestedScrollEnabled
                                         data={products}
                                         renderItem={({ item }) => {
                                             return (
