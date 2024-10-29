@@ -78,19 +78,21 @@ export const ChatScreen = () => {
                 <Text style={[GlobalStyles.textStyle, { fontSize: 20, fontWeight: '700', color: Colors.secondary, textAlign: 'center', width: "80%" }]}>Dược sĩ TC Parmacy</Text>
             </View>
 
-            <ScrollView>
-                <Text style={[GlobalStyles.textStyle, { textAlign: 'center', marginVertical: 10 }]}>{getCurrentDate()}</Text>
-                {messages.map((item, index) => {
-                    return (
+            <View style={{ width: "100%", height: 690 }}>
+                    <ScrollView>
+                    <Text style={[GlobalStyles.textStyle, { textAlign: 'center', marginVertical: 10 }]}>{getCurrentDate()}</Text>
+                        {messages.map((item, index) => {
+                            return (
 
-                        <View key={item.id} style={{ flexDirection: item.isMe ? 'row-reverse' : 'row', marginHorizontal: 10, marginVertical: 10 }}>
-                            <View style={{ backgroundColor: item.isMe ? Colors.primary : "#fff", padding: 10, borderRadius: 10 }}>
-                                <Text style={[GlobalStyles.textStyle, { color: item.isMe ? Colors.secondary : Colors.textDecription }]}>{item.message}</Text>
-                            </View>
-                        </View>
-                    )
-                })}
-            </ScrollView>
+                                <View key={item.id} style={{ flexDirection: item.isMe ? 'row-reverse' : 'row', marginHorizontal: 10, marginVertical: 10 }}>
+                                    <View style={{ backgroundColor: item.isMe ? Colors.primary : "#fff", padding: 10, borderRadius: 10 }}>
+                                        <Text style={[GlobalStyles.textStyle, { color: item.isMe ? Colors.secondary : Colors.textDecription }]}>{item.message}</Text>
+                                    </View>
+                                </View>
+                            )
+                        })}
+                    </ScrollView>
+                </View>
 
             <View style={{
                 height: 80, width: '100%', position: "absolute",
