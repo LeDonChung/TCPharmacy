@@ -10,6 +10,8 @@ import { TextInput } from "react-native-paper"
 import { ModalCustom } from "../../components/ModalCustom"
 import { ButtonCustom } from "../../components/ButtonCustom"
 import IconAnd from "react-native-vector-icons/AntDesign"
+import { Linking } from "react-native"
+import { Alert } from "react-native"
 
 const messageList = [{
     id: 1,
@@ -46,6 +48,20 @@ export const ConsultScreen = () => {
     useEffect(() => {
         // setMessages(messageList);
     }, []);
+
+    //Ham goi dien thoai
+    const handleClickCallHotline = () => {
+        const phoneNumber = 'tel:18006928';
+    Linking.canOpenURL(phoneNumber)
+        .then((supported) => {
+            if (supported) {
+                Linking.openURL(phoneNumber);
+            } else {
+                Alert.alert("Thiết bị không hỗ trợ tính năng này");
+            }
+        })
+        .catch((err) => console.error('Error:', err));
+    }
 
     //send message
     const sendMessage = () => {
@@ -112,7 +128,7 @@ export const ConsultScreen = () => {
                 />
             </View> */}
 
-                    <View style={{ width: "100%", height: 650, marginBottom: 150 }}>
+                    <View style={{ width: "100%", height: 700, marginBottom: 200 }}>
                         <Text style={[GlobalStyles.textStyle, { textAlign: 'center', marginVertical: 10 }]}>{getCurrentDate()}</Text>
                         {messages.map((item, index) => {
                             return (
@@ -176,7 +192,8 @@ export const ConsultScreen = () => {
                             textStyle={{color: Colors.primary}} 
                             leadingIcon={<IconF name="phone" size={20} style={{ color: Colors.primary }} />}
                             onPress={() => {
-                                setModalVisible(false);
+                                // setModalVisible(false);
+                                handleClickCallHotline();
                             }} />
                         </View>
                     }
