@@ -59,17 +59,21 @@ const switchAccount = [
     }
 ]
 
+const user = {
+    name: "TRAN THI THANH TUYEN", phone: "0396 172 224", gender: "Female", dob: new Date()
+}
+
 export const AccountScreen = () => {
     const navigation = useNavigation()
-    const [user, setUser] = useState({ name: "TRAN THI THANH TUYEN", phone: "0396 172 224" })
+    const [account, setAccount] = useState(user)
     return (
         <>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ width: "100%", height: 80, backgroundColor: Colors.primary, flexDirection: "row", alignItems: 'center' }}>
                     <IconF name="user-circle-o" size={50} color={"#fff"} style={{ marginHorizontal: 20 }} />
                     <View style={{}}>
-                        <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>{user.name}</Text>
-                        <Text style={{ color: "#fff", fontSize: 16 }}>{user.phone}</Text>
+                        <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>{account.name}</Text>
+                        <Text style={{ color: "#fff", fontSize: 16 }}>{account.phone}</Text>
                     </View>
                 </View>
 
@@ -100,11 +104,11 @@ export const AccountScreen = () => {
                         keyExtractor={item => item.id.toString()}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, marginVertical: 5, justifyContent: 'space-between' }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center' }} >
-                                    <View style={{width: 40, height: 40, justifyContent: 'center', alignItems: 'center'}}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: "75%" }} >
+                                    <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
                                         <Image source={item.image} style={{ marginHorizontal: 15 }} />
                                     </View>
-                                    <Text style={[GlobalStyles.textStyle, { fontSize: 22, fontWeight: '500', marginHorizontal: 10 }]}>{item.name}</Text>
+                                    <Text style={[GlobalStyles.textStyle, { fontSize: 18, fontWeight: '500', marginHorizontal: 10 }]}>{item.name}</Text>
                                 </View>
                                 <IconMas name="chevron-right" size={40} color={Colors.desciption} style={{ marginHorizontal: 15, marginVertical: 10 }} />
                             </TouchableOpacity>
