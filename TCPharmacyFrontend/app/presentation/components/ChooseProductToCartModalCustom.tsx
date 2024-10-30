@@ -6,7 +6,10 @@ import { GlobalStyles } from "../styles/GlobalStyles"
 import IconAD from "react-native-vector-icons/AntDesign";
 import { Colors } from "../styles/Colors"
 import { ButtonCustom } from "./ButtonCustom"
-
+import { useDispatch } from "react-redux"
+import { addProductToCart } from "../redux/slice/CartSlice"
+import { CartDetailModel } from "../../domain/models/CartDetailModel"
+import { useNavigation } from "@react-navigation/native"
 
 type ChooseProductToCartProps = {
     productChoose: any,
@@ -18,16 +21,17 @@ type ChooseProductToCartProps = {
 const quantityReducer = (state: number, action: any) => {
     switch (action.type) {
         case 'increment':
-            return state < 10 ? state + 1: state;
+            return state < 10 ? state + 1 : state;
         case 'decrement':
-            return state > 1 ? state - 1: state;
+            return state > 1 ? state - 1 : state;
         default:
             return state;
     }
 }
 export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) => {
 
-    const [quantity, dispatch] = React.useReducer(quantityReducer, 1);
+    const navigation = useNavigation();
+    const [quantity, dispatchReducer] = React.useReducer(quantityReducer, 1);
 
     const [price, setPrice] = useState(props.productChoose.price);
 
@@ -39,7 +43,8 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
     const formatPrice = (price: number) => {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
-    
+
+    const dispatch = useDispatch();
     return (
         <ModalCustom
             modalVisible={props.visible}
@@ -74,7 +79,7 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#464A56', marginVertical: 10 }]}>Số lượng</Text>
                             <View style={{ flexDirection: 'row' }}>
                                 <TouchableOpacity
-                                    onPress={() => dispatch({ type: 'decrement' }) }
+                                    onPress={() => dispatchReducer({ type: 'decrement' })}
                                     style={{ borderWidth: 1, borderBottomLeftRadius: 20, borderTopLeftRadius: 20, borderColor: '#AFB0B3', justifyContent: 'center', paddingHorizontal: 5 }}>
                                     <IconAD name="minus" size={30} color={Colors.primary} style={{ textAlign: 'center' }} />
                                 </TouchableOpacity>
@@ -82,7 +87,7 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                                     <Text style={{ textAlign: 'center', padding: 12, width: 40 }}>{quantity}</Text>
                                 </View>
                                 <TouchableOpacity
-                                    onPress={() => dispatch({ type: 'increment' })}
+                                    onPress={() => dispatchReducer({ type: 'increment' })}
                                     style={{ borderWidth: 1, borderBottomRightRadius: 20, borderTopRightRadius: 20, borderColor: '#AFB0B3', justifyContent: 'center', paddingHorizontal: 5 }}>
                                     <IconAD name="plus" size={30} color={Colors.primary} style={{ textAlign: 'center' }} />
                                 </TouchableOpacity>
@@ -97,8 +102,23 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#000', marginVertical: 10 }]}>0đ</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <ButtonCustom title="Thêm vào giỏ" onPress={() => { }} buttonStyle={{ borderRadius: 50, width: '45%', backgroundColor: '#EAF0F3' }} textStyle={{ fontSize: 14, color: Colors.primary }} />
-                            <ButtonCustom title="Mua ngay" buttonStyle={{ borderRadius: 50, width: '45%' }} textStyle={{ fontSize: 14 }} onPress={() => { }} />
+                            <ButtonCustom title="Thêm vào giỏ" onPress={() => dispatch(addProductToCart(
+                                {
+                                    cartDetail: new CartDetailModel(props.productChoose, quantity),
+                                }
+                            ))}
+                                buttonStyle={{ borderRadius: 50, width: '45%', backgroundColor: '#EAF0F3' }} textStyle={{ fontSize: 14, color: Colors.primary }} />
+                            <ButtonCustom onPress={() => {
+                                dispatch(addProductToCart(
+                                    {
+                                        cartDetail: new CartDetailModel(props.productChoose, quantity),
+                                    }
+                                ))
+
+                                props.setModalVisible(false);
+                                navigation.navigate('cart' as never);
+                            }}
+                                title="Mua ngay" buttonStyle={{ borderRadius: 50, width: '45%' }} textStyle={{ fontSize: 14 }}  />
                         </View>
                     </View>
                 </View>
