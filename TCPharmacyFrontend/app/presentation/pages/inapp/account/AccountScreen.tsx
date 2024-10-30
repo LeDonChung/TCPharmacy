@@ -35,37 +35,49 @@ const switchAccount = [
     {
         id: 1,
         name: "Mã QR của tôi",
-        image: require("./../../../../../assets/imgAccountScreen/qr.png")
+        image: require("./../../../../../assets/imgAccountScreen/qr.png"),
+        navigateName : "MyQrScreen"
     },
     {
         id: 2,
         name: "Thông tin cá nhân",
-        image: require("./../../../../../assets/imgAccountScreen/user.png")
+        image: require("./../../../../../assets/imgAccountScreen/user.png"),
+        navigateName : "UserInfo"
     },
     {
         id: 3,
         name: "Quán lý sổ địa chỉ",
-        image: require("./../../../../../assets/imgAccountScreen/location.png")
+        image: require("./../../../../../assets/imgAccountScreen/location.png"),
+        navigateName : "LocationScreen"
     },
     {
         id: 4,
         name: "Quản lý thẻ thanh toán",
-        image: require("./../../../../../assets/imgAccountScreen/credit-card.png")
+        image: require("./../../../../../assets/imgAccountScreen/credit-card.png"),
+        navigateName : "CreditCardScreen"
     },
     {
         id: 5,
         name: "Đơn thuốc của tôi",
-        image: require("./../../../../../assets/imgAccountScreen/check-list.png")
+        image: require("./../../../../../assets/imgAccountScreen/check-list.png"),
+        navigateName : "OrderScreen"
     }
 ]
 
 const user = {
-    name: "TRAN THI THANH TUYEN", phone: "0396 172 224", gender: "Female", dob: new Date()
+    name: "TRAN THI THANH TUYEN", 
+    phone: "0396 172 224", 
+    gender: "Female", 
+    dob: null,
+    image: ""
 }
 
 export const AccountScreen = () => {
     const navigation = useNavigation()
     const [account, setAccount] = useState(user)
+
+
+
     return (
         <>
             <SafeAreaView style={{ flex: 1 }}>
@@ -103,7 +115,9 @@ export const AccountScreen = () => {
                         data={switchAccount}
                         keyExtractor={item => item.id.toString()}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, marginVertical: 5, justifyContent: 'space-between' }}>
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 10, marginVertical: 5, justifyContent: 'space-between' }}
+                                onPress={() => {navigation.navigate(item.navigateName as never)}}
+                            >
                                 <View style={{ flexDirection: 'row', alignItems: 'center', width: "75%" }} >
                                     <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
                                         <Image source={item.image} style={{ marginHorizontal: 15 }} />
