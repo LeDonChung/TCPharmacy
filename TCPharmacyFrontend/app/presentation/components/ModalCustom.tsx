@@ -21,6 +21,10 @@ type ModalCustomProps = {
 }
 
 export const ModalCustom = (props: ModalCustomProps) => {
+    const clonedContent = React.cloneElement(props.content, {
+        setModalVisible: props.setModalVisible,
+        modalVisible: props.modalVisible
+    });
     return (
         <Modal
             animationType="slide"
@@ -32,7 +36,7 @@ export const ModalCustom = (props: ModalCustomProps) => {
         >
             <Pressable style={styles.centeredView} onPress={() => props.setModalVisible(!props.modalVisible)}>
                 <View style={styles.modalView}>
-                    {props.content}
+                    {clonedContent}
                 </View>
             </Pressable >
         </Modal>
