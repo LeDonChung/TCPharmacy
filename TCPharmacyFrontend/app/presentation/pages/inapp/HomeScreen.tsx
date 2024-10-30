@@ -684,6 +684,7 @@ export const HomeScreen = () => {
                                         nestedScrollEnabled
                                         data={categoryProductBySubject}
                                         horizontal={true}
+                                        scrollEnabled={false}
                                         renderItem={
                                             ({ item, index }) => {
                                                 return (
@@ -719,6 +720,7 @@ export const HomeScreen = () => {
                                         }}
                                         keyExtractor={(item) => item.id + ''}
                                         horizontal={true}
+                                        scrollEnabled={false}
                                         showsHorizontalScrollIndicator={false}
                                     />
                                 </View>
@@ -732,6 +734,7 @@ export const HomeScreen = () => {
                                     <FlatList
                                         nestedScrollEnabled
                                         data={sugg}
+                                        scrollEnabled={false}
                                         horizontal={true}
                                         renderItem={
                                             ({ item, index }) => {
@@ -768,6 +771,7 @@ export const HomeScreen = () => {
                                         nestedScrollEnabled
                                         keyExtractor={(item) => item.id + ''}
                                         horizontal={true}
+                                        scrollEnabled={false}
                                         showsHorizontalScrollIndicator={false}
                                     />
                                 </View>
@@ -792,6 +796,7 @@ export const HomeScreen = () => {
                                     keyExtractor={(item) => item.id}
                                     nestedScrollEnabled
                                     numColumns={2}
+                                    scrollEnabled={false}
                                 />
                             </View>
                             {/** End Policy*/}

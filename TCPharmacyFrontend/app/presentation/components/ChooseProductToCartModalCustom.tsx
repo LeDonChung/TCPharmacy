@@ -1,4 +1,4 @@
-import { Image, TouchableOpacity, View } from "react-native"
+import { Image, ToastAndroid, TouchableOpacity, View } from "react-native"
 import { ModalCustom } from "./ModalCustom"
 import { Text } from "react-native"
 import React, { useEffect, useState } from 'react'
@@ -14,7 +14,6 @@ import { useNavigation } from "@react-navigation/native"
 type ChooseProductToCartProps = {
     productChoose: any,
     visible: boolean,
-    onClose?: () => void
     setModalVisible: (value: boolean) => void;
 }
 
@@ -24,6 +23,8 @@ const quantityReducer = (state: number, action: any) => {
             return state < 10 ? state + 1 : state;
         case 'decrement':
             return state > 1 ? state - 1 : state;
+        case 'reset':
+            return 1;
         default:
             return state;
     }
@@ -43,6 +44,9 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
     const formatPrice = (price: number) => {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
+    useEffect(() => {
+        dispatchReducer({ type: 'reset' });
+    }, [props.productChoose])
 
     const dispatch = useDispatch();
     return (
@@ -102,23 +106,27 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#000', marginVertical: 10 }]}>0đ</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <ButtonCustom title="Thêm vào giỏ" onPress={() => dispatch(addProductToCart(
-                                {
-                                    cartDetail: new CartDetailModel(props.productChoose, quantity),
-                                }
-                            ))}
+                            <ButtonCustom title="Thêm vào giỏ" onPress={() => {
+                                dispatch(addProductToCart(
+                                    {
+                                        cartDetail: new CartDetailModel(props.productChoose, quantity, true),
+                                    }
+                                ))
+                                props.setModalVisible(false);
+                                ToastAndroid.show('Thêm vào giỏ hàng thành công', ToastAndroid.SHORT);
+                            }}
                                 buttonStyle={{ borderRadius: 50, width: '45%', backgroundColor: '#EAF0F3' }} textStyle={{ fontSize: 14, color: Colors.primary }} />
                             <ButtonCustom onPress={() => {
                                 dispatch(addProductToCart(
                                     {
-                                        cartDetail: new CartDetailModel(props.productChoose, quantity),
+                                        cartDetail: new CartDetailModel(props.productChoose, quantity, true),
                                     }
                                 ))
 
                                 props.setModalVisible(false);
                                 navigation.navigate('cart' as never);
                             }}
-                                title="Mua ngay" buttonStyle={{ borderRadius: 50, width: '45%' }} textStyle={{ fontSize: 14 }}  />
+                                title="Mua ngay" buttonStyle={{ borderRadius: 50, width: '45%' }} textStyle={{ fontSize: 14 }} />
                         </View>
                     </View>
                 </View>
