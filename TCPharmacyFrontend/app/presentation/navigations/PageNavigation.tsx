@@ -7,7 +7,10 @@ import { AccountScreen } from "../pages/inapp/account/AccountScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 const Tab = createBottomTabNavigator();
 import React from "react";
+import { useSelector } from "react-redux";
+import { Store } from "../redux/store";
 export const PageNavigation = () => {
+    const cart = useSelector((state: Store) => state.cart);
     return (
         <>
             <Tab.Navigator screenOptions={({ route }) => {
@@ -53,7 +56,8 @@ export const PageNavigation = () => {
                     fontSize: 14,
                     fontFamily: 'Roboto'
                 },
-                title: 'Giỏ hàng'
+                title: 'Giỏ hàng',
+                tabBarBadge: cart.value.cartItems.length > 0 ? cart.value.cartItems.length : undefined,
             }} />
             <Tab.Screen name="account" component={AccountScreen} options={{
                 tabBarLabelStyle: {
