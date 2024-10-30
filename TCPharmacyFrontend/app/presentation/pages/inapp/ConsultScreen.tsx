@@ -45,9 +45,17 @@ export const ConsultScreen = () => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState(messageList);
     const [modalVisible, setModalVisible] = useState(false);
+
     useEffect(() => {
-        // setMessages(messageList);
-    }, []);
+        navigation.getParent()?.setOptions({
+          tabBarStyle: {
+            display: "none"
+          }
+        });
+        return () => navigation.getParent()?.setOptions({
+          tabBarStyle: undefined
+        });
+      }, [navigation]); 
 
     //Ham goi dien thoai
     const handleClickCallHotline = () => {

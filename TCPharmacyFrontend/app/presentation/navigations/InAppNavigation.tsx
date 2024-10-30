@@ -16,7 +16,7 @@ export const InAppNavigation = () => {
         <>
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name="pageNavigation" component={PageNavigation} />
-                <Stack.Screen name="accountMavigation" component={AccountNavigation} />
+                <Stack.Screen name="accountNavigation" component={AccountNavigation} />
                 <Stack.Screen name="bonusNavigation" component={BonusNavigation} />
                 <Stack.Screen name="chatScreen" component={ChatScreen} />
             </Stack.Navigator>
