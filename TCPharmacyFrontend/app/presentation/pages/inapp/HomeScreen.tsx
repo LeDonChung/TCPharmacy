@@ -502,7 +502,9 @@ export const HomeScreen = () => {
                     )
                 }}
             >
-                <ScrollView>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                >
                     <SafeAreaView style={GlobalStyles.container}>
 
                         {/* <Button 

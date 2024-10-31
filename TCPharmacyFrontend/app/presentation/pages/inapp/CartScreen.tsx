@@ -132,7 +132,7 @@ export const CartScreen = () => {
                                     </View>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}><Text style={{ color: 'orange', fontWeight: 'bold' }}>+1.320</Text> điểm</Text>
-                                        <ButtonCustom title="Mua hàng" buttonStyle={{ borderRadius: 50 }} onPress={() => { }} />
+                                        <ButtonCustom title="Mua hàng" buttonStyle={{ borderRadius: 50 }} onPress={() => { navigation.navigate('checkoutScreen' as never)  }} />
                                     </View>
                                 </View>
                             </View>
