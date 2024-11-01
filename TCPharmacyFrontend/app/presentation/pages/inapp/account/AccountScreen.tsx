@@ -60,7 +60,7 @@ const switchAccount = [
         id: 5,
         name: "Đơn thuốc của tôi",
         image: require("./../../../../../assets/imgAccountScreen/check-list.png"),
-        navigateName : "OrderScreen"
+        navigateName : "MedicineOrderScreen"
     }
 ]
 

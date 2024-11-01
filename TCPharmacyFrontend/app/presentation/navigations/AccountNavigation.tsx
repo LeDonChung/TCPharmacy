@@ -6,6 +6,8 @@ import { UserInfo } from "../pages/inapp/account/UserInfo";
 import { UpdateUserInfo } from "../pages/inapp/account/UpdateUserInfo";
 import { Location } from "../pages/inapp/account/Location";
 import { EditLocation } from "../pages/inapp/account/EditLocation";
+import { MedicineOrderScreen } from "../pages/inapp/account/MedicineOrderScreen";
+import { ChatScreen } from "../pages/inapp/ChatScreen";
 const Stack = createStackNavigator();
 export const AccountNavigation = () => {
     return (
@@ -17,6 +19,8 @@ export const AccountNavigation = () => {
                 <Stack.Screen name="UpdateUserInfo" component={UpdateUserInfo} />
                 <Stack.Screen name="LocationScreen" component={Location} />
                 <Stack.Screen name="EditLocationScreen" component={EditLocation} />
+                <Stack.Screen name="MedicineOrderScreen" component={MedicineOrderScreen} />
+                <Stack.Screen name="ChatScreen" component={ChatScreen} />
             </Stack.Navigator>
         </>
     )
