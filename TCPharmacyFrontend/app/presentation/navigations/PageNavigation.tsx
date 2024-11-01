@@ -9,6 +9,7 @@ const Tab = createBottomTabNavigator();
 import React from "react";
 import { useSelector } from "react-redux";
 import { Store } from "../redux/store";
+import { AccountNavigation } from "./AccountNavigation";
 export const PageNavigation = () => {
     const cart = useSelector((state: Store) => state.cart);
     return (
@@ -59,7 +60,7 @@ export const PageNavigation = () => {
                 title: 'Giỏ hàng',
                 tabBarBadge: cart.value.cartItems.length > 0 ? cart.value.cartItems.length : undefined,
             }} />
-            <Tab.Screen name="account" component={AccountScreen} options={{
+            <Tab.Screen name="account" component={AccountNavigation} options={{
                 tabBarLabelStyle: {
                     fontSize: 14,
                     fontFamily: 'Roboto'
