@@ -77,6 +77,14 @@ export const EditLocation = () => {
     const [provinceSelected, setProvinceSelected] = useState(null);
     const [districtSelected, setDistrictSelected] = useState(null);
     const [wardSelected, setWardSelected] = useState(null);
+    const [type, setType] = useState("");
+    const hanldedType = (type: string) => {
+        if (type === "Nhà") {
+            setType("Nhà");
+        } else {
+            setType("Văn phòng");
+        }
+    }
 
     //Lay ra toan bo tinh thanh
     useEffect(() => {
@@ -121,7 +129,7 @@ export const EditLocation = () => {
     const [modalVisible, setModalVisible] = useState(false);
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
             {/* header */}
             <View style={{ height: 70, width: '100%', backgroundColor: Colors.primary, flexDirection: 'row', alignItems: 'center', }}>
                 <TouchableOpacity style={{ marginHorizontal: 15 }} onPress={() => { navigation.goBack() }}>
@@ -228,8 +236,8 @@ export const EditLocation = () => {
 
                                 renderItem={(item, index, isSelected) => {
                                     return (
-                                        <View style={{}}>
-                                            <Text style={{}}>{item.name}</Text>
+                                        <View style={{marginHorizontal: 10, marginVertical: 10}}>
+                                            <Text style={[GlobalStyles.textStyle, {fontSize: 15}]}>{item.name}</Text>
                                         </View>
                                     );
                                 }}
@@ -263,8 +271,8 @@ export const EditLocation = () => {
 
                                 renderItem={(item, index, isSelected) => {
                                     return (
-                                        <View style={{}}>
-                                            <Text style={{}}>{item.name}</Text>
+                                        <View style={{marginHorizontal: 10, marginVertical: 10}}>
+                                            <Text style={[GlobalStyles.textStyle, {fontSize: 15}]}>{item.name}</Text>
                                         </View>
                                     );
                                 }}
@@ -297,8 +305,8 @@ export const EditLocation = () => {
 
                                 renderItem={(item, index, isSelected) => {
                                     return (
-                                        <View style={{}}>
-                                            <Text style={{}}>{item.name}</Text>
+                                        <View style={{marginHorizontal: 10, marginVertical: 10}}>
+                                            <Text style={[GlobalStyles.textStyle, {fontSize: 15}]}>{item.name}</Text>
                                         </View>
                                     );
                                 }}
@@ -332,23 +340,27 @@ export const EditLocation = () => {
                 <View style={{ height: 60, width: "95%", marginHorizontal: 'auto', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription, marginVertical: 10 }]}>Loại địa chỉ</Text>
                     <View style={{ flexDirection: 'row', }}>
-                        <TouchableOpacity style={{ width: 70, height: 35, borderWidth: 1, borderColor: '#c4c4c4', borderRadius: 30, justifyContent: 'center', alignItems: 'center', marginHorizontal: 15 }}>
-                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', color: "#464A56", fontSize: 17 }]}>Nhà</Text>
+                        <TouchableOpacity style={{ width: 70, height: 35, borderWidth: 1, borderColor: '#c4c4c4', 
+                            borderRadius: 30, justifyContent: 'center', alignItems: 'center', marginHorizontal: 15, 
+                            backgroundColor: type === "Nhà" ? Colors.primary : "#fff" }} onPress={() => {setType("Nhà")}}>
+                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', color: type === "Nhà" ? Colors.secondary : "#464A56", fontSize: 17 }]}>Nhà</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ width: 115, height: 35, borderWidth: 1, borderColor: '#c4c4c4', borderRadius: 30, justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', color: "#464A56", fontSize: 17 }]}>Văn phòng</Text>
+                        <TouchableOpacity style={{ width: 115, height: 35, borderWidth: 1, borderColor: '#c4c4c4', 
+                            borderRadius: 30, justifyContent: 'center', alignItems: 'center', 
+                            backgroundColor: type === "Văn phòng" ? Colors.primary : "#fff" }} onPress={() => {setType("Văn phòng")}}>
+                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', color: type === "Văn phòng" ? "#fff" : "#464A56", fontSize: 17 }]}>Văn phòng</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
 
             {/* Chon lam mac dinh */}
-            <View style={{ width: '95%', height: 60, marginHorizontal: 'auto', flexDirection: 'row', justifyContent: 'space-between', alignItems :'center' }}>
+            <View style={{ width: '95%', height: 60, marginHorizontal: 'auto', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
 
                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription, }]}>Đặt làm địa chỉ mặc định</Text>
 
                 <Switch
-                    trackColor={{ false: "#767577", true: Colors.primary }}
+                    trackColor={{ false: "#767577", true: Colors.primary, }}
                     thumbColor={"#ffff"}
                     ios_backgroundColor="#3e3e3e"
                     onValueChange={() => { setLocationInfo({ ...locationInfo, default: !locationInfo.default }) }}
@@ -356,6 +368,11 @@ export const EditLocation = () => {
 
                 />
             </View>
+
+            <ButtonCustom title="Thêm địa chỉ mới" onPress={() => { console.log(locationInfo) }}
+                buttonStyle={{ margin: 20, borderRadius: 30, paddingVertical: 15, backgroundColor: Colors.primary, width: '90%', alignSelf: 'center',  position: "absolute", bottom: 15 }}
+                textStyle={{ color: Colors.secondary, fontSize: 16, fontWeight: '700',  }}
+            />
 
         </SafeAreaView>
     )
