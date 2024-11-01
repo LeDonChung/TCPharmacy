@@ -17,7 +17,9 @@ const locations = [
             district: "Quận Gò Vấp",
             ward: "Phường 4",
             street: "44/10 Lê Lai"
-        }
+        },
+        addressType: "Nhà",
+        default: true
     },
     {
         id: "2",
@@ -28,7 +30,9 @@ const locations = [
             district: "Quận Gò Vấp",
             ward: "Phường 4",
             street: "44/10 Lê Lai"
-        }
+        },
+        addressType: "Nhà",
+        default: false
     }
 ]
 
