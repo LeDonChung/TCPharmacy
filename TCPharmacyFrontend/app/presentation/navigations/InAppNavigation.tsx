@@ -8,6 +8,7 @@ import { BonusNavigation } from "./BonusNavigation";
 import { ChatScreen } from "../pages/inapp/ChatScreen";
 import { CartScreen } from "../pages/inapp/CartScreen";
 import { CheckoutScreen } from "../pages/inapp/CheckoutScreen";
+import { ProductDetailScreen } from "../pages/inapp/ProductDetailScreen";
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ export const InAppNavigation = () => {
                 <Stack.Screen name="bonusNavigation" component={BonusNavigation} />
                 <Stack.Screen name="chatScreen" component={ChatScreen} />
                 <Stack.Screen name="checkoutScreen" component={CheckoutScreen} />
+                <Stack.Screen name="productDetailScreen" component={ProductDetailScreen} />
             </Stack.Navigator>
             
         </>

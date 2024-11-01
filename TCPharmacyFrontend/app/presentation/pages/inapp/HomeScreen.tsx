@@ -25,6 +25,7 @@ import { ProductCustom } from "../../components/ProductCustom";
 import { ModalCustom } from "../../components/ModalCustom";
 import { TextInput } from "react-native-paper";
 import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom";
+import { ProductModel } from "../../../domain/models/ProductModel";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
 const menus = [
@@ -221,7 +222,7 @@ const categorySuggestion = [
     }
 ]
 
-const productsInit = [
+const productsInit: ProductModel[] = [
     {
         id: 1,
         images: [
@@ -551,7 +552,7 @@ export const HomeScreen = () => {
                                 <FlatList
                                     nestedScrollEnabled
                                     data={menus}
-                                    scrollEnabled={false}
+                                    scrollEnabled={true}
                                     renderItem={
                                         ({ item, index }) => {
 
@@ -610,7 +611,7 @@ export const HomeScreen = () => {
                                 <FlatList
                                     nestedScrollEnabled
                                     data={menuCategory}
-                                    scrollEnabled={false}
+                                    scrollEnabled={true}
                                     renderItem={
                                         ({ item, index }) => {
 
@@ -686,7 +687,7 @@ export const HomeScreen = () => {
                                         nestedScrollEnabled
                                         data={categoryProductBySubject}
                                         horizontal={true}
-                                        scrollEnabled={false}
+                                        scrollEnabled={true}
                                         renderItem={
                                             ({ item, index }) => {
                                                 return (
@@ -711,18 +712,19 @@ export const HomeScreen = () => {
                                         renderItem={({ item }) => {
                                             return (
                                                 <ProductCustom
-                                                    image={item.images[0]}
+                                                    image={item.images[0]} 
                                                     title={item.name}
                                                     salePrice={item.price}
                                                     unit={item.unit}
                                                     specifications={item.specifications}
-                                                    onPress={() => { () => { setProductChoose(item); setModalVisible(true) } }}
+                                                    addToCart={() => { setProductChoose(item); setModalVisible(true); }}
+                                                    onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
                                                 />
                                             )
                                         }}
                                         keyExtractor={(item) => item.id + ''}
                                         horizontal={true}
-                                        scrollEnabled={false}
+                                        scrollEnabled={true}
                                         showsHorizontalScrollIndicator={false}
                                     />
                                 </View>
@@ -731,12 +733,12 @@ export const HomeScreen = () => {
 
                             {/** Start Suggestion Component */}
                             <View style={{ marginHorizontal: 15 }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Sản phẩm theo đối tượng</Text>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Gợi ý hôm nay</Text>
                                 <View style={{ marginVertical: 20 }}>
                                     <FlatList
                                         nestedScrollEnabled
                                         data={sugg}
-                                        scrollEnabled={false}
+                                        scrollEnabled={true}
                                         horizontal={true}
                                         renderItem={
                                             ({ item, index }) => {
@@ -764,16 +766,17 @@ export const HomeScreen = () => {
                                                     image={item.images[0]}
                                                     title={item.name}
                                                     salePrice={item.price}
-                                                    unit={item.unit}
+                                                    unit={item.unit} 
                                                     specifications={item.specifications}
-                                                    onPress={() => { setProductChoose(item); setModalVisible(true); }}
+                                                    addToCart={() => { setProductChoose(item); setModalVisible(true); }}
+                                                    onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
                                                 />
                                             )
                                         }}
                                         nestedScrollEnabled
                                         keyExtractor={(item) => item.id + ''}
                                         horizontal={true}
-                                        scrollEnabled={false}
+                                        scrollEnabled={true}
                                         showsHorizontalScrollIndicator={false}
                                     />
                                 </View>
@@ -798,7 +801,7 @@ export const HomeScreen = () => {
                                     keyExtractor={(item) => item.id}
                                     nestedScrollEnabled
                                     numColumns={2}
-                                    scrollEnabled={false}
+                                    scrollEnabled={true}
                                 />
                             </View>
                             {/** End Policy*/}
