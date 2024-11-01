@@ -5,6 +5,7 @@ import { Colors } from "../styles/Colors"
 import { ButtonCustom } from "./ButtonCustom"
 type ProductCustomProps = {
     onPress: () => void,
+    addToCart: () => void,
     title: string,
     salePrice: number,
     specifications: string,
@@ -16,7 +17,7 @@ export const ProductCustom = (props: ProductCustomProps) => {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
     return (
-        <TouchableOpacity onPress={() => { }} style={[styles.container]}>
+        <TouchableOpacity onPress={props.onPress} style={[styles.container]}>
             <Image style={styles.image} source={props.image} />
             <View>
                 <Text numberOfLines={2} style={[GlobalStyles.textStyle, styles.textStyleTitle]}>
@@ -31,7 +32,7 @@ export const ProductCustom = (props: ProductCustomProps) => {
                 </View>
             </View>
             <ButtonCustom
-                onPress={props.onPress}
+                onPress={props.addToCart}
                 title={"Chọn mua"}
                 textStyle={[GlobalStyles.textStyle, { color: '#fff', fontWeight: 'bold' }]}
                 buttonStyle={{ backgroundColor: Colors.primary, padding: 10, borderRadius: 40, marginTop: 'auto', marginBottom: 10, width: '100%' }}
