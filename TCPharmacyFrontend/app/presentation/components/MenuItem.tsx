@@ -1,10 +1,10 @@
-import { Image, StyleSheet, Text, TouchableOpacity } from "react-native"
+import { Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity } from "react-native"
 import React from "react"
 import { ImageProps } from "react-native"
 import { GlobalStyles } from "../styles/GlobalStyles"
 
 type MenuItemProps = {
-    icon: ImageProps,
+    icon: ImageSourcePropType,
     title: string,
     styleContainer?: any,
     styleIcon?: any,
