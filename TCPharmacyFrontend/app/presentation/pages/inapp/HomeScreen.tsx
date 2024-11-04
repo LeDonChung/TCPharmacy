@@ -26,6 +26,9 @@ import { ModalCustom } from "../../components/ModalCustom";
 import { TextInput } from "react-native-paper";
 import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom";
 import { ProductModel } from "../../../domain/models/ProductModel";
+import { useDispatch, useSelector } from "react-redux";
+import { Store } from "../../redux/store";
+import { getCategoryByParentCategoryId, getCategoryByParentId } from "../../redux/slice/CategorySlice";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
 const menus = [
@@ -471,7 +474,7 @@ export const HomeScreen = () => {
 
     const [productPurchaseds, setProductPurchaseds] = useState(purchasedProducts);
 
-    const [menuCategory, setMenuCategory] = useState(menuCategories);
+    const menuCategory = useSelector((state: Store) => state.categories.category);
     const [brandFavorite, setBrandFavorites] = useState(brandFavorites);
     const [categoryProductBySubject, setCategoryProductBySubject] = useState(categoryProductBySubjects);
 
@@ -491,6 +494,13 @@ export const HomeScreen = () => {
     const formatPrice = (price: number) => {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getCategoryByParentCategoryId({ parentId: "thucPhamChucNang" }));
+    }, [navigation])   
+
     return (
         <>
             <DrawerLayout
@@ -610,21 +620,22 @@ export const HomeScreen = () => {
                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18 }]}>Danh mục nổi bật</Text>
                                 <FlatList
                                     nestedScrollEnabled
-                                    data={menuCategory}
+                                    data={menuCategory.category}
                                     scrollEnabled={true}
                                     renderItem={
                                         ({ item, index }) => {
 
                                             const isFirstColumn = index % 2 === 0;
                                             const isLastColumn = (index + 1) % 2 === 0;
+                                            
                                             return (
                                                 <MenuItem
                                                     styleIcon={{ flex: 0 }}
                                                     styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
                                                     styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70 }}
-                                                    icon={item.icon}
+                                                    icon={item.icon} 
                                                     title={item.title}
-                                                    onPress={item.onPress}
+                                                    onPress={() => { navigation.navigate('productScreen' as never, { category: item }) }}
                                                 />
                                             )
                                         }
