@@ -9,11 +9,23 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { TextInput } from "react-native-gesture-handler"
 import { ButtonCustom } from "../../components/ButtonCustom"
 import { ModalCustom } from "../../components/ModalCustom"
+import { useDispatch, useSelector } from "react-redux"
+import { Store } from "../../redux/store"
+import { generateOTP, setUsertRegister } from "../../redux/slice/UserSlice"
 
 export const LoginScreen = () => {
     const navigation = useNavigation()
     const [modalVisible, setModalVisible] = useState(false);
+    const userRegister = useSelector((state: Store) => state.user.userRegister);
+    const dispatch = useDispatch();
 
+    const sendOTP = async () => {
+        const response = await dispatch(generateOTP(userRegister.phoneNumber));
+        if(response.meta.requestStatus === 'fulfilled') {
+            navigation.navigate('otp' as never);
+        } else {
+        }
+    }
     return (
         <>
             <SafeAreaView style={[GlobalStyles.container, styles.container]}>
@@ -24,14 +36,14 @@ export const LoginScreen = () => {
                         <View style={{ width: '100%', height: 450, justifyContent: 'space-between', alignItems: 'center' }}>
                             <Image style={{ width: 160 }} resizeMode="contain" source={require('./../../../../assets/login_sms.png')} />
                             <Text style={[GlobalStyles.textStyle, { textAlign: 'center' }]}>
-                                Mã xác thực được gửi đến số điện thoại <Text style={{ fontWeight: "bold" }}>0867713557</Text> <Text style={{ color: Colors.primary }}>Đổi số điện thoại</Text>
+                                Mã xác thực được gửi đến số điện thoại <Text style={{ fontWeight: "bold" }}>{userRegister.phoneNumber}</Text> <Text style={{ color: Colors.primary }}>Đổi số điện thoại</Text>
                             </Text>
                             <Text style={GlobalStyles.textStyle}>Vui lòng chọn hình thức nhận mã</Text>
                             <ButtonCustom buttonStyle={{ borderRadius: 30, paddingVertical: 15, width: '100%' }} title="Nhận mã qua Zalo" onPress={() => {
-                                navigation.navigate('otp' as never);
+                                sendOTP();
                             }} />
                             <ButtonCustom buttonStyle={{ borderRadius: 30, paddingVertical: 15, width: '100%', backgroundColor: '#fff' }} textStyle={{ color: Colors.primary }} title="Nhận mã qua SMS" onPress={() => {
-                                navigation.navigate('otp' as never);
+                                sendOTP();
                             }} />
                         </View>
                     }
@@ -45,7 +57,9 @@ export const LoginScreen = () => {
                 <View style={{ flex: 9 }}>
                     <View style={{ flex: 2 }}>
                         <Text style={[GlobalStyles.textStyle, { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 50 }]}> Vui lòng nhập số điện thoại </Text>
-                        <TextInput style={[GlobalStyles.textStyle, { textAlign: 'center', fontSize: 24, fontWeight: 'bold' }]} placeholder="0000 0000 0000" />
+                        <TextInput value={userRegister.phoneNumber} onChangeText={(text) => {
+                            dispatch(setUsertRegister({ ...userRegister, phoneNumber: text }));
+                        }} style={[GlobalStyles.textStyle, { textAlign: 'center', fontSize: 24, fontWeight: 'bold' }]} placeholder="0000 000 000" />
                     </View>
 
                     <View style={{ flex: 1, alignItems: 'center' }}>

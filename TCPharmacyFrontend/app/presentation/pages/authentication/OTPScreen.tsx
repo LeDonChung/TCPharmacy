@@ -4,12 +4,18 @@ import React, { useEffect, useState } from "react"
 import { GlobalStyles } from "../../styles/GlobalStyles"
 import { Colors } from "../../styles/Colors"
 import { InputOtpCustom } from "../../components/InputOtpCustom"
+import { UserRegisterRequest } from "../../../domain/models/request/UserRegisterRequest"
+import { useDispatch, useSelector } from "react-redux"
+import { Store } from "../../redux/store"
+import { register, setUsertRegister } from "../../redux/slice/UserSlice"
 
 export const OTPScreen = () => {
     const navigation = useNavigation()
-    const [secondsLeft, setSecondsLeft] = useState(120);
+    const [secondsLeft, setSecondsLeft] = useState(60);
     const [otpSent, setOtpSent] = useState(true);
     const [otp, setOtp] = React.useState<string[]>(['', '', '', '', '', '']);
+    const userRegister = useSelector((state: Store) => state.user.userRegister);
+    const dispatch = useDispatch();
     useEffect(() => {
         if (otpSent && secondsLeft > 0) {
             const timer = setInterval(() => {
@@ -22,9 +28,18 @@ export const OTPScreen = () => {
         }
     }, [otpSent, secondsLeft]);
     useEffect(() => {
-        if(otp.filter((value) => value !== '').length === 6) {
-            navigation.navigate('inapp' as never);
+        const handlerRegister = async () => {
+            if (otp.filter((value) => value !== '').length === 6) {
+                await dispatch(setUsertRegister(new UserRegisterRequest(userRegister.phoneNumber, userRegister.password, parseInt(otp.join('')))));
+                const response = dispatch(register(userRegister));
+
+                // if (response.meta.requestStatus === 'fulfilled') {
+                //     navigation.navigate('otp' as never);
+                // } else {
+                // }
+            }
         }
+        handlerRegister();
 
     }, [otp]);
     return (
@@ -64,9 +79,9 @@ export const OTPScreen = () => {
 
             <View style={{ flex: 2, justifyContent: 'space-evenly', alignItems: 'center' }}>
                 <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription, fontWeight: 'regular' }]}>Gửi lại mã OTP cho tôi ({secondsLeft})</Text>
-                <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription }]}>hoặc có thể 
-                    {' '} 
-                        <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>nhận mã qua Zalo</Text>
+                <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription }]}>hoặc có thể
+                    {' '}
+                    <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>nhận mã qua Zalo</Text>
                     {' '}
                 </Text>
             </View>
