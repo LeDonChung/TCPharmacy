@@ -3,6 +3,7 @@ package vn.edu.iuh.fit.pharmacy.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -77,15 +78,16 @@ public class AuthController {
 
     }
 
-    @GetMapping("/validation")
-    public ResponseEntity<BaseResponse<Boolean>> validationToken(@RequestHeader("Authorization") String token) {
-        boolean status = jwtService.isValidToken(token.substring(7));
+    @GetMapping("/me")
+    public ResponseEntity<BaseResponse<UserResponse>> validationToken(@RequestHeader("Authorization") String token) {
+        log.info("Token: " + token);
+        UserResponse user = userService.getMe(token.substring(7));
         return new ResponseEntity<>(
                 BaseResponse
-                        .<Boolean>builder()
+                        .<UserResponse>builder()
                         .code(String.valueOf(HttpStatus.OK.value()))
-                        .success(status)
-                        .data(status)
+                        .success(true)
+                        .data(user)
                         .build(),
                 HttpStatus.OK
         );

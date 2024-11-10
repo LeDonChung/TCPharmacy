@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.pharmacy.POJOs.Role;
 import vn.edu.iuh.fit.pharmacy.POJOs.User;
+import vn.edu.iuh.fit.pharmacy.exceptions.JwtException;
+import vn.edu.iuh.fit.pharmacy.jwt.JwtService;
 import vn.edu.iuh.fit.pharmacy.mappers.UserMapper;
 import vn.edu.iuh.fit.pharmacy.repositories.RoleRepository;
 import vn.edu.iuh.fit.pharmacy.repositories.UserRepository;
@@ -27,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private JwtService jwtService;
 
     @Override
     public UserResponse register(UserRegisterRequest request) {
@@ -34,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> userOptional = userRepository.findByUsername(user.getPhoneNumber());
         if (userOptional.isPresent()) {
-            return userMapper.toDto(userOptional.get());
+            return userMapper.toUserResponse(userOptional.get());
         }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEnabled(true);
@@ -45,6 +49,17 @@ public class UserServiceImpl implements UserService {
 
         User response = userRepository.save(user);
 
-        return userMapper.toDto(response);
+        return userMapper.toUserResponse(response);
+    }
+
+    @Override
+    public UserResponse getMe(String token) {
+        boolean isLogin = jwtService.isValidToken(token);
+        if(!isLogin) {
+            throw new JwtException("Vui lòng đăng nhập lại.");
+        }
+        String username = jwtService.getUsernameFromToken(token);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        return userOptional.map(user -> userMapper.toUserResponse(user)).orElse(null);
     }
 }

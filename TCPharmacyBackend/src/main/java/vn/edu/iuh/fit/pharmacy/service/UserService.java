@@ -5,4 +5,6 @@ import vn.edu.iuh.fit.pharmacy.utils.response.UserResponse;
 
 public interface UserService {
     public UserResponse register(UserRegisterRequest request);
+
+    UserResponse getMe(String token);
 }

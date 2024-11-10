@@ -9,5 +9,5 @@ import vn.edu.iuh.fit.pharmacy.utils.response.UserResponse;
 public interface UserMapper {
     User toEntity(UserRegisterRequest request);
 
-    UserResponse toDto(User user);
+    UserResponse toUserResponse(User user);
 }
