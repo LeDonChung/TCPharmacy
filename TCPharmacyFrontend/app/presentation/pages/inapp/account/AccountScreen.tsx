@@ -6,7 +6,7 @@ import { Colors } from "../../../styles/Colors"
 import IconF from "react-native-vector-icons/FontAwesome"
 import IconMas from "react-native-vector-icons/MaterialCommunityIcons"
 import { GlobalStyles } from "../../../styles/GlobalStyles"
-
+import * as SecureStore from 'expo-secure-store';
 const stausOrder = [
     {
         id: 1,
@@ -130,7 +130,13 @@ export const AccountScreen = () => {
                     />
                 </View>
 
-                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 10, left: 100 }}>
+                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 10, left: 100 }} onPress={async () => {
+                    const token = await SecureStore.getItemAsync('token');
+                    if(token) {
+                        SecureStore.deleteItemAsync('token');
+                    }
+                    navigation.reset({ index: 0, routes: [{ name: 'authentication' as never }] })
+                }}>
                     <IconMas name="logout" size={40} color={Colors.desciption} style={{ marginHorizontal: 15, marginVertical: 10 }} />
                     <Text style={[GlobalStyles.textStyle, { fontSize: 25, fontWeight: '700' }]}>Đăng xuất</Text>
                 </TouchableOpacity>

@@ -1,4 +1,4 @@
-import { Alert, BackHandler, Image, Text, View } from "react-native"
+import { Alert, BackHandler, Image, LogBox, Text, View } from "react-native"
 import React, { useEffect, useRef, useState } from "react"
 import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
 import { GlobalStyles } from "../../styles/GlobalStyles";
@@ -29,6 +29,11 @@ import { ProductModel } from "../../../domain/models/ProductModel";
 import { useDispatch, useSelector } from "react-redux";
 import { Store } from "../../redux/store";
 import { getCategoryByParentCategoryId, getCategoryByParentId } from "../../redux/slice/CategorySlice";
+import { findUserLogin } from "../../redux/slice/UserSlice";
+import Toast from "react-native-toast-message";
+import * as SecureStore from 'expo-secure-store';
+
+import { showToast } from "../../../api/AppUtils";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
 const menus = [
@@ -441,30 +446,8 @@ const policiesInit = [
     }
 ]
 export const HomeScreen = () => {
-    const navigation = useNavigation();
-    // useEffect(() => {
-    //     const backAction = () => {
-    //         Alert.alert(
-    //             "Thoát!",
-    //             "Bạn có chắc chắn muốn thoát?",
-    //             [
-    //                 { 
-    //                     text: "Không",
-    //                     onPress: () => null,
-    //                     style: "cancel"
-    //                 },
-    //                 { text: "Chắc chắn", onPress: () => BackHandler.exitApp() }
-    //             ]
-    //         );
-    //         return true;
-    //     };
 
-    //     const backHandler = BackHandler.addEventListener(
-    //         "hardwareBackPress",
-    //         backAction
-    //     );
-    //     return () => backHandler.remove();
-    // }, []);
+    const navigation = useNavigation();
 
     const drawer = useRef(null);
     const closeDrawer = () => {
@@ -491,15 +474,26 @@ export const HomeScreen = () => {
 
     const [productChoose, setProductChoose] = useState(productsInit[0]);
 
+    const userLogin = useSelector((state: Store) => state.user.userLogin);
+    const dispatch = useDispatch();
+    const errorRespone = useSelector((state: Store) => state.user.errorResponse);
+    console.log(userLogin);
+    useEffect(() => {
+        dispatch(findUserLogin()).unwrap().catch((error: any) => {
+            showToast('error', 'bottom', 'Lỗi', 'Vui lòng đăng nhập.');
+            SecureStore.deleteItemAsync('token');
+            navigation.navigate('authentication' as never);
+        });
+    }, []);
+
     const formatPrice = (price: number) => {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getCategoryByParentCategoryId({ parentId: "thucPhamChucNang" }));
-    }, [navigation])   
+    }, [navigation])
 
     return (
         <>
@@ -513,7 +507,12 @@ export const HomeScreen = () => {
                     )
                 }}
             >
-                <ScrollView
+                <FlatList
+                    data={[]}
+                    keyExtractor={() => "key"}
+                    renderItem={null}
+                    ListHeaderComponent={
+                        <ScrollView
                     showsVerticalScrollIndicator={false}
                 >
                     <SafeAreaView style={GlobalStyles.container}>
@@ -820,6 +819,9 @@ export const HomeScreen = () => {
                         {/** End Body  Component*/}
                     </SafeAreaView>
                 </ScrollView>
+                    }
+                />
+
 
                 {
                     productChoose && <ChooseProductToCartModalCustom

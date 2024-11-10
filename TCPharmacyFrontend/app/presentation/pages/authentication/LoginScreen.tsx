@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native"
-import { Image, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native"
-import React, { useState } from "react"
+import { Alert, Image, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native"
+import React, { useEffect, useState } from "react"
 import { GlobalStyles } from "../../styles/GlobalStyles"
 import IconAnt from "react-native-vector-icons/AntDesign"
 import { LogoCustom } from "../../components/LogoCustom"
@@ -12,26 +12,36 @@ import { ModalCustom } from "../../components/ModalCustom"
 import { useDispatch, useSelector } from "react-redux"
 import { Store } from "../../redux/store"
 import { generateOTP, setUsertRegister } from "../../redux/slice/UserSlice"
+import Toast from "react-native-toast-message"
+import { showToast } from "../../../api/AppUtils"
 
 export const LoginScreen = () => {
     const navigation = useNavigation()
     const [modalVisible, setModalVisible] = useState(false);
     const userRegister = useSelector((state: Store) => state.user.userRegister);
+    const errorRespone = useSelector((state: Store) => state.user.errorResponse);
     const dispatch = useDispatch();
 
     const sendOTP = async () => {
-        const response = await dispatch(generateOTP(userRegister.phoneNumber));
-        if(response.meta.requestStatus === 'fulfilled') {
-            navigation.navigate('otp' as never);
-        } else {
+
+        if(userRegister.phoneNumber.length !== 10){
+            showToast('error', 'bottom', 'Lỗi', 'Số điện thoại không hợp lệ');
+            return;
         }
+        await dispatch(generateOTP(userRegister.phoneNumber)).unwrap().catch((error: any) => {
+            console.log(error);
+            showToast('error', 'bottom', 'Lỗi', errorRespone.error || 'Tạo OTP không thành công.');
+        });
+
+        navigation.navigate('otp' as never);
+        setModalVisible(false);
     }
     return (
         <>
             <SafeAreaView style={[GlobalStyles.container, styles.container]}>
                 <ModalCustom
                     modalVisible={modalVisible}
-                    setModalVisible={setModalVisible} 
+                    setModalVisible={setModalVisible}
                     content={
                         <View style={{ width: '100%', height: 450, justifyContent: 'space-between', alignItems: 'center' }}>
                             <Image style={{ width: 160 }} resizeMode="contain" source={require('./../../../../assets/login_sms.png')} />
@@ -50,20 +60,24 @@ export const LoginScreen = () => {
                 />
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <IconAnt name="close" size={30} color="#000" />
-                    <View style={{flex: 1}}>
+                    <View style={{ flex: 1 }}>
                         <LogoCustom color={Colors.primary} />
                     </View>
                 </View>
                 <View style={{ flex: 9 }}>
                     <View style={{ flex: 2 }}>
                         <Text style={[GlobalStyles.textStyle, { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 50 }]}> Vui lòng nhập số điện thoại </Text>
-                        <TextInput value={userRegister.phoneNumber} onChangeText={(text) => {
-                            dispatch(setUsertRegister({ ...userRegister, phoneNumber: text }));
+                        <TextInput value={userRegister.phoneNumber} onChangeText={async (text) => {
+                            await dispatch(setUsertRegister({ ...userRegister, phoneNumber: text }));
                         }} style={[GlobalStyles.textStyle, { textAlign: 'center', fontSize: 24, fontWeight: 'bold' }]} placeholder="0000 000 000" />
                     </View>
 
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <ButtonCustom buttonStyle={{ borderRadius: 30, paddingVertical: 15, width: '100%' }} title="Tiếp tục" onPress={() => {
+                             if(userRegister.phoneNumber.length !== 10){
+                                showToast('error', 'bottom', 'Lỗi', 'Số điện thoại không hợp lệ.');
+                                return;
+                            }
                             setModalVisible(!modalVisible);
                         }} />
 

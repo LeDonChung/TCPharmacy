@@ -249,161 +249,168 @@ export const ProductScreen = () => {
     const [indexSubject, setIndexSubject] = useState(0);
 
     return (
-        <SafeAreaView style={styles.container
+        <FlatList
+            data={[]}
+            keyExtractor={() => "key"}
+            renderItem={null}
+            ListHeaderComponent={
+                <SafeAreaView style={styles.container
 
-        }>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 15, backgroundColor: '#fff' }}>
-                <TouchableOpacity onPress={() => navigation.navigate('home' as never)}>
-                    <IconF name="home" size={30} color={Colors.primary} style={{}} />
-                </TouchableOpacity>
-                <Text style={[GlobalStyles.textStyle, { margin: 'auto', fontWeight: 'bold', fontSize: 18 }]}>{categoryParent.title}</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity style={{ marginRight: 20 }}>
-                        <IconFT name="search" size={30} onPress={() => { }} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginRight: 5 }}>
-                        <IconF5 name="shopping-cart" size={24} color={Colors.primary} onPress={() => { navigation.navigate('cart' as never) }} />
-                        <View style={{ backgroundColor: 'orange', alignItems: 'center', justifyContent: 'center', height: 15, width: 15, borderRadius: 50, position: 'absolute', top: -5, right: -5 }}>
-                            <Text style={[GlobalStyles.textStyle, { color: '#fff', fontSize: 12, textAlign: 'center' }]}>{cart.cartItems.length}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <ScrollView>
-                <View>
-                    <FlatList
-                        horizontal={true}
-                        data={categories}
-                        renderItem={({ item }) => {
-                            return (
-                                item.id === category.parentCategory.id
-                                    ? <View style={{ padding: 10, backgroundColor: '#fff', height: 80, width: 120, alignItems: 'center', justifyContent: 'center', borderTopWidth: 2, borderTopColor: Colors.primary }}>
-                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary, textAlign: 'center' }]}>{item.title}</Text>
-                                    </View>
-                                    : <View style={{ padding: 10, height: 80, width: 120, alignItems: 'center', justifyContent: 'center' }}>
-                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription, textAlign: 'center' }]}>{item.title}</Text>
-                                    </View>
-                            )
-                        }}
-                    />
-                </View>
-                <View>
-                    {/**  Start Category Menu */}
-                    <View style={{ paddingHorizontal: 15, paddingVertical: 20, backgroundColor: '#fff' }}>
-                        <View>
-                            {
-                                category.parentCategory && category.parentCategory.id
-                                && <TouchableOpacity style={{ alignItems: 'center', flexDirection: 'row', paddingVertical: 15 }} onPress={
-                                    () => { }
-                                }>
-                                    <IconF name="angle-left" size={30} style={{ marginRight: 20 }} onPress={() => { navigation.navigate('productScreen' as never, { category: category.parentCategory }) }} />
-                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}>{category.title}</Text>
-                                </TouchableOpacity>
-                            }
-                        </View>
-                        <View>
-                            <FlatList
-                                nestedScrollEnabled
-                                data={categoryMenu}
-                                scrollEnabled={true}
-                                renderItem={
-                                    ({ item, index }) => {
-
-                                        const isFirstColumn = index % 2 === 0;
-                                        const isLastColumn = (index + 1) % 2 === 0;
-                                        return (
-                                            <MenuItem
-                                                styleIcon={{ flex: 0 }}
-                                                styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
-                                                styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70, borderWidth: 1, borderColor: '#BDC2C7' }}
-                                                icon={item.icon}
-                                                title={item.title}
-                                                onPress={() => { }}
-                                            />
-                                        )
-                                    }
-
-                                }
-                                keyExtractor={
-                                    (item) => item.id
-                                }
-                                numColumns={2}
-                            />
-                        </View>
-                    </View>
-                    {/**  End Category Menu */}
-
-
-                </View>
-                {/** Start Product By Subject Component */}
-                <View style={{}}>
-                    <View style={{ backgroundColor: '#fff' }}>
-                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50, paddingHorizontal: 15, backgroundColor: '#fff' }]}>Danh sách sản phẩm</Text>
-                        <View style={{ marginVertical: 20, paddingVertical: 15, paddingHorizontal: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <FlatList
-                                nestedScrollEnabled
-                                data={categoryProductBySubject}
-                                scrollEnabled={true}
-                                horizontal={true}
-                                renderItem={
-                                    ({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity
-                                                onPress={() => { setIndexSubject(index) }}
-                                                style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
-                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
-                                            </TouchableOpacity>
-                                        )
-                                    }
-
-                                }
-                                keyExtractor={
-                                    (item) => item.id
-                                }
-                            />
-                            
-                            <TouchableOpacity>
-                                <IconI name="filter-sharp" size={24}/>
+                }>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 15, backgroundColor: '#fff' }}>
+                        <TouchableOpacity onPress={() => navigation.navigate('home' as never)}>
+                            <IconF name="home" size={30} color={Colors.primary} style={{}} />
+                        </TouchableOpacity>
+                        <Text style={[GlobalStyles.textStyle, { margin: 'auto', fontWeight: 'bold', fontSize: 18 }]}>{categoryParent.title}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <TouchableOpacity style={{ marginRight: 20 }}>
+                                <IconFT name="search" size={30} onPress={() => { }} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ marginRight: 5 }}>
+                                <IconF5 name="shopping-cart" size={24} color={Colors.primary} onPress={() => { navigation.navigate('cart' as never) }} />
+                                <View style={{ backgroundColor: 'orange', alignItems: 'center', justifyContent: 'center', height: 15, width: 15, borderRadius: 50, position: 'absolute', top: -5, right: -5 }}>
+                                    <Text style={[GlobalStyles.textStyle, { color: '#fff', fontSize: 12, textAlign: 'center' }]}>{cart.cartItems.length}</Text>
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{ marginVertical: 20, paddingHorizontal: 15 }}>
-                        <FlatList
-                            nestedScrollEnabled
-                            data={products}
+                    <ScrollView>
+                        <View>
+                            <FlatList
+                                horizontal={true}
+                                data={categories}
+                                renderItem={({ item }) => {
+                                    return (
+                                        item.id === category.parentCategory.id
+                                            ? <View style={{ padding: 10, backgroundColor: '#fff', height: 80, width: 120, alignItems: 'center', justifyContent: 'center', borderTopWidth: 2, borderTopColor: Colors.primary }}>
+                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary, textAlign: 'center' }]}>{item.title}</Text>
+                                            </View>
+                                            : <View style={{ padding: 10, height: 80, width: 120, alignItems: 'center', justifyContent: 'center' }}>
+                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription, textAlign: 'center' }]}>{item.title}</Text>
+                                            </View>
+                                    )
+                                }}
+                            />
+                        </View>
+                        <View>
+                            {/**  Start Category Menu */}
+                            <View style={{ paddingHorizontal: 15, paddingVertical: 20, backgroundColor: '#fff' }}>
+                                <View>
+                                    {
+                                        category.parentCategory && category.parentCategory.id
+                                        && <TouchableOpacity style={{ alignItems: 'center', flexDirection: 'row', paddingVertical: 15 }} onPress={
+                                            () => { }
+                                        }>
+                                            <IconF name="angle-left" size={30} style={{ marginRight: 20 }} onPress={() => { navigation.navigate('productScreen' as never, { category: category.parentCategory }) }} />
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}>{category.title}</Text>
+                                        </TouchableOpacity>
+                                    }
+                                </View>
+                                <View>
+                                    <FlatList
+                                        nestedScrollEnabled
+                                        data={categoryMenu}
+                                        scrollEnabled={true}
+                                        renderItem={
+                                            ({ item, index }) => {
 
-                            renderItem={({ item }) => {
-                                return (
-                                    <View style={{ marginVertical: 10 }}>
-                                        <ProductCustom
-                                            image={item.images[0]}
-                                            title={item.name}
-                                            salePrice={item.price}
-                                            unit={item.unit}
-                                            specifications={item.specifications}
-                                            addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                            onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
-                                        />
-                                    </View>
-                                )
-                            }}
-                            keyExtractor={(item) => item.id + ''}
-                            horizontal={false}
-                            numColumns={2}
-                            scrollEnabled={true}
-                        />
-                    </View>
-                </View>
-                {/** End Product By Subject Component */}
-            </ScrollView>
+                                                const isFirstColumn = index % 2 === 0;
+                                                const isLastColumn = (index + 1) % 2 === 0;
+                                                return (
+                                                    <MenuItem
+                                                        styleIcon={{ flex: 0 }}
+                                                        styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
+                                                        styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70, borderWidth: 1, borderColor: '#BDC2C7' }}
+                                                        icon={item.icon}
+                                                        title={item.title}
+                                                        onPress={() => { }}
+                                                    />
+                                                )
+                                            }
 
-            {
-                productChoose && <ChooseProductToCartModalCustom
-                    productChoose={productChoose}
-                    visible={modalVisible}
-                    setModalVisible={setModalVisible} />
+                                        }
+                                        keyExtractor={
+                                            (item) => item.id
+                                        }
+                                        numColumns={2}
+                                    />
+                                </View>
+                            </View>
+                            {/**  End Category Menu */}
+
+
+                        </View>
+                        {/** Start Product By Subject Component */}
+                        <View style={{}}>
+                            <View style={{ backgroundColor: '#fff' }}>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50, paddingHorizontal: 15, backgroundColor: '#fff' }]}>Danh sách sản phẩm</Text>
+                                <View style={{ marginVertical: 20, paddingVertical: 15, paddingHorizontal: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <FlatList
+                                        nestedScrollEnabled
+                                        data={categoryProductBySubject}
+                                        scrollEnabled={true}
+                                        horizontal={true}
+                                        renderItem={
+                                            ({ item, index }) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        onPress={() => { setIndexSubject(index) }}
+                                                        style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
+                                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
+
+                                        }
+                                        keyExtractor={
+                                            (item) => item.id
+                                        }
+                                    />
+
+                                    <TouchableOpacity>
+                                        <IconI name="filter-sharp" size={24} />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={{ marginVertical: 20, paddingHorizontal: 15 }}>
+                                <FlatList
+                                    nestedScrollEnabled
+                                    data={products}
+
+                                    renderItem={({ item }) => {
+                                        return (
+                                            <View style={{ marginVertical: 10 }}>
+                                                <ProductCustom
+                                                    image={item.images[0]}
+                                                    title={item.name}
+                                                    salePrice={item.price}
+                                                    unit={item.unit}
+                                                    specifications={item.specifications}
+                                                    addToCart={() => { setProductChoose(item); setModalVisible(true); }}
+                                                    onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
+                                                />
+                                            </View>
+                                        )
+                                    }}
+                                    keyExtractor={(item) => item.id + ''}
+                                    horizontal={false}
+                                    numColumns={2}
+                                    scrollEnabled={true}
+                                />
+                            </View>
+                        </View>
+                        {/** End Product By Subject Component */}
+                    </ScrollView>
+
+                    {
+                        productChoose && <ChooseProductToCartModalCustom
+                            productChoose={productChoose}
+                            visible={modalVisible}
+                            setModalVisible={setModalVisible} />
+                    }
+                </SafeAreaView>
             }
-        </SafeAreaView>
+        />
     )
 }
 
