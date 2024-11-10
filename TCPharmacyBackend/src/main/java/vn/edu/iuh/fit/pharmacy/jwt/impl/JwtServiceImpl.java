@@ -118,4 +118,9 @@ public class JwtServiceImpl implements JwtService {
     public String getCurrentUser() {
         return (String) claims.get("sub");
     }
+
+    @Override
+    public String getUsernameFromToken(String token) {
+        return extractClaims(token, Claims::getSubject);
+    }
 }
