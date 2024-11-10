@@ -1,6 +1,6 @@
 export class UserRegisterRequest {
     phoneNumber: string;
-    password: string;
+    password: string = 'default';
     otp: string[] = ['', '', '', '', '', ''];
 
     constructor(phoneNumber: string, password: string, otp: string[]) {

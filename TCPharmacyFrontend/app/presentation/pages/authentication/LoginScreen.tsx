@@ -29,6 +29,7 @@ export const LoginScreen = () => {
             return;
         }
         await dispatch(generateOTP(userRegister.phoneNumber)).unwrap().catch((error: any) => {
+            console.log(error);
             showToast('error', 'bottom', 'Lỗi', errorRespone.error || 'Tạo OTP không thành công.');
         });
 

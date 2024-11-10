@@ -15,7 +15,7 @@ import { showToast } from "../../../api/AppUtils"
 
 export const OTPScreen = () => {
     const navigation = useNavigation()
-    const [secondsLeft, setSecondsLeft] = useState(5);
+    const [secondsLeft, setSecondsLeft] = useState(60);
     const errorRespone = useSelector((state: Store) => state.user.errorResponse);
     const [otpSent, setOtpSent] = useState(true);
     const userRegister = useSelector((state: Store) => state.user.userRegister);
@@ -34,30 +34,29 @@ export const OTPScreen = () => {
 
     const handlerReOTP = async () => {
         dispatch(generateOTP(userRegister.phoneNumber)).unwrap().catch((error: any) => {
-            showToast('error', 'bottom', 'Lỗi', errorRespone.error || error|| 'Tạo OTP không thành công.');
+            showToast('error', 'bottom', 'Lỗi', errorRespone.error || error || 'Tạo OTP không thành công.');
             return;
         });
 
         showToast('success', 'bottom', 'Thành công', 'Gửi mã OTP thành công.');
         dispatch(setUsertRegister(new UserRegisterRequest(userRegister.phoneNumber, userRegister.password, ['', '', '', '', '', ''])));
 
-        setSecondsLeft(5);
+        setSecondsLeft(60);
         setOtpSent(true);
 
     }
     const handlerRegister = async () => {
 
         if (userRegister.otp.filter((value) => value !== '').length === 6) {
-            dispatch(register(userRegister)).unwrap().catch((error: any) => {
-                showToast('error', 'bottom', 'Lỗi', errorRespone.error || error||  'Đăng nhập không thành công.');
+            await dispatch(register(userRegister))
+            if(errorRespone && errorRespone.error){
+                showToast('error', 'bottom', 'Lỗi', errorRespone.error);
                 return;
-            });
-
-
+            }
             setOtpSent(false);
             dispatch(setUsertRegister(new UserRegisterRequest(userRegister.phoneNumber, userRegister.password, ['', '', '', '', '', ''])));
-
             navigation.navigate('inapp' as never);
+
         } else {
             setOtpSent(false);
             showToast('error', 'bottom', 'Lỗi', 'Mã OTP không hợp lệ.');
@@ -76,15 +75,15 @@ export const OTPScreen = () => {
                         <Text style={{ fontWeight: 'bold' }}>0867713557</Text>
                         {' '}
                         {
-                        otpSent
-                            ?
-                            (<Text> có hiệu lực trong vòng {`${Math.floor(secondsLeft / 60)} phút ${secondsLeft % 60 < 10 ? `0${secondsLeft % 60}` : secondsLeft % 60} giây`} </Text>)
-                            :
-                            (
-                            <Pressable onPress={() => {handlerReOTP();}}>
-                                <Text style={[GlobalStyles.textStyle, { color: Colors.primary }]}>Gửi lại mã</Text>
-                            </Pressable>
-                            )
+                            otpSent
+                                ?
+                                (<Text> có hiệu lực trong vòng {`${Math.floor(secondsLeft / 60)} phút ${secondsLeft % 60 < 10 ? `0${secondsLeft % 60}` : secondsLeft % 60} giây`} </Text>)
+                                :
+                                (
+                                    <Pressable onPress={() => { handlerReOTP(); }}>
+                                        <Text style={[GlobalStyles.textStyle, { color: Colors.primary }]}>Gửi lại mã</Text>
+                                    </Pressable>
+                                )
                         }
 
                     </Text>
@@ -93,8 +92,9 @@ export const OTPScreen = () => {
                     </TouchableOpacity>
 
                     <View style={{ width: '100%' }}>
-                        <InputOtpCustom otp={userRegister.otp} setOtp={(text) => {dispatch(setUsertRegister(new UserRegisterRequest(userRegister.phoneNumber, userRegister.password, text)));
- }} />
+                        <InputOtpCustom otp={userRegister.otp} setOtp={(text) => {
+                            dispatch(setUsertRegister(new UserRegisterRequest(userRegister.phoneNumber, userRegister.password, text)));
+                        }} />
                     </View>
                     <ButtonCustom
                         buttonStyle={{ borderRadius: 30, paddingVertical: 15, width: '100%', marginTop: 100 }}

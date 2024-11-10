@@ -11,7 +11,7 @@ const initialState: {
     loading: boolean
 } = {
     userLogin: new UserModel(0, '', '', '', new Date(), Gender.Female, ''),
-    userRegister: new UserRegisterRequest('', '', ['', '', '', '', '', '']),
+    userRegister: new UserRegisterRequest('', 'default', ['', '', '', '', '', '']),
     errorResponse: null,
     loading: false
 }
@@ -36,6 +36,7 @@ const register: any = createAsyncThunk('userRegister/register', async (
             password: request.password,
             otp: request.otp.join('')
         }
+        console.log("LOGIN REQUEST: ", requestBody);
         const response = await axiosInstance.post(`/auth/register`, requestBody);
 
         return response.data;
@@ -51,11 +52,9 @@ const findUserLogin: any = createAsyncThunk('userRegister/findUserLogin', async 
         if(token === null){
             throw rejectWithValue('Vui lòng đăng nhập.');
         }
-
-        axiosInstance.defaults.headers.common['Authorization'] = "Bearer " + token;
-
+        console.log("CALL")
         const response = await axiosInstance.get(`/auth/me`);
-        return response.data;
+        return response.data; 
     }catch(error: any){
         throw rejectWithValue(error.response.data);
     }

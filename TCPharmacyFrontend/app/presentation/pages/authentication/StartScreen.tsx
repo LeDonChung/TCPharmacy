@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import React from "react";
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import { StyleSheet, View } from "react-native";
@@ -9,6 +9,7 @@ import { CarouselModel } from "../../../domain/models/CarouselModel";
 import CarouselItem, { ITEM_WIDTH, SLIDER_WIDTH } from "../../components/CarouselItem";
 import { Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from 'expo-secure-store';
 const initCarousels = [
     new CarouselModel('carouse01', 'Đủ thuốc theo đơn bệnh viện', 'Cam kết thuốc tốt, chính hãng & giá tốt', require('./../../../../assets/start/carousel01.png')),
     new CarouselModel('carouse02', 'Giao hàng tận nơi', 'Giao hàng nhanh chóng, tận tâm & đúng hẹn tại tất cả các tỉnh thành trên toàn quốc', require('./../../../../assets/start/carousel01.png')),
@@ -21,6 +22,12 @@ export const StartScreen = () => {
     const [index, setIndex] = useState(0)
     const navigation = useNavigation();
 
+    useEffect(() => {
+        const token = SecureStore.getItem('token');
+        if(token) {
+            navigation.navigate('inapp' as never);
+        }
+    }, []);
     return (
         <View style={[GlobalStyles.container, styles.container]}>
             <View style={{flex: 8}}>

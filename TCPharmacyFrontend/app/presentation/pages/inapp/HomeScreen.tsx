@@ -31,6 +31,8 @@ import { Store } from "../../redux/store";
 import { getCategoryByParentCategoryId, getCategoryByParentId } from "../../redux/slice/CategorySlice";
 import { findUserLogin } from "../../redux/slice/UserSlice";
 import Toast from "react-native-toast-message";
+import * as SecureStore from 'expo-secure-store';
+
 import { showToast } from "../../../api/AppUtils";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
@@ -478,7 +480,8 @@ export const HomeScreen = () => {
     console.log(userLogin);
     useEffect(() => {
         dispatch(findUserLogin()).unwrap().catch((error: any) => {
-            showToast('error', 'bottom', 'Lỗi', error || 'Vui lòng đăng nhập.');
+            showToast('error', 'bottom', 'Lỗi', 'Vui lòng đăng nhập.');
+            SecureStore.deleteItemAsync('token');
             navigation.navigate('authentication' as never);
         });
     }, []);
