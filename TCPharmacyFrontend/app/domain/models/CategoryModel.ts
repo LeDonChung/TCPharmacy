@@ -1,17 +1,27 @@
 import { ImageSourcePropType } from "react-native";
 
 export class CategoryModel {
-    id: string;
-    title: string;
-    icon: ImageSourcePropType;
-    category: CategoryModel[] = [];
-    parentCategory: CategoryModel;
+    id: number;
 
-    constructor(id: string, title: string, icon: ImageSourcePropType, category: CategoryModel[], parentCategory: CategoryModel) {
+    fullPathSlug: string;
+
+    title: string;
+
+    level: number;
+
+    icon: string;
+
+    parent: number;
+
+    children: CategoryModel[];
+
+    constructor(id: number, fullPathSlug: string, title: string, level: number, icon: string, parent: number, children: CategoryModel[]) {
         this.id = id;
+        this.fullPathSlug = fullPathSlug;
         this.title = title;
+        this.level = level;
         this.icon = icon;
-        this.category = category;
-        this.parentCategory = parentCategory;
+        this.parent = parent;
+        this.children = children;
     }
 }

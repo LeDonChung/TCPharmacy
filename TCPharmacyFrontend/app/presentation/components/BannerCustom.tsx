@@ -11,11 +11,14 @@ const banners = [
     new CarouselModel('banner02', '', '', require('./../../../assets/banner/Vacxin_Viemnao_bannerweb_Homepage_Web_1610x492_34ba60a578 1.png')),
     new CarouselModel('banner03', '', '', require('./../../../assets/banner/Vacxin_Viemnao_bannerweb_Homepage_Web_1610x492_34ba60a578 1.png')),
 ]
-export const BannerCustom = () => {
+type BannerProps = {
+    data: CarouselModel[]
+}
+export const BannerCustom = (props: BannerProps) => {
     const isCarousel = useRef<Carousel<CarouselModel> | null>(null)
 
     const [index, setIndex] = useState(0)
-    const [carousels, setCarousels] = useState(banners);
+    const [carousels, setCarousels] = useState(props.data);
 
 
 
@@ -28,7 +31,7 @@ export const BannerCustom = () => {
             renderItem={
                 ({ item, index }) => {
                     return (
-                            <Image source={item.image} style={{ width: SLIDER_WIDTH, height: 150 }} resizeMode="contain" />
+                            <Image source={{uri: item.image}} style={{ width: SLIDER_WIDTH, height: 150 }} resizeMode="contain" />
                     )
                 }
             }

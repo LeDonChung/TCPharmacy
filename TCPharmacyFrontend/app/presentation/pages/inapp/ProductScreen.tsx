@@ -11,10 +11,10 @@ import { GlobalStyles } from "../../styles/GlobalStyles"
 import { useDispatch, useSelector } from "react-redux"
 import { Store } from "../../redux/store"
 import { MenuItem } from "../../components/MenuItem"
-import { getCategoryParent, searchCategoryByParentId, setCategorySearch } from "../../redux/slice/CategorySlice"
 import { ProductCustom } from "../../components/ProductCustom"
 import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom"
 import IconI from "react-native-vector-icons/Ionicons"
+import { ProductModel } from "../../../domain/models/ProductModel"
 
 const categoryProductBySubjects = [
     {
@@ -224,21 +224,21 @@ export const ProductScreen = () => {
     const navigation = useNavigation()
 
     const cart = useSelector((state: Store) => state.cart.value)
-    const categories = useSelector((state: Store) => state.categories.value)
+    // const categories = useSelector((state: Store) => state.categories.value)
 
     const [products, setProducts] = useState(productsInit);
     const [modalVisible, setModalVisible] = useState(false);
     const [productChoose, setProductChoose] = useState(productsInit[0]);
 
-    const categoryParent = useSelector((state: Store) => state.categories.parentCategory);
+    // const categoryParent = useSelector((state: Store) => state.categories.value.level1);
 
     // Toàn bộ menu của thằng category
-    const categoryMenu = useSelector((state: Store) => state.categories.search)
+    // const categoryMenu = useSelector((state: Store) => state.categories.)
     const dispatch = useDispatch()
-    useEffect(() => {
-        dispatch(setCategorySearch(category.category))
-        dispatch(getCategoryParent({ parentId: category.parentCategory.id }))
-    }, [])
+    // useEffect(() => {
+    //     dispatch(setCategorySearch(category.category))
+    //     dispatch(getCategoryParent({ parentId: category.parentCategory.id }))
+    // }, [])
 
     const handlerActionBackCategory = () => {
 
@@ -261,7 +261,7 @@ export const ProductScreen = () => {
                         <TouchableOpacity onPress={() => navigation.navigate('home' as never)}>
                             <IconF name="home" size={30} color={Colors.primary} style={{}} />
                         </TouchableOpacity>
-                        <Text style={[GlobalStyles.textStyle, { margin: 'auto', fontWeight: 'bold', fontSize: 18 }]}>{categoryParent.title}</Text>
+                        <Text style={[GlobalStyles.textStyle, { margin: 'auto', fontWeight: 'bold', fontSize: 18 }]}>{"Tìm kiếm"}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TouchableOpacity style={{ marginRight: 20 }}>
                                 <IconFT name="search" size={30} onPress={() => { }} />
@@ -276,9 +276,9 @@ export const ProductScreen = () => {
                     </View>
                     <ScrollView>
                         <View>
-                            <FlatList
+                            {/* <FlatList
                                 horizontal={true}
-                                data={categories}
+                                data={[categories]}
                                 renderItem={({ item }) => {
                                     return (
                                         item.id === category.parentCategory.id
@@ -290,7 +290,7 @@ export const ProductScreen = () => {
                                             </View>
                                     )
                                 }}
-                            />
+                            /> */}
                         </View>
                         <View>
                             {/**  Start Category Menu */}
@@ -307,7 +307,7 @@ export const ProductScreen = () => {
                                     }
                                 </View>
                                 <View>
-                                    <FlatList
+                                    {/* <FlatList
                                         nestedScrollEnabled
                                         data={categoryMenu}
                                         scrollEnabled={true}
@@ -333,7 +333,7 @@ export const ProductScreen = () => {
                                             (item) => item.id
                                         }
                                         numColumns={2}
-                                    />
+                                    /> */}
                                 </View>
                             </View>
                             {/**  End Category Menu */}
@@ -356,7 +356,7 @@ export const ProductScreen = () => {
                                                     <TouchableOpacity
                                                         onPress={() => { setIndexSubject(index) }}
                                                         style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
-                                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
+                                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{"Thể loại"}</Text>
                                                     </TouchableOpacity>
                                                 )
                                             }
