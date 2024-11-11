@@ -51,12 +51,6 @@ const switchAccount = [
         navigateName : "LocationScreen"
     },
     {
-        id: 4,
-        name: "Quản lý thẻ thanh toán",
-        image: require("./../../../../../assets/imgAccountScreen/credit-card.png"),
-        navigateName : "CreditCardScreen"
-    },
-    {
         id: 5,
         name: "Đơn thuốc của tôi",
         image: require("./../../../../../assets/imgAccountScreen/check-list.png"),
@@ -103,14 +97,14 @@ export const AccountScreen = () => {
                         renderItem={({ item }) => (
                             <TouchableOpacity style={{ width: "25%", marginHorizontal: 'auto', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Image source={item.image} style={{ width: 40, height: 40 }} />
-                                <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{item.name}</Text>
+                                <Text style={[GlobalStyles.textStyle, { fontSize: 14, fontWeight: 'bold' }]}>{item.name}</Text>
                             </TouchableOpacity>
                         )}
                         numColumns={4}
                     />
                 </View>
                 <Text style={[GlobalStyles.textStyle, { fontWeight: '700', color: Colors.textDecription, fontSize: 18, marginHorizontal: 10 }]}>Tài khoản</Text>
-                <View style={{ width: "95%", marginHorizontal: 'auto', height: 370, backgroundColor: '#fff', marginVertical: 15, borderRadius: 15, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ width: "95%", marginHorizontal: 'auto', height: 300, backgroundColor: '#fff', marginVertical: 15, borderRadius: 15, alignItems: 'center', justifyContent: 'center' }}>
                     <FlatList
                         data={switchAccount}
                         keyExtractor={item => item.id.toString()}
@@ -122,7 +116,7 @@ export const AccountScreen = () => {
                                     <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
                                         <Image source={item.image} style={{ marginHorizontal: 15 }} />
                                     </View>
-                                    <Text style={[GlobalStyles.textStyle, { fontSize: 18, fontWeight: '500', marginHorizontal: 10 }]}>{item.name}</Text>
+                                    <Text style={[GlobalStyles.textStyle, { fontSize: 16, fontWeight: '500', marginHorizontal: 10 }]}>{item.name}</Text>
                                 </View>
                                 <IconMas name="chevron-right" size={40} color={Colors.desciption} style={{ marginHorizontal: 15, marginVertical: 10 }} />
                             </TouchableOpacity>
@@ -138,7 +132,7 @@ export const AccountScreen = () => {
                     navigation.reset({ index: 0, routes: [{ name: 'authentication' as never }] })
                 }}>
                     <IconMas name="logout" size={40} color={Colors.desciption} style={{ marginHorizontal: 15, marginVertical: 10 }} />
-                    <Text style={[GlobalStyles.textStyle, { fontSize: 25, fontWeight: '700' }]}>Đăng xuất</Text>
+                    <Text style={[GlobalStyles.textStyle, { fontSize: 14, fontWeight: '700' }]}>Đăng xuất</Text>
                 </TouchableOpacity>
             </SafeAreaView>
         </>

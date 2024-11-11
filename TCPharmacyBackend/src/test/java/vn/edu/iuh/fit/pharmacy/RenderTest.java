@@ -183,7 +183,7 @@ public class RenderTest {
                     Category category2 = Category.builder()
                             .title(categoryLevel02.getName())
                             .level(2)
-                            .icon(image)
+                            .icon(image2)
                             .parent(categoryNewLevel01)
                             .fullPathSlug(categoryLevel02.getFullPathSlug())
                             .build();
@@ -201,7 +201,7 @@ public class RenderTest {
                             Category category3 = Category.builder()
                                     .title(categoryLevel03.getName())
                                     .level(3)
-                                    .icon(image)
+                                    .icon(image3)
                                     .parent(categoryNewLevel02)
                                     .fullPathSlug(categoryLevel03.getFullPathSlug())
                                     .build();
@@ -212,6 +212,35 @@ public class RenderTest {
                 }
             }
 
+        }
+    }
+
+    @Test
+    public void renderFix() {
+
+        ResponseEntity<ClazzAPI> response = restTemplate.getForEntity("https://nhathuoclongchau.com.vn/_next/data/4spj1LZ8XwtF7o1Jr_Lan/thuc-pham-chuc-nang/sinh-ly-noi-tiet-to.json?slug=thuc-pham-chuc-nang&slug=sinh-ly-noi-tiet-to", ClazzAPI.class);
+        ClazzAPI clazzAPI = response.getBody();
+
+        List<CategoryAPI> level01 = clazzAPI.getMasterLayoutDataProps().getMenu();
+        List<CategoryAPI> level02 = new ArrayList<>();
+        for (CategoryAPI categoryAPI : level01) {
+            level02.addAll(categoryAPI.getChildren());
+        }
+        List<CategoryAPI> level03 = new ArrayList<>();
+        for (CategoryAPI categoryAPI : level02) {
+            if (categoryAPI.getChildren() != null)
+                level03.addAll(categoryAPI.getChildren());
+        }
+        List<CategoryAPI> result = new ArrayList<>(level01);
+        result.addAll(level02);
+        result.addAll(level03);
+
+        for (CategoryAPI categoryAPI : result) {
+            Category category = categoryRepository.findByFullPathSlug(categoryAPI.getFullPathSlug());
+            if(category != null) {
+                category.setIcon(categoryAPI.getImage().getUrl());
+                categoryRepository.saveAndFlush(category);
+            }
         }
     }
 

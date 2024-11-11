@@ -28,12 +28,14 @@ import { ChooseProductToCartModalCustom } from "../../components/ChooseProductTo
 import { ProductModel } from "../../../domain/models/ProductModel";
 import { useDispatch, useSelector } from "react-redux";
 import { Store } from "../../redux/store";
-import { getCategoryByParentCategoryId, getCategoryByParentId } from "../../redux/slice/CategorySlice";
+import { getAllCategories, setDraw, setOutstanding } from "../../redux/slice/CategorySlice";
 import { findUserLogin } from "../../redux/slice/UserSlice";
-import Toast from "react-native-toast-message";
 import * as SecureStore from 'expo-secure-store';
 
 import { showToast } from "../../../api/AppUtils";
+import { CategoryModel } from "../../../domain/models/CategoryModel";
+import { BrandCustom } from "../../components/BrandCustom";
+import { getBrandsFavorite } from "../../redux/slice/BrandSlice";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
 const menus = [
@@ -457,8 +459,10 @@ export const HomeScreen = () => {
 
     const [productPurchaseds, setProductPurchaseds] = useState(purchasedProducts);
 
-    const menuCategory = useSelector((state: Store) => state.categories.category);
-    const [brandFavorite, setBrandFavorites] = useState(brandFavorites);
+    const menuCategory = useSelector((state: Store) => state.categories.value.outstanding);
+
+    const brandFavorite = useSelector((state: Store) => state.brand.brands);
+
     const [categoryProductBySubject, setCategoryProductBySubject] = useState(categoryProductBySubjects);
 
     const [indexSubject, setIndexSubject] = useState(0);
@@ -476,8 +480,8 @@ export const HomeScreen = () => {
 
     const userLogin = useSelector((state: Store) => state.user.userLogin);
     const dispatch = useDispatch();
-    const errorRespone = useSelector((state: Store) => state.user.errorResponse);
-    console.log(userLogin);
+
+    const banner = useSelector((state: Store) => state.banner);
     useEffect(() => {
         dispatch(findUserLogin()).unwrap().catch((error: any) => {
             showToast('error', 'bottom', 'Lỗi', 'Vui lòng đăng nhập.');
@@ -492,8 +496,16 @@ export const HomeScreen = () => {
 
 
     useEffect(() => {
-        dispatch(getCategoryByParentCategoryId({ parentId: "thucPhamChucNang" }));
-    }, [navigation])
+        const init = async () => {
+            await dispatch(getAllCategories());
+            await dispatch(getBrandsFavorite());
+            dispatch(setDraw());
+
+            dispatch(setOutstanding());
+        }
+
+        init();
+    }, []) // Lấy tất cả danh mục
 
     return (
         <>
@@ -513,312 +525,305 @@ export const HomeScreen = () => {
                     renderItem={null}
                     ListHeaderComponent={
                         <ScrollView
-                    showsVerticalScrollIndicator={false}
-                >
-                    <SafeAreaView style={GlobalStyles.container}>
+                            showsVerticalScrollIndicator={false}
+                        >
+                            <SafeAreaView style={GlobalStyles.container}>
 
-                        {/* <Button 
+                                {/* <Button 
     title="Open Drawer"
     onPress={() => (drawer.current as DrawerLayout | null)?.openDrawer()} // Mở Drawer khi nhấn
 /> */}
-                        {/** Start Header Component */}
-                        <View style={{ backgroundColor: Colors.primary, height: 200, marginHorizontal: -15 }}>
-                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 15 }}>
-                                <IconE name="menu" size={34} color={"#fff"} onPress={() => (drawer.current as DrawerLayout | null)?.openDrawer()} />
-                                <LogoCustom color={"#fff"} />
-                                <IconF name="bell" size={34} color={"#fff"} />
-                            </View>
-                            <View style={{ flex: 1, paddingHorizontal: 15 }}>
-                                <TextInput
-                                    value={search}
-                                    onChangeText={setSearch}
-                                    placeholder="Tìm tên thuốc, bệnh lý, TPCN, ..."
-                                    mode="outlined"
-                                    outlineColor={Colors.primary}
-                                    activeOutlineColor={Colors.primary}
-                                    placeholderTextColor="gray"
-                                    outlineStyle={{ borderRadius: 30 }}
-                                    style={[GlobalStyles.textStyle, { backgroundColor: '#fff' }]}
-                                    left={<TextInput.Icon icon={() => <IconFE name="search" size={30} color="gray" />} />}  // Biểu tượng bên trái
-                                />
-                            </View>
-                        </View>
-                        {/** End Header Component */}
-                        {/** Start Body  Component*/}
-                        <View style={{ borderTopRightRadius: 30, borderTopLeftRadius: 30, marginHorizontal: -15, marginTop: -30, backgroundColor: Colors.secondary }}>
-                            <View style={{ paddingHorizontal: 15, paddingVertical: 30 }}>
-                                <Text style={[GlobalStyles.textStyle]}>Xin chào, <Text style={{ fontWeight: 'bold' }}>ĐÔN CHỦNG</Text></Text>
-                                <TouchableOpacity style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10 }} onPress={() => {
-                                    navigation.navigate('bonusNavigation' as never);
-                                }} >
-                                    <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
-                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', marginStart: 10 }]}>494 điểm thưởng</Text>
-                                </TouchableOpacity>
-                            </View>
-
-                            {/** Start Menu Component */}
-                            <View style={{ paddingHorizontal: 15, height: 300 }}>
-                                <FlatList
-                                    nestedScrollEnabled
-                                    data={menus}
-                                    scrollEnabled={true}
-                                    renderItem={
-                                        ({ item, index }) => {
-
-                                            const isFirstColumn = index % 4 === 0;
-                                            const isLastColumn = (index + 1) % 4 === 0;
-                                            return (
-                                                <MenuItem
-                                                    styleContainer={{ marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 110 }}
-                                                    icon={item.icon}
-                                                    title={item.title}
-                                                    onPress={item.onPress}
-                                                />
-                                            )
-                                        }
-
-                                    }
-                                    keyExtractor={
-                                        (item) => item.id
-                                    }
-                                    numColumns={4}
-                                />
-                            </View>
-                            {/** End Menu Component */}
-
-
-                            {/** Start Banner Carousel Component */}
-                            <View>
-                                <BannerCustom />
-                            </View>
-                            {/** End Banner Carousel Component */}
-
-                            {/** Start Purchased Product Component */}
-                            <View style={{ paddingHorizontal: 15, marginVertical: 20 }}>
-                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18 }]}>Mua lại nhanh chóng</Text>
-                                    <TouchableOpacity>
-                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]}>Xem tất cả</Text>
-                                    </TouchableOpacity>
+                                {/** Start Header Component */}
+                                <View style={{ backgroundColor: Colors.primary, height: 200, marginHorizontal: -15 }}>
+                                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 15 }}>
+                                        <IconE name="menu" size={34} color={"#fff"} onPress={() => (drawer.current as DrawerLayout | null)?.openDrawer()} />
+                                        <LogoCustom color={"#fff"} />
+                                        <IconF name="bell" size={34} color={"#fff"} />
+                                    </View>
+                                    <View style={{ flex: 1, paddingHorizontal: 15 }}>
+                                        <TextInput
+                                            value={search}
+                                            onChangeText={setSearch}
+                                            placeholder="Tìm tên thuốc, bệnh lý, TPCN, ..."
+                                            mode="outlined"
+                                            outlineColor={Colors.primary}
+                                            activeOutlineColor={Colors.primary}
+                                            placeholderTextColor="gray"
+                                            outlineStyle={{ borderRadius: 30 }}
+                                            style={[GlobalStyles.textStyle, { backgroundColor: '#fff' }]}
+                                            left={<TextInput.Icon icon={() => <IconFE name="search" size={30} color="gray" />} />}  // Biểu tượng bên trái
+                                        />
+                                    </View>
                                 </View>
-                                <View style={{ marginTop: 20 }}>
-                                    <CarouselCustom
-                                        data={productPurchaseds}
-                                        layout="default"
-                                        pagination={false}
-                                        renderItem={PurchasedProduct}
-                                        vertical={false}
-                                        itemWidth={250}
-                                        sliderWidth={SLIDER_WIDTH}
-                                    />
-                                </View>
-                            </View>
-                            {/** End Purchased Product Component */}
-                            {/**  Start Category Menu */}
-                            <View style={{ paddingHorizontal: 15, height: 600 }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18 }]}>Danh mục nổi bật</Text>
-                                <FlatList
-                                    nestedScrollEnabled
-                                    data={menuCategory.category}
-                                    scrollEnabled={true}
-                                    renderItem={
-                                        ({ item, index }) => {
+                                {/** End Header Component */}
+                                {/** Start Body  Component*/}
+                                <View style={{ borderTopRightRadius: 30, borderTopLeftRadius: 30, marginHorizontal: -15, marginTop: -30, backgroundColor: Colors.secondary }}>
+                                    <View style={{ paddingHorizontal: 15, paddingVertical: 30 }}>
+                                        <Text style={[GlobalStyles.textStyle]}>Xin chào, <Text style={{ fontWeight: 'bold' }}>
+                                            {userLogin.fullName ? userLogin.fullName : 'Khách hàng'}
+                                        </Text></Text>
+                                        <TouchableOpacity style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10 }} onPress={() => {
+                                            navigation.navigate('bonusNavigation' as never);
+                                        }} >
+                                            <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', marginStart: 10 }]}>494 điểm thưởng</Text>
+                                        </TouchableOpacity>
+                                    </View>
 
-                                            const isFirstColumn = index % 2 === 0;
-                                            const isLastColumn = (index + 1) % 2 === 0;
-                                            
-                                            return (
-                                                <MenuItem
-                                                    styleIcon={{ flex: 0 }}
-                                                    styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
-                                                    styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70 }}
-                                                    icon={item.icon} 
-                                                    title={item.title}
-                                                    onPress={() => { navigation.navigate('productScreen' as never, { category: item }) }}
-                                                />
-                                            )
-                                        }
+                                    {/** Start Menu Component */}
+                                    <View style={{ paddingHorizontal: 15, height: 300 }}>
+                                        <FlatList
+                                            nestedScrollEnabled
+                                            data={menus}
+                                            scrollEnabled={true}
+                                            renderItem={
+                                                ({ item, index }) => {
 
-                                    }
-                                    keyExtractor={
-                                        (item) => item.id
-                                    }
-                                    numColumns={2}
-                                />
-                            </View>
-                            {/**  End Category Menu */}
-                            {/** Start Info */}
-                            <View style={{ backgroundColor: '#fff' }}>
-                                <View style={{ justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#EEF2FD', height: 370, margin: 15, borderRadius: 10, padding: 20 }}>
-                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, color: '#4E5661', textAlign: 'center' }]}>
-                                        HIỂU THÊM UNG THƯ TỪ A - Z
-                                    </Text>
-                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, textAlign: 'center' }]}>
-                                        Thông tin được biên soạn và kiểm duyệt bởi đội ngũ chuyên gia y tế hàng đầu
-                                    </Text>
-                                    <ButtonCustom buttonStyle={{ width: 150, borderRadius: 50 }} title="Tìm hiểu thêm" onPress={() => { }} />
-                                    <Image source={require('./../../../../assets/banner/Untitled dsign 1.png')} resizeMode="contain" />
-                                </View>
-                            </View>
-                            {/** End Info */}
+                                                    const isFirstColumn = index % 4 === 0;
+                                                    const isLastColumn = (index + 1) % 4 === 0;
+                                                    return (
+                                                        <MenuItem
+                                                            styleContainer={{ marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 110 }}
+                                                            icon={item.icon}
+                                                            title={item.title}
+                                                            onPress={item.onPress}
+                                                        />
+                                                    )
+                                                }
 
-                            {/** Start Brand Component */}
-                            <View style={{ marginHorizontal: 15 }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Thương hiệu yêu thích</Text>
-                                <View style={{ marginHorizontal: -15, marginVertical: 20 }}>
-                                    <CarouselCustom
-                                        data={brandFavorite}
-                                        layout="default"
-                                        pagination={false}
-                                        renderItem={({ item }) => {
-                                            return (
-                                                <TouchableOpacity style={{ flex: 1, justifyContent: 'space-between', alignItems: 'center', padding: 10, backgroundColor: '#fff', borderRadius: 10, margin: 10 }}>
-                                                    <Image source={item.image} resizeMode="contain" style={{ width: 150, height: 150, marginVertical: 20 }} />
-                                                    <View style={{ borderWidth: 1, borderColor: Colors.desciption, borderRadius: 10, paddingHorizontal: 20, paddingVertical: 5 }}>
-                                                        <Image source={item.logo} resizeMode="contain" style={{ width: 100 }} />
-                                                    </View>
-                                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, color: Colors.primary, marginVertical: 10 }]}>Giảm đến {item.discount}%</Text>
-                                                </TouchableOpacity>
-                                            )
-                                        }}
-                                        vertical={false}
-                                        itemWidth={250}
-                                        sliderWidth={SLIDER_WIDTH}
-                                    />
-                                </View>
-                            </View>
-                            {/** End Brand Component */}
-
-                            {/** Start Product By Subject Component */}
-                            <View style={{ marginHorizontal: 15 }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Sản phẩm theo đối tượng</Text>
-                                <View style={{ marginVertical: 20 }}>
-                                    <FlatList
-                                        nestedScrollEnabled
-                                        data={categoryProductBySubject}
-                                        horizontal={true}
-                                        scrollEnabled={true}
-                                        renderItem={
-                                            ({ item, index }) => {
-                                                return (
-                                                    <TouchableOpacity
-                                                        onPress={() => { setIndexSubject(index) }}
-                                                        style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
-                                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
-                                                    </TouchableOpacity>
-                                                )
                                             }
-
-                                        }
-                                        keyExtractor={
-                                            (item) => item.id
-                                        }
-                                    />
-                                </View>
-                                <View style={{ marginVertical: 20 }}>
-                                    <FlatList
-                                        nestedScrollEnabled
-                                        data={products}
-                                        renderItem={({ item }) => {
-                                            return (
-                                                <ProductCustom
-                                                    image={item.images[0]} 
-                                                    title={item.name}
-                                                    salePrice={item.price}
-                                                    unit={item.unit}
-                                                    specifications={item.specifications}
-                                                    addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                                    onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
-                                                />
-                                            )
-                                        }}
-                                        keyExtractor={(item) => item.id + ''}
-                                        horizontal={true}
-                                        scrollEnabled={true}
-                                        showsHorizontalScrollIndicator={false}
-                                    />
-                                </View>
-                            </View>
-                            {/** End Product By Subject Component */}
-
-                            {/** Start Suggestion Component */}
-                            <View style={{ marginHorizontal: 15 }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Gợi ý hôm nay</Text>
-                                <View style={{ marginVertical: 20 }}>
-                                    <FlatList
-                                        nestedScrollEnabled
-                                        data={sugg}
-                                        scrollEnabled={true}
-                                        horizontal={true}
-                                        renderItem={
-                                            ({ item, index }) => {
-                                                return (
-                                                    <TouchableOpacity
-                                                        onPress={() => { setIndexSuggestion(index) }}
-                                                        style={{ borderWidth: 1, borderColor: index == indexSuggestion ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
-                                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSuggestion ? Colors.primary : '#000' }]}>{item.title}</Text>
-                                                    </TouchableOpacity>
-                                                )
+                                            keyExtractor={
+                                                (item) => item.id
                                             }
+                                            numColumns={4}
+                                        />
+                                    </View>
+                                    {/** End Menu Component */}
 
-                                        }
-                                        keyExtractor={
-                                            (item) => item.id
-                                        }
-                                    />
-                                </View>
-                                <View style={{ marginVertical: 20 }}>
-                                    <FlatList
-                                        data={products}
-                                        renderItem={({ item }) => {
-                                            return (
-                                                <ProductCustom
-                                                    image={item.images[0]}
-                                                    title={item.name}
-                                                    salePrice={item.price}
-                                                    unit={item.unit} 
-                                                    specifications={item.specifications}
-                                                    addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                                    onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
-                                                />
-                                            )
-                                        }}
-                                        nestedScrollEnabled
-                                        keyExtractor={(item) => item.id + ''}
-                                        horizontal={true}
-                                        scrollEnabled={true}
-                                        showsHorizontalScrollIndicator={false}
-                                    />
-                                </View>
-                            </View>
-                            {/** End Suggestion Component */}
 
-                            {/** Start Policy*/}
-                            <View style={{ marginHorizontal: 15, marginBottom: 20 }}>
-                                <FlatList
-                                    data={policies}
-                                    renderItem={({ item }) => {
-                                        return <View style={{ justifyContent: 'center', alignItems: 'center', width: '50%', marginVertical: 10 }}>
-                                            <Image source={item?.logo} />
-                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', textAlign: 'center', marginVertical: 10 }]}>
-                                                {item?.title}
-                                            </Text>
-                                            <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription, textAlign: 'center', fontSize: 14 }]}>
-                                                {item?.des}
-                                            </Text>
+                                    {/** Start Banner Carousel Component */}
+                                    <View>
+                                        <BannerCustom data={banner} />
+                                    </View>
+                                    {/** End Banner Carousel Component */}
+
+                                    {/** Start Purchased Product Component */}
+                                    <View style={{ paddingHorizontal: 15, marginVertical: 20 }}>
+                                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18 }]}>Mua lại nhanh chóng</Text>
+                                            <TouchableOpacity>
+                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]}>Xem tất cả</Text>
+                                            </TouchableOpacity>
                                         </View>
-                                    }}
-                                    keyExtractor={(item) => item.id}
-                                    nestedScrollEnabled
-                                    numColumns={2}
-                                    scrollEnabled={true}
-                                />
-                            </View>
-                            {/** End Policy*/}
-                        </View>
-                        {/** End Body  Component*/}
-                    </SafeAreaView>
-                </ScrollView>
+                                        <View style={{ marginTop: 20 }}>
+                                            <CarouselCustom
+                                                data={productPurchaseds}
+                                                layout="default"
+                                                pagination={false}
+                                                renderItem={PurchasedProduct}
+                                                vertical={false}
+                                                itemWidth={250}
+                                                sliderWidth={SLIDER_WIDTH}
+                                            />
+                                        </View>
+                                    </View>
+                                    {/** End Purchased Product Component */}
+                                    {/**  Start Category Menu */}
+                                    <View style={{ paddingHorizontal: 15, height: 520, marginTop: 20 }}>
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18 }]}>Danh mục nổi bật</Text>
+                                        <FlatList
+                                            nestedScrollEnabled
+                                            data={menuCategory}
+                                            scrollEnabled={true}
+                                            renderItem={
+                                                ({ item, index }) => {
+
+                                                    const isFirstColumn = index % 2 === 0;
+                                                    const isLastColumn = (index + 1) % 2 === 0;
+
+                                                    return (
+                                                        <MenuItem
+                                                            styleIcon={{ width: 40, height: 40, flex: 0 }}
+                                                            styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
+                                                            styleContainer={{ padding: 10, flexDirection: 'row', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70 }}
+                                                            icon={item.icon}
+                                                            title={item.title}
+                                                            onPress={() => { navigation.navigate('productScreen' as never, { category: item }) }}
+                                                        />
+                                                    )
+                                                }
+
+                                            }
+                                            keyExtractor={
+                                                (item) => item.id
+                                            }
+                                            numColumns={2}
+                                        />
+                                    </View>
+                                    {/**  End Category Menu */}
+                                    {/** Start Info */}
+                                    <View style={{ backgroundColor: '#fff' }}>
+                                        <View style={{ justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#EEF2FD', height: 370, margin: 15, borderRadius: 10, padding: 20 }}>
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, color: '#4E5661', textAlign: 'center' }]}>
+                                                HIỂU THÊM UNG THƯ TỪ A - Z
+                                            </Text>
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, textAlign: 'center' }]}>
+                                                Thông tin được biên soạn và kiểm duyệt bởi đội ngũ chuyên gia y tế hàng đầu
+                                            </Text>
+                                            <ButtonCustom buttonStyle={{ width: 150, borderRadius: 50 }} title="Tìm hiểu thêm" onPress={() => { }} />
+                                            <Image source={require('./../../../../assets/banner/Untitled dsign 1.png')} resizeMode="contain" />
+                                        </View>
+                                    </View>
+                                    {/** End Info */}
+
+                                    {/** Start Brand Component */}
+                                    <View style={{ marginHorizontal: 15 }}>
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Thương hiệu yêu thích</Text>
+                                        <View style={{ marginHorizontal: -15, marginVertical: 20 }}>
+                                            <FlatList 
+                                                data={brandFavorite}
+                                                renderItem={({item, index}) => {
+                                                    return <BrandCustom index={index} item={item}/>
+                                                }}
+                                                keyExtractor={(item) => item.id.toString()}
+                                                horizontal={true}
+                                                scrollEnabled={true}
+                                                showsHorizontalScrollIndicator={false}
+                                            />
+                                        </View>
+                                    </View>
+                                    {/** End Brand Component */}
+
+                                    {/** Start Product By Subject Component */}
+                                    <View style={{ marginHorizontal: 15 }}>
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Sản phẩm theo đối tượng</Text>
+                                        <View style={{ marginVertical: 20 }}>
+                                            <FlatList
+                                                nestedScrollEnabled
+                                                data={categoryProductBySubject}
+                                                horizontal={true}
+                                                scrollEnabled={true}
+                                                renderItem={
+                                                    ({ item, index }) => {
+                                                        return (
+                                                            <TouchableOpacity
+                                                                onPress={() => { setIndexSubject(index) }}
+                                                                style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
+                                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
+                                                            </TouchableOpacity>
+                                                        )
+                                                    }
+
+                                                }
+                                                keyExtractor={
+                                                    (item) => item.id
+                                                }
+                                            />
+                                        </View>
+                                        <View style={{ marginVertical: 20 }}>
+                                            <FlatList
+                                                nestedScrollEnabled
+                                                data={products}
+                                                renderItem={({ item }) => {
+                                                    return (
+                                                        <ProductCustom
+                                                            image={item.images[0]}
+                                                            title={item.name}
+                                                            salePrice={item.price}
+                                                            unit={item.unit}
+                                                            specifications={item.specifications}
+                                                            addToCart={() => { setProductChoose(item); setModalVisible(true); }}
+                                                            onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
+                                                        />
+                                                    )
+                                                }}
+                                                keyExtractor={(item) => item.id + ''}
+                                                horizontal={true}
+                                                scrollEnabled={true}
+                                                showsHorizontalScrollIndicator={false}
+                                            />
+                                        </View>
+                                    </View>
+                                    {/** End Product By Subject Component */}
+
+                                    {/** Start Suggestion Component */}
+                                    <View style={{ marginHorizontal: 15 }}>
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Gợi ý hôm nay</Text>
+                                        <View style={{ marginVertical: 20 }}>
+                                            <FlatList
+                                                nestedScrollEnabled
+                                                data={sugg}
+                                                scrollEnabled={true}
+                                                horizontal={true}
+                                                renderItem={
+                                                    ({ item, index }) => {
+                                                        return (
+                                                            <TouchableOpacity
+                                                                onPress={() => { setIndexSuggestion(index) }}
+                                                                style={{ borderWidth: 1, borderColor: index == indexSuggestion ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
+                                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSuggestion ? Colors.primary : '#000' }]}>{item.title}</Text>
+                                                            </TouchableOpacity>
+                                                        )
+                                                    }
+
+                                                }
+                                                keyExtractor={
+                                                    (item) => item.id
+                                                }
+                                            />
+                                        </View>
+                                        <View style={{ marginVertical: 20 }}>
+                                            <FlatList
+                                                data={products}
+                                                renderItem={({ item }) => {
+                                                    return (
+                                                        <ProductCustom
+                                                            image={item.images[0]}
+                                                            title={item.name}
+                                                            salePrice={item.price}
+                                                            unit={item.unit}
+                                                            specifications={item.specifications}
+                                                            addToCart={() => { setProductChoose(item); setModalVisible(true); }}
+                                                            onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
+                                                        />
+                                                    )
+                                                }}
+                                                nestedScrollEnabled
+                                                keyExtractor={(item) => item.id + ''}
+                                                horizontal={true}
+                                                scrollEnabled={true}
+                                                showsHorizontalScrollIndicator={false}
+                                            />
+                                        </View>
+                                    </View>
+                                    {/** End Suggestion Component */}
+
+                                    {/** Start Policy*/}
+                                    <View style={{ marginHorizontal: 15, marginBottom: 20 }}>
+                                        <FlatList
+                                            data={policies}
+                                            renderItem={({ item }) => {
+                                                return <View style={{ justifyContent: 'center', alignItems: 'center', width: '50%', marginVertical: 10 }}>
+                                                    <Image source={item?.logo} />
+                                                    <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', textAlign: 'center', marginVertical: 10 }]}>
+                                                        {item?.title}
+                                                    </Text>
+                                                    <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription, textAlign: 'center', fontSize: 14 }]}>
+                                                        {item?.des}
+                                                    </Text>
+                                                </View>
+                                            }}
+                                            keyExtractor={(item) => item.id}
+                                            nestedScrollEnabled
+                                            numColumns={2}
+                                            scrollEnabled={true}
+                                        />
+                                    </View>
+                                    {/** End Policy*/}
+                                </View>
+                                {/** End Body  Component*/}
+                            </SafeAreaView>
+                        </ScrollView>
                     }
                 />
 

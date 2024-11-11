@@ -3,6 +3,9 @@ package vn.edu.iuh.fit.pharmacy.POJOs;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
+import java.util.List;
+
 @Entity
 @Table(name = "brands")
 @NoArgsConstructor
@@ -17,4 +20,7 @@ public class Brand {
     private Long id;
     private String title;
     private String image;
+
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
+    private List<Medicine> products;
 }

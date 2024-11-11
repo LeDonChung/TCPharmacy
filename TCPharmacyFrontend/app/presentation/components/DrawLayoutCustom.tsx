@@ -1,6 +1,6 @@
 import { Image, ImageBackground, Pressable, ScrollView, SectionList, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { DrawerLayout } from "react-native-gesture-handler"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { LogoCustom } from "./LogoCustom"
 import { GlobalStyles } from "../styles/GlobalStyles"
 import { Colors } from "../styles/Colors"
@@ -12,6 +12,9 @@ import { ButtonCustom } from "./ButtonCustom"
 import IconF5 from "react-native-vector-icons/FontAwesome5"
 import { Dimensions } from 'react-native';
 import { useNavigation } from "@react-navigation/native"
+import { useDispatch, useSelector } from "react-redux"
+import { Store, store } from "../redux/store"
+import { setDraw } from "../redux/slice/CategorySlice"
 
 const screenWidth = Dimensions.get('window').width;
 type DrawScreenLayoutProps = {
@@ -33,27 +36,33 @@ export const DrawScreenLayout = (props: DrawScreenLayoutProps) => {
         return expandedSections.includes(sectionId);
     };
 
+    const menus = useSelector((state: Store) => state.categories.value.draw);  
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+    }, []);
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <SectionList
                 sections={menus.map((item) => {
-                    return { data: item.menuItem, title: item.name, id: item.id, hasChildren: item.menuItem.length }
+                    return { data: item.children, title: item.title, id: item.id, hasChildren: item.children.length }
                 })}
-                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => {
-                    if (isSectionExpanded(item.parentId)) {
+                    if (isSectionExpanded(item.parent.toString())) {
                         return (
-                            <TouchableOpacity onPress={item.onPress} style={{ padding: 10, marginHorizontal: 15, marginVertical: 1, backgroundColor: '#ECF0FB', borderTopLeftRadius: 10, borderTopRightRadius: 10 }} >
-                                <Text style={[GlobalStyles.textStyle, { paddingVertical: 10 }]}>{item.name}</Text>
+                            <TouchableOpacity onPress={() => {console.log("Go to", item.fullPathSlug)}} style={{ padding: 10, marginHorizontal: 15, marginVertical: 1, backgroundColor: '#ECF0FB', borderTopLeftRadius: 10, borderTopRightRadius: 10 }} >
+                                <Text style={[GlobalStyles.textStyle, { paddingVertical: 10 }]}>{item.title}</Text>
                             </TouchableOpacity>
                         )
                     }
                     return null;
                 }}
                 renderSectionHeader={({ section: { id, title, hasChildren } }) => (
-                    <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 20, paddingHorizontal: 15 }} onPress={() => toggleSection(id)}>
-                        <Text style={[GlobalStyles.textStyle, { color: hasChildren > 0 && isSectionExpanded(id) ? Colors.primary : '#000', fontWeight: 'bold' }]}>{title}</Text>
-                        {hasChildren > 0 && <IconAnt name={isSectionExpanded(id) ? 'down' : 'right'} size={20} />}
+                    <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 20, paddingHorizontal: 15 }} onPress={() => toggleSection(id.toString())}>
+                        <Text style={[GlobalStyles.textStyle, { color: hasChildren > 0 && isSectionExpanded(id.toString()) ? Colors.primary : '#000', fontWeight: 'bold' }]}>{title}</Text>
+                        {hasChildren > 0 && <IconAnt name={isSectionExpanded(id.toString()) ? 'down' : 'right'} size={20} />}
                     </TouchableOpacity>
                 )}
                 ListHeaderComponent={() => (

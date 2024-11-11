@@ -4,7 +4,7 @@ import { ImageProps } from "react-native"
 import { GlobalStyles } from "../styles/GlobalStyles"
 
 type MenuItemProps = {
-    icon: ImageSourcePropType,
+    icon: string | ImageSourcePropType,
     title: string,
     styleContainer?: any,
     styleIcon?: any,
@@ -13,17 +13,21 @@ type MenuItemProps = {
 }
 export const MenuItem = (props: MenuItemProps) => {
     return (
-        props.icon != null ?
+        props.icon != null && props.icon !== '' ?
             (
                 <TouchableOpacity style={[props.styleContainer, styles.container,]} onPress={props.onPress}>
-                    <Image style={[styles.icon, props.styleIcon]} source={props.icon} resizeMode="contain" />
+                    {props.icon != null && typeof props.icon === 'string' ?
+                        <Image style={[styles.icon, props.styleIcon]} source={{ uri: String(props.icon) }} resizeMode="contain" />
+                        :
+                        <Image style={[styles.icon, props.styleIcon]} source={props.icon} resizeMode="contain" />
+                    }
                     <Text style={[GlobalStyles.textStyle, styles.title, props.styleTitle]}> {props.title} </Text>
                 </TouchableOpacity>
             )
             :
 
             (
-                <TouchableOpacity style={[props.styleContainer,styles.containerEmpty]} onPress={props.onPress}>
+                <TouchableOpacity style={[props.styleContainer, styles.containerEmpty]} onPress={props.onPress}>
                 </TouchableOpacity>
             )
 
@@ -37,7 +41,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
         borderRadius: 10,
-        
+
 
     },
     containerEmpty: {
