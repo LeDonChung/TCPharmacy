@@ -15,6 +15,8 @@ import { ProductCustom } from "../../components/ProductCustom"
 import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom"
 import IconI from "react-native-vector-icons/Ionicons"
 import { ProductModel } from "../../../domain/models/ProductModel"
+import { setCategoryLevel1, setCategoryLevel2, setCategoryLevel3 } from "../../redux/slice/CategorySlice"
+import { CategoryModel } from "../../../domain/models/CategoryModel"
 
 const categoryProductBySubjects = [
     {
@@ -219,35 +221,70 @@ const productsInit: ProductModel[] = [
 ];
 
 export const ProductScreen = () => {
-    const route = useRoute()
-    const { category } = route.params as any
-    const navigation = useNavigation()
+    const route = useRoute();
+    const { category } = route.params as any;
+    const navigation = useNavigation();
 
-    const cart = useSelector((state: Store) => state.cart.value)
-    // const categories = useSelector((state: Store) => state.categories.value)
+    const cart = useSelector((state: Store) => state.cart.value);
 
-    const [products, setProducts] = useState(productsInit);
-    const [modalVisible, setModalVisible] = useState(false);
     const [productChoose, setProductChoose] = useState(productsInit[0]);
 
-    // const categoryParent = useSelector((state: Store) => state.categories.value.level1);
+    const [products, setProducts] = useState(productsInit);
 
-    // Toàn bộ menu của thằng category
-    // const categoryMenu = useSelector((state: Store) => state.categories.)
-    const dispatch = useDispatch()
-    // useEffect(() => {
-    //     dispatch(setCategorySearch(category.category))
-    //     dispatch(getCategoryParent({ parentId: category.parentCategory.id }))
-    // }, [])
+    const [modalVisible, setModalVisible] = useState(false);
+
+
+
+    const dispatch = useDispatch();
+
 
     const handlerActionBackCategory = () => {
+        const id = categoryChoose.parent;
 
+        const level = selectedLevel - 1;
+        if (level === 1) {
+            setSelectedLevel(level);
+            setCategoryChoose(level1.find(value => value.id === id));
+            return;
+        } else if (level == 2) {
+            setSelectedLevel(level);
+            setCategoryChoose(level2.find(value => value.id === id));
+            return;
+        } else if (level == 3) {
+            setSelectedLevel(level);
+            setCategoryChoose(level3.find(value => value.id === id));
+            return;
+        }
     }
 
     const [categoryProductBySubject, setCategoryProductBySubject] = useState(categoryProductBySubjects);
 
     const [indexSubject, setIndexSubject] = useState(0);
 
+    const [selectedLevel, setSelectedLevel] = useState(1);
+
+    const [categoryChoose, setCategoryChoose] = useState(category);
+
+    const level1 = useSelector((state: Store) => state.categories.value.level1);
+
+    const level2 = useSelector((state: Store) => state.categories.value.level2);
+
+    const level3 = useSelector((state: Store) => state.categories.value.level3);
+
+    useEffect(() => {
+        const init = async () => {
+            dispatch(setCategoryLevel1());
+            dispatch(setCategoryLevel2());
+            dispatch(setCategoryLevel3());
+            setSelectedLevel(categoryChoose.level);
+        }
+        init();
+    }, [categoryChoose])
+
+    const findParent = (id: number, level: number) => {
+        const parent = level2.find(value => value.id === id);
+        return parent?.parent;
+    }
     return (
         <FlatList
             data={[]}
@@ -276,70 +313,73 @@ export const ProductScreen = () => {
                     </View>
                     <ScrollView>
                         <View>
-                            {/* <FlatList
+                            {/** Start Category Level 01 */}
+                            <FlatList
                                 horizontal={true}
-                                data={[categories]}
+                                data={level1}
                                 renderItem={({ item }) => {
-                                    return (
-                                        item.id === category.parentCategory.id
-                                            ? <View style={{ padding: 10, backgroundColor: '#fff', height: 80, width: 120, alignItems: 'center', justifyContent: 'center', borderTopWidth: 2, borderTopColor: Colors.primary }}>
-                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary, textAlign: 'center' }]}>{item.title}</Text>
-                                            </View>
-                                            : <View style={{ padding: 10, height: 80, width: 120, alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription, textAlign: 'center' }]}>{item.title}</Text>
-                                            </View>
-                                    )
-                                }}
-                            /> */}
-                        </View>
-                        <View>
-                            {/**  Start Category Menu */}
-                            <View style={{ paddingHorizontal: 15, paddingVertical: 20, backgroundColor: '#fff' }}>
-                                <View>
-                                    {
-                                        category.parentCategory && category.parentCategory.id
-                                        && <TouchableOpacity style={{ alignItems: 'center', flexDirection: 'row', paddingVertical: 15 }} onPress={
-                                            () => { }
-                                        }>
-                                            <IconF name="angle-left" size={30} style={{ marginRight: 20 }} onPress={() => { navigation.navigate('productScreen' as never, { category: category.parentCategory }) }} />
-                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}>{category.title}</Text>
+                                    return ((selectedLevel == 1 && item.id === categoryChoose.id) || (selectedLevel == 2 && item.id === categoryChoose.parent) || (selectedLevel == 3 && item.id === findParent(categoryChoose.parent, selectedLevel - 1)))
+                                        ? <TouchableOpacity style={{ padding: 10, backgroundColor: '#fff', height: 80, width: 120, alignItems: 'center', justifyContent: 'center', borderTopWidth: 2, borderTopColor: Colors.primary }} onPress={() => { setCategoryChoose(item) }}>
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary, textAlign: 'center' }]}>{item.title}</Text>
                                         </TouchableOpacity>
-                                    }
-                                </View>
-                                <View>
-                                    {/* <FlatList
-                                        nestedScrollEnabled
-                                        data={categoryMenu}
-                                        scrollEnabled={true}
-                                        renderItem={
-                                            ({ item, index }) => {
-
-                                                const isFirstColumn = index % 2 === 0;
-                                                const isLastColumn = (index + 1) % 2 === 0;
-                                                return (
-                                                    <MenuItem
-                                                        styleIcon={{ flex: 0 }}
-                                                        styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
-                                                        styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70, borderWidth: 1, borderColor: '#BDC2C7' }}
-                                                        icon={item.icon}
-                                                        title={item.title}
-                                                        onPress={() => { }}
-                                                    />
-                                                )
-                                            }
-
-                                        }
-                                        keyExtractor={
-                                            (item) => item.id
-                                        }
-                                        numColumns={2}
-                                    /> */}
-                                </View>
-                            </View>
-                            {/**  End Category Menu */}
-
-
+                                        : <TouchableOpacity style={{ padding: 10, height: 80, width: 120, alignItems: 'center', justifyContent: 'center' }} onPress={() => { setCategoryChoose(item) }}>
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription, textAlign: 'center' }]}>{item.title}</Text>
+                                        </TouchableOpacity>
+                                }}
+                                keyExtractor={(item) => item.id + ''}
+                            />
                         </View>
+                        {
+                            categoryChoose.children && categoryChoose.children.length > 0 &&
+                            <View>
+                                {/**  Start Category Menu */}
+                                <View style={{ paddingHorizontal: 15, paddingVertical: 20, backgroundColor: '#fff' }}>
+                                    <View>
+                                        {
+                                            categoryChoose.parent
+                                            && <TouchableOpacity style={{ alignItems: 'center', flexDirection: 'row', paddingVertical: 15 }} onPress={
+                                                () => { handlerActionBackCategory() }
+                                            }>
+                                                <IconF name="angle-left" size={30} style={{ marginRight: 20 }} onPress={() => { }} />
+                                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}>{categoryChoose.title}</Text>
+                                            </TouchableOpacity>
+                                        }
+                                    </View>
+                                    <View>
+                                        <FlatList
+                                            nestedScrollEnabled
+                                            data={categoryChoose.children}
+                                            scrollEnabled={true}
+                                            renderItem={
+                                                ({ item, index }) => {
+
+                                                    const isFirstColumn = index % 2 === 0;
+                                                    const isLastColumn = (index + 1) % 2 === 0;
+                                                    return (
+                                                        <MenuItem
+                                                            styleIcon={{ flex: 0 }}
+                                                            styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
+                                                            styleContainer={{ padding: 10, flexDirection: 'row', justifyContent: "flex-start", alignTtem: 'center', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70, borderWidth: item.icon ? 1 : 0, borderColor: '#BDC2C7' }}
+                                                            icon={item.icon}
+                                                            title={item.title}
+                                                            onPress={() => { setCategoryChoose(item) }}
+                                                        />
+                                                    )
+                                                }
+
+                                            }
+                                            keyExtractor={
+                                                (item) => item.id.toString()
+                                            }
+                                            numColumns={2}
+                                        />
+                                    </View>
+                                </View>
+                                {/**  End Category Menu */}
+
+
+                            </View>
+                        }
                         {/** Start Product By Subject Component */}
                         <View style={{}}>
                             <View style={{ backgroundColor: '#fff' }}>
@@ -412,6 +452,8 @@ export const ProductScreen = () => {
             }
         />
     )
+
+
 }
 
 const styles = StyleSheet.create({

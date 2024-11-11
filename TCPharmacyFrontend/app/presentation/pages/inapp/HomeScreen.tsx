@@ -647,7 +647,7 @@ export const HomeScreen = () => {
                                                             styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
                                                             styleContainer={{ padding: 10, flexDirection: 'row', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70 }}
                                                             icon={item.icon}
-                                                            title={item.title}
+                                                            title={item.title} 
                                                             onPress={() => { navigation.navigate('productScreen' as never, { category: item }) }}
                                                         />
                                                     )
@@ -655,7 +655,7 @@ export const HomeScreen = () => {
 
                                             }
                                             keyExtractor={
-                                                (item) => item.id
+                                                (item) => item.id.toString()
                                             }
                                             numColumns={2}
                                         />
