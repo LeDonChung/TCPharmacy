@@ -48,7 +48,15 @@ const CategorySlice = createSlice({
                 new CategoryModel(999, "", "Thông báo", 1, "", 0, []),
                 new CategoryModel(997, "", "Điểm thưởng", 1, "", 0, [])
             );
-            console.log("sss", state.value.draw.length) 
+        },
+        setCategoryLevel1(state) {
+            state.value.level1 = state.value.categories.filter(value => value.level === 1);
+        },
+        setCategoryLevel2(state) {
+            state.value.level2 = state.value.categories.filter(value => value.level === 2);
+        },
+        setCategoryLevel3(state) {
+            state.value.level3 = state.value.categories.filter(value => value.level === 3);
         }
     },
     extraReducers: (builder) => {
@@ -61,6 +69,6 @@ const CategorySlice = createSlice({
     }
 })
 
-export const { setOutstanding, setDraw } = CategorySlice.actions
+export const { setOutstanding, setDraw, setCategoryLevel1, setCategoryLevel2, setCategoryLevel3 } = CategorySlice.actions
 export { getAllCategories }
 export default CategorySlice.reducer
