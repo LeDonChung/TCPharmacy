@@ -17,26 +17,32 @@ type ModalCustomProps = {
     modalVisible: boolean;
     setModalVisible: (value: boolean) => void;
     content: any;
-
+    style?: any;
 }
 
 export const ModalCustom = (props: ModalCustomProps) => {
     const clonedContent = React.cloneElement(props.content, {
-        setModalVisible: props.setModalVisible,
+        setModalVisible: true,
         modalVisible: props.modalVisible
     });
+    const handleContentPress = (event: React.SyntheticEvent) => {
+        // Prevent the background press event from triggering
+        event.stopPropagation();
+    }
     return (
         <Modal
             animationType="slide"
             transparent={true}
             visible={props.modalVisible}
             onRequestClose={() => {
-                props.setModalVisible(!props.modalVisible);
+                props.setModalVisible(false);
             }}
         >
-            <Pressable style={styles.centeredView} onPress={() => props.setModalVisible(!props.modalVisible)}>
-                <View style={styles.modalView}>
-                    {clonedContent}
+            <Pressable style={styles.centeredView} onPress={() => props.setModalVisible(false)}>
+                <View 
+                    onStartShouldSetResponder={() => true} 
+                    style={[styles.modalView, props.style]}>
+                    {clonedContent} 
                 </View>
             </Pressable >
         </Modal>
@@ -45,7 +51,7 @@ export const ModalCustom = (props: ModalCustomProps) => {
 
 
 const styles = StyleSheet.create({
-    
+
     centeredView: {
         flex: 1,
         justifyContent: 'center',
@@ -65,7 +71,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5,
+        elevation: 5
     },
     modalText: {
         marginBottom: 15,

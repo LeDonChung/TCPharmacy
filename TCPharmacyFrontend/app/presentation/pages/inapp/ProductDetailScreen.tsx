@@ -1,6 +1,6 @@
-import { Dimensions, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native"
+import { Dimensions, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions } from "react-native"
 import { View } from "react-native"
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductModel } from "../../../domain/models/ProductModel";
@@ -13,13 +13,20 @@ import { Colors } from "../../styles/Colors";
 import PagerView from "react-native-pager-view";
 import { GlobalStyles } from "../../styles/GlobalStyles";
 import IconI from "react-native-vector-icons/Ionicons"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CartModel } from "../../../domain/models/CartModel";
 import { Store } from "../../redux/store";
 import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom";
 import { ProductCustom } from "../../components/ProductCustom";
 import { FlatList } from "react-native";
 import { ButtonCustom } from "../../components/ButtonCustom";
+import { MedicineModel } from "../../../domain/models/MedicineModel";
+import { BrandModel } from "../../../domain/models/BrandModel";
+import { CategoryModel } from "../../../domain/models/CategoryModel";
+import { getProductById } from "../../redux/slice/ProductSlice";
+import RenderHTML from "react-native-render-html";
+import HTMLView from "react-native-htmlview";
+import { ModalCustom } from "../../components/ModalCustom";
 
 const productsInit: ProductModel[] = [
     {
@@ -212,7 +219,7 @@ type Props = {
 export const ProductDetailScreen = () => {
     const route = useRoute()
 
-    const product: ProductModel = (route.params as any).product;
+    const medicineId: number = (route.params as any).medicineId;
 
     const [index, setIndex] = useState(0);
 
@@ -228,6 +235,17 @@ export const ProductDetailScreen = () => {
     const cart = useSelector((state: Store) => state.cart.value);
 
     const [products, setProducts] = useState(productsInit);
+
+    const product = useSelector((state: Store) => state.product.value.product);
+
+    const { width } = useWindowDimensions();
+
+    const [showDetail, setShowDetail] = useState(false);
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getProductById(medicineId));
+    }, [])
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
@@ -239,7 +257,7 @@ export const ProductDetailScreen = () => {
                         <Text style={[GlobalStyles.textStyle, { color: '#fff', fontSize: 12, textAlign: 'center' }]}>{cart.cartItems.length}</Text>
                     </View>
                 </View>
-            </View> 
+            </View>
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 <View>
@@ -249,9 +267,9 @@ export const ProductDetailScreen = () => {
                             initialPage={index}
                             onPageSelected={(e) => setIndex(e.nativeEvent.position)}
                         >
-                            {product.images.map((image, imgIndex) => (
+                            {product.medicineImages.map((image, imgIndex) => (
                                 <View key={imgIndex} style={styles.page}>
-                                    <Image source={image} style={styles.image} />
+                                    <Image source={{ uri: image.url }} style={styles.image} />
 
                                 </View>
                             ))}
@@ -260,22 +278,20 @@ export const ProductDetailScreen = () => {
                     <View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
                             <Text style={[GlobalStyles.textStyle, {}]}>Thương hiệu: </Text>
-                            <Text style={[GlobalStyles.textStyle, { color: Colors.primary }]}>{product.brand}</Text>
+                            <Text style={[GlobalStyles.textStyle, { color: Colors.primary }]}>{product.brand.title}</Text>
                         </View>
                         <View style={{ marginBottom: 20 }}>
                             <Text style={[GlobalStyles.textStyle, { fontSize: 20, fontWeight: 'bold' }]}>{product.name} ({product.specifications})</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-                            <Text>{product.id}</Text>
+                            <Text style={[GlobalStyles.textStyle]}>{product.star} ⭐</Text>
                             <View style={{ width: 5, height: 5, borderRadius: 50, backgroundColor: '#BBC4CC' }}></View>
-                            <Text>{product.star} ⭐</Text>
+                            <Text style={[GlobalStyles.textStyle]}>{product.reviews} đánh giá</Text>
                             <View style={{ width: 5, height: 5, borderRadius: 50, backgroundColor: '#BBC4CC' }}></View>
-                            <Text>{product.reviews} đánh giá</Text>
-                            <View style={{ width: 5, height: 5, borderRadius: 50, backgroundColor: '#BBC4CC' }}></View>
-                            <Text>{product.reviews} bình luận</Text>
+                            <Text style={[GlobalStyles.textStyle]}>{product.reviews} bình luận</Text>
                         </View>
                         <View>
-                            <Text style={[GlobalStyles.textStyle, { color: Colors.primary, fontSize: 20, fontWeight: 'bold' }]}>{formatPrice(product.price)} / <Text style={{ fontWeight: 'normal' }}>{product.unit}</Text></Text>
+                            <Text style={[GlobalStyles.textStyle, { color: Colors.primary, fontSize: 20, fontWeight: 'bold' }]}>{formatPrice(product.price)} / <Text style={{ fontWeight: 'normal' }}>{product.init}</Text></Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
                             <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
@@ -286,7 +302,7 @@ export const ProductDetailScreen = () => {
                             <TouchableOpacity
                                 onPress={() => { }}
                                 style={{ borderWidth: 1, borderColor: Colors.primary, borderRadius: 20, width: 90 }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: '#3A4CB0', padding: 10, textAlign: 'center' }]}>{product.unit}</Text>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: '#3A4CB0', padding: 10, textAlign: 'center' }]}>{product.init}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -319,19 +335,16 @@ export const ProductDetailScreen = () => {
                 </View>
 
                 <View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 20 }}>
                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: '#000' }]}>
                             Thông tin sản phẩm
                         </Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => setShowDetail(true)}>
                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]}>Xem tất cả</Text>
-
                         </TouchableOpacity>
                     </View>
                     <View>
-                        <Text>
-                            {product.des}
-                        </Text>
+                        <HTMLView value={product.desShort} textComponentProps={{ style: GlobalStyles.textStyle }} />
                     </View>
                 </View>
                 {/** Start Product By Category Component */}
@@ -381,11 +394,21 @@ export const ProductDetailScreen = () => {
                     textStyle={{ color: Colors.primary, fontWeight: 'bold' }}
                 />
                 <ButtonCustom
-                    onPress={() => { setProductChoose(product); setModalVisible(true);}}
+                    onPress={() => { setProductChoose(product); setModalVisible(true); }}
                     title={"Chọn mua"}
                     buttonStyle={{ borderRadius: 40 }}
                 />
             </View>
+            <ModalCustom
+                style={{ flex: 1, margin: 30 }} // Flex style
+                content={
+                    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={true}>
+                        <HTMLView value={product.des} textComponentProps={{ style: GlobalStyles.textStyle }} />
+                    </ScrollView>
+                } 
+                modalVisible={showDetail}
+                setModalVisible={setShowDetail}
+            />
         </SafeAreaView>
     )
 }
