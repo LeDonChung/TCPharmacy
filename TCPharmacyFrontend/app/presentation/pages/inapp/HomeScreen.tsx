@@ -32,6 +32,8 @@ import { getAllCategories, setDraw, setOutstanding } from "../../redux/slice/Cat
 import { findUserLogin } from "../../redux/slice/UserSlice";
 import * as SecureStore from 'expo-secure-store';
 
+import { getProductById, getAllProducts } from "../../redux/slice/ProductSlice";
+
 import { showToast } from "../../../api/AppUtils";
 import { CategoryModel } from "../../../domain/models/CategoryModel";
 import { BrandCustom } from "../../components/BrandCustom";
@@ -234,7 +236,7 @@ const categorySuggestion = [
 
 const productsInit: ProductModel[] = [
     {
-        id: 1,
+        id: 17,
         images: [
             require('./../../../../assets/products/1.webp'),
             require('./../../../../assets/products/2.webp'),
@@ -462,6 +464,8 @@ export const HomeScreen = () => {
     const menuCategory = useSelector((state: Store) => state.categories.value.outstanding);
 
     const brandFavorite = useSelector((state: Store) => state.brand.brands);
+
+    const productId= useSelector((state: Store) => state.product.value.product);
 
     const [categoryProductBySubject, setCategoryProductBySubject] = useState(categoryProductBySubjects);
 
@@ -784,7 +788,7 @@ export const HomeScreen = () => {
                                                             unit={item.unit}
                                                             specifications={item.specifications}
                                                             addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                                            onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
+                                                            onPress={() => { navigation.navigate('productDetailScreen' as never, { medicineId: 17 }) }}
                                                         />
                                                     )
                                                 }}
