@@ -63,5 +63,16 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<ErrorDetail> handlerOrderException(OrderException ex, WebRequest req) {
+        ErrorDetail errorDetail = ErrorDetail.builder()
+                .error(ex.getMessage())
+                .message(req.getDescription(false))
+                .timeStamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
+    }
+
+
 
 }

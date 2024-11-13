@@ -52,5 +52,5 @@ public class User {
     private List<Address> addresses;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Point point;
+    private Point point = new Point();
 }

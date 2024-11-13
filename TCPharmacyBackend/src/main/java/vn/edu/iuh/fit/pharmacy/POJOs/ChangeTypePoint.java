@@ -2,9 +2,7 @@ package vn.edu.iuh.fit.pharmacy.POJOs;
 
 public enum ChangeTypePoint {
     EARN("EARN"),
-    REDEEM("REDEEM"),
-    ADJUST("ADJUST");
-
+    USE("USE");
     private final String name;
 
     ChangeTypePoint(String name) {
