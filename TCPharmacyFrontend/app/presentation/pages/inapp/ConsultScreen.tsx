@@ -46,16 +46,7 @@ export const ConsultScreen = () => {
     const [messages, setMessages] = useState(messageList);
     const [modalVisible, setModalVisible] = useState(false);
 
-    useEffect(() => {
-        navigation.getParent()?.setOptions({
-          tabBarStyle: {
-            display: "none"
-          }
-        });
-        return () => navigation.getParent()?.setOptions({
-          tabBarStyle: undefined
-        });
-      }, [navigation]); 
+    
 
     //Ham goi dien thoai
     const handleClickCallHotline = () => {
@@ -70,6 +61,17 @@ export const ConsultScreen = () => {
         })
         .catch((err) => console.error('Error:', err));
     }
+
+    useEffect(() => {
+        navigation.setOptions({
+            tabBarStyle: {
+                display: "none"
+            }
+        });
+        return () => navigation.setOptions({
+            tabBarStyle: undefined
+        }); 
+    }, [navigation]);
 
     //send message
     const sendMessage = () => {
@@ -108,13 +110,13 @@ export const ConsultScreen = () => {
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ height: 70, width: '100%', backgroundColor: Colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
                     <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => { navigation.goBack() }}>
-                        <IconF5 name="chevron-left" size={35} style={{ color: Colors.secondary }} />
+                        <IconF5 name="chevron-left" size={25} style={{ color: Colors.secondary }} />
                     </TouchableOpacity>
                     <Text style={[GlobalStyles.textStyle, { fontSize: 20, fontWeight: '700', color: Colors.secondary, textAlign: 'center' }]}>
                         Dược sĩ TC Parmacy
                     </Text>
                     <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => { handleClickPhone() }}>
-                        <IconF name="phone" size={35} style={{ color: Colors.secondary }} />
+                        <IconF name="phone" size={25} style={{ color: Colors.secondary }} />
                     </TouchableOpacity>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false}>

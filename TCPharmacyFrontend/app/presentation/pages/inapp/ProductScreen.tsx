@@ -277,9 +277,21 @@ export const ProductScreen = () => {
             dispatch(setCategoryLevel2());
             dispatch(setCategoryLevel3());
             setSelectedLevel(categoryChoose.level);
+
+            // // Ensure the children array has an even number of items by adding placeholders if needed
+            // if (categoryChoose.children.length % 2 !== 0) {
+            //     setCategoryChoose({
+            //         ...categoryChoose,
+            //         children: [
+            //             ...categoryChoose.children,
+            //             new CategoryModel(999, "", "Thông báo", 1, "", 0, []),
+            //             new CategoryModel(997, "", "Điểm thưởng", 1, "", 0, [])
+            //         ]
+            //     });
+            // }
         }
         init();
-    }, [categoryChoose])
+    }, [navigation])
 
     const findParent = (id: number, level: number) => {
         const parent = level2.find(value => value.id === id);
