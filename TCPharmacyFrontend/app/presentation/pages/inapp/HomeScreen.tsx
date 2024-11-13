@@ -38,6 +38,8 @@ import { showToast } from "../../../api/AppUtils";
 import { CategoryModel } from "../../../domain/models/CategoryModel";
 import { BrandCustom } from "../../components/BrandCustom";
 import { getBrandsFavorite } from "../../redux/slice/BrandSlice";
+import { getTagGroupById, getTagGroups } from "../../redux/slice/TagGroupSlice";
+import { MedicineModel } from "../../../domain/models/MedicineModel";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
 const menus = [
@@ -109,316 +111,6 @@ const purchasedProducts = [
 ]
 
 
-const brandFavorites = [
-    {
-        id: "brand1",
-        logo: require('./../../../../assets/brand/ic_brand_biok.png'),
-        image: require('./../../../../assets/imgPurcharedProduct/1.png'),
-        discount: 20,
-    },
-    {
-        id: "brand2",
-        logo: require('./../../../../assets/brand/ic_brand_japanwell.png'),
-        image: require('./../../../../assets/imgPurcharedProduct/2.png'),
-        discount: 30,
-    },
-    {
-        id: "brand3",
-        logo: require('./../../../../assets/brand/ic_brand_biok.png'),
-        image: require('./../../../../assets/imgPurcharedProduct/3.png'),
-        discount: 20,
-    }
-]
-const menuCategories = [
-    {
-        id: 'menuCategory1',
-        icon: require('./../../../../assets/icon/menuCategories/vitamin 1.png'),
-        title: 'Vitamin & Khoáng chất',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory2',
-        icon: require('./../../../../assets/icon/menuCategories/SinhLy-NoiTiet 1.png'),
-        title: 'Sinh lý - Nội tiết tố',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory3',
-        icon: require('./../../../../assets/icon/menuCategories/CaiThienTangCuong 1.png'),
-        title: 'Cải thiện tăng cường',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory4',
-        icon: require('./../../../../assets/icon/menuCategories/HoTroDieuTri 1.png'),
-        title: 'Hỗ trợ điều trị',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory5',
-        icon: require('./../../../../assets/icon/menuCategories/HoTroTieuHoa 1.png'),
-        title: 'Hỗ trợ tiêu hóa',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory6',
-        icon: require('./../../../../assets/icon/menuCategories/ThanKinhNao 1.png'),
-        title: 'Thần kinh não',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory7',
-        icon: require('./../../../../assets/icon/menuCategories/1.png'),
-        title: 'Sức khỏe tim mạch',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory8',
-        icon: require('./../../../../assets/icon/menuCategories/4.png'),
-        title: 'Hỗ trợ làm đẹp',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory9',
-        icon: require('./../../../../assets/icon/menuCategories/2.png'),
-        title: 'Dinh dưỡng',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory10',
-        icon: require('./../../../../assets/icon/menuCategories/6.png'),
-        title: 'Hỗ trợ tình dục',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory11',
-        icon: require('./../../../../assets/icon/menuCategories/3.png'),
-        title: 'Giải pháp làn da',
-        onPress: () => { },
-    },
-    {
-        id: 'menuCategory12',
-        icon: require('./../../../../assets/icon/menuCategories/5.png'),
-        title: 'Chăm sóc da mặt',
-        onPress: () => { },
-    }
-]
-const categoryProductBySubjects = [
-    {
-        "id": "category1",
-        "title": "Trẻ em"
-    },
-    {
-        "id": "category2",
-        "title": "Mẹ và bé"
-    },
-    {
-        "id": "category3",
-        "title": "Người cao tuổi"
-    }
-
-]
-
-const categorySuggestion = [
-    {
-        "id": "category1",
-        "title": "Tìm kiếm nhiều"
-    },
-    {
-        "id": "category2",
-        "title": "Sản phẩm mới"
-    },
-    {
-        "id": "category3",
-        "title": "Vitamin tổng hợp"
-    }
-]
-
-const productsInit: ProductModel[] = [
-    {
-        id: 17,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-        ],
-        price: 300000,
-        unit: 'Hộp',
-        specifications: 'Hộp 60 viên',
-        category: 'Vitamin',
-        desShort: 'Bột điện giải vị chanh dây Kamizol giúp cung cấp năng lượng và chất điện giải cho cơ thể.',
-        name: 'Bột điện giải vị chanh dây Kamizol Sports Drink Powder 25g (5 gói)',
-        brand: 'Kamizol',
-        star: 4.5,
-        reviews: 100,
-        discount: 20,
-        des: ''
-    },
-    {
-        id: 2,
-        images: [
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 250000,
-        unit: 'Chai',
-        specifications: 'Chai 500ml',
-        category: 'Thực phẩm chức năng',
-        desShort: 'Nước uống bổ sung Collagen vị dâu Berry giúp da căng mịn và giảm nếp nhăn.',
-        name: 'Nước uống bổ sung Collagen Berry Drink 500ml',
-        brand: 'Berry Collagen',
-        star: 4.7,
-        reviews: 220,
-        discount: 15,
-        des: ''
-    },
-    {
-        id: 3,
-        images: [
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 180000,
-        unit: 'Tuýp',
-        specifications: 'Tuýp 100g',
-        category: 'Chăm sóc da',
-        desShort: 'Kem dưỡng ẩm Vitamin E cung cấp độ ẩm và phục hồi da khô ráp.',
-        name: 'Kem dưỡng ẩm Vitamin E Moisturizing Cream 100g',
-        brand: 'Natural Care',
-        star: 4.3,
-        reviews: 150,
-        discount: 10,
-        des: ''
-    },
-    {
-        id: 4,
-        images: [
-            require('./../../../../assets/products/4.webp'),
-            require('./../../../../assets/products/2.webp'),
-        ],
-        price: 120000,
-        unit: 'Lọ',
-        specifications: 'Lọ 30 viên',
-        category: 'Vitamin',
-        desShort: 'Viên uống bổ sung vitamin D3 giúp hỗ trợ sức khỏe xương và tăng cường miễn dịch.',
-        name: 'Viên uống bổ sung vitamin D3 30 viên',
-        brand: 'Health Plus',
-        star: 4.6,
-        reviews: 180,
-        discount: 5,
-        des: ''
-    },
-    {
-        id: 5,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/3.webp'),
-            require('./../../../../assets/products/4.webp'),
-        ],
-        price: 400000,
-        unit: 'Hộp',
-        specifications: 'Hộp 120 viên',
-        category: 'Dược mỹ phẩm',
-        desShort: 'Viên uống trắng da Beauty Skin giúp cải thiện độ sáng da và giảm sạm nám.',
-        name: 'Viên uống trắng da Beauty Skin Complex 120 viên',
-        brand: 'BeautyPro',
-        star: 4.8,
-        reviews: 300,
-        discount: 25,
-        des: ''
-    },
-    {
-        id: 6,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/4.webp'),
-        ],
-        price: 150000,
-        unit: 'Lọ',
-        specifications: 'Lọ 50 viên',
-        category: 'Chăm sóc sức khỏe',
-        desShort: 'Viên bổ sung Omega-3 giúp hỗ trợ sức khỏe tim mạch và mắt.',
-        name: 'Viên dầu cá Omega-3 50 viên',
-        brand: 'Heart Health',
-        star: 4.4,
-        reviews: 120,
-        discount: 10,
-        des: ''
-    },
-    {
-        id: 7,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-        ],
-        price: 210000,
-        unit: 'Tuýp',
-        specifications: 'Tuýp 150ml',
-        category: 'Chăm sóc da',
-        desShort: 'Gel rửa mặt Gentle Cleanser làm sạch sâu và duy trì độ ẩm cho da.',
-        name: 'Gel rửa mặt Gentle Cleanser 150ml',
-        brand: 'PureSkin',
-        star: 4.2,
-        reviews: 75,
-        discount: 5,
-        des: ''
-    },
-    {
-        id: 8,
-        images: [
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 320000,
-        unit: 'Lọ',
-        specifications: 'Lọ 90 viên',
-        category: 'Vitamin',
-        desShort: 'Viên bổ sung vitamin tổng hợp cho nam giới, giúp tăng cường sức khỏe và sinh lực.',
-        name: 'Vitamin tổng hợp cho nam 90 viên',
-        brand: 'Men’s Health',
-        star: 4.6,
-        reviews: 200,
-        discount: 20,
-        des: ''
-    },
-    {
-        id: 9,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-        ],
-        price: 190000,
-        unit: 'Gói',
-        specifications: 'Gói 30g',
-        category: 'Thực phẩm chức năng',
-        desShort: 'Bột protein vị vani giúp cung cấp năng lượng và protein cho cơ thể.',
-        name: 'Bột protein vị vani 30g',
-        brand: 'FitPro',
-        star: 4.1,
-        reviews: 80,
-        discount: 15,
-        des: ''
-    },
-    {
-        id: 10,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 500000,
-        unit: 'Hộp',
-        specifications: 'Hộp 100 viên',
-        category: 'Dược mỹ phẩm',
-        desShort: 'Viên uống chống lão hóa với chiết xuất thiên nhiên, giúp duy trì vẻ tươi trẻ cho làn da.',
-        name: 'Viên uống chống lão hóa 100 viên',
-        brand: 'Youthful',
-        star: 4.9,
-        reviews: 320,
-        discount: 30,
-        des: ''
-    }
-];
-
 
 const policiesInit = [
     {
@@ -452,6 +144,7 @@ const policiesInit = [
 export const HomeScreen = () => {
 
     const navigation = useNavigation();
+    
 
     const drawer = useRef(null);
     const closeDrawer = () => {
@@ -465,51 +158,68 @@ export const HomeScreen = () => {
 
     const brandFavorite = useSelector((state: Store) => state.brand.brands);
 
-    const productId= useSelector((state: Store) => state.product.value.product);
-
-    const [categoryProductBySubject, setCategoryProductBySubject] = useState(categoryProductBySubjects);
-
-    const [indexSubject, setIndexSubject] = useState(0);
-
-    const [sugg, setSugg] = useState(categorySuggestion);
-    const [indexSuggestion, setIndexSuggestion] = useState(0);
-
-    const [products, setProducts] = useState(productsInit);
-
     const [policies, setPolicies] = useState(policiesInit);
 
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [productChoose, setProductChoose] = useState(productsInit[0]);
+    const [productChoose, setProductChoose] = useState();
 
     const userLogin = useSelector((state: Store) => state.user.userLogin);
     const dispatch = useDispatch();
 
     const banner = useSelector((state: Store) => state.banner);
-    useEffect(() => {
-        dispatch(findUserLogin()).unwrap().catch((error: any) => {
-            showToast('error', 'bottom', 'Lỗi', 'Vui lòng đăng nhập.');
-            SecureStore.deleteItemAsync('token');
-            navigation.navigate('authentication' as never);
-        });
-    }, []);
+    const tagGroupByObject = useSelector((state: Store) => state.tagGroup.value.tagGroupByObject);
 
-    const formatPrice = (price: number) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
+    const [productsByObject, setProductsByObject] = useState([] as MedicineModel[]);
+    const [indexSubject, setIndexSubject] = useState(0);
 
+    const tagGroupSuggestions = useSelector((state: Store) => state.tagGroup.value.tagGroupSuggestions);
+    
+    const [sugg, setSugg] = useState([] as MedicineModel[]);    
+    const [indexSuggestion, setIndexSuggestion] = useState(0);
 
     useEffect(() => {
         const init = async () => {
-            await dispatch(getAllCategories());
-            await dispatch(getBrandsFavorite());
-            dispatch(setDraw());
-
-            dispatch(setOutstanding());
-        }
-
+            try {
+                await dispatch(getAllCategories());
+                await dispatch(getBrandsFavorite());
+                await dispatch(getTagGroups());
+                dispatch(setDraw());
+                dispatch(setOutstanding());
+            } catch (error) {
+                console.error("Initialization error:", error);
+            }
+        };
+    
+        dispatch(findUserLogin())
+            .unwrap()
+            .catch((error: any) => {
+                showToast('error', 'bottom', 'Lỗi', 'Vui lòng đăng nhập.');
+                SecureStore.deleteItemAsync('token');
+                navigation.navigate('authentication' as never);
+            });
         init();
-    }, []) // Lấy tất cả danh mục
+    }, []);
+    
+    useEffect(() => {
+        const checkTokenAndSetProducts = async () => {
+            const token = await SecureStore.getItemAsync('token');
+            if (token) {
+                setProductsByObject(tagGroupByObject.tags[indexSubject].medicines);
+            }
+        };
+        checkTokenAndSetProducts();
+    }, [indexSubject]);
+    
+    useEffect(() => {
+        const checkTokenAndSetSugg = async () => {
+            const token = await SecureStore.getItemAsync('token');
+            if (token) {
+                setSugg(tagGroupSuggestions.tags[indexSuggestion].medicines);
+            }
+        };
+        checkTokenAndSetSugg();
+    }, [indexSuggestion]);
 
     return (
         <>
@@ -540,9 +250,14 @@ export const HomeScreen = () => {
                                 {/** Start Header Component */}
                                 <View style={{ backgroundColor: Colors.primary, height: 200, marginHorizontal: -15 }}>
                                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 15 }}>
-                                        <IconE name="menu" size={34} color={"#fff"} onPress={() => (drawer.current as DrawerLayout | null)?.openDrawer()} />
+                                        <TouchableOpacity onPress={() => (drawer.current as DrawerLayout | null)?.openDrawer()} >
+                                            <IconE name="menu" size={34} color={"#fff"} />
+                                        </TouchableOpacity>
                                         <LogoCustom color={"#fff"} />
-                                        <IconF name="bell" size={34} color={"#fff"} />
+                                        <TouchableOpacity onPress={() => showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển")} >
+                                            <IconF name="bell" size={34} color={"#fff"} />
+                                        </TouchableOpacity>
+                                        
                                     </View>
                                     <View style={{ flex: 1, paddingHorizontal: 15 }}>
                                         <TextInput
@@ -590,7 +305,7 @@ export const HomeScreen = () => {
                                                             styleContainer={{ marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 110 }}
                                                             icon={item.icon}
                                                             title={item.title}
-                                                            onPress={item.onPress}
+                                                            onPress={() => showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển")}
                                                         />
                                                     )
                                                 }
@@ -599,7 +314,7 @@ export const HomeScreen = () => {
                                             keyExtractor={
                                                 (item) => item.id
                                             }
-                                            numColumns={4}
+                                            numColumns={4} 
                                         />
                                     </View>
                                     {/** End Menu Component */}
@@ -615,7 +330,7 @@ export const HomeScreen = () => {
                                     <View style={{ paddingHorizontal: 15, marginVertical: 20 }}>
                                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18 }]}>Mua lại nhanh chóng</Text>
-                                            <TouchableOpacity>
+                                            <TouchableOpacity onPress={() => showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển")}>
                                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]}>Xem tất cả</Text>
                                             </TouchableOpacity>
                                         </View>
@@ -674,7 +389,7 @@ export const HomeScreen = () => {
                                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, textAlign: 'center' }]}>
                                                 Thông tin được biên soạn và kiểm duyệt bởi đội ngũ chuyên gia y tế hàng đầu
                                             </Text>
-                                            <ButtonCustom buttonStyle={{ width: 150, borderRadius: 50 }} title="Tìm hiểu thêm" onPress={() => { }} />
+                                            <ButtonCustom buttonStyle={{ width: 150, borderRadius: 50 }} title="Tìm hiểu thêm" onPress={() => { showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển") }} />
                                             <Image source={require('./../../../../assets/banner/Untitled dsign 1.png')} resizeMode="contain" />
                                         </View>
                                     </View>
@@ -704,7 +419,7 @@ export const HomeScreen = () => {
                                         <View style={{ marginVertical: 20 }}>
                                             <FlatList
                                                 nestedScrollEnabled
-                                                data={categoryProductBySubject}
+                                                data={tagGroupByObject.tags}
                                                 horizontal={true}
                                                 scrollEnabled={true}
                                                 renderItem={
@@ -715,29 +430,25 @@ export const HomeScreen = () => {
                                                                 style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
                                                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
                                                             </TouchableOpacity>
-                                                        )
+                                                        ) 
                                                     }
 
                                                 }
                                                 keyExtractor={
-                                                    (item) => item.id
+                                                    (item) => item.id.toString()
                                                 }
                                             />
                                         </View>
                                         <View style={{ marginVertical: 20 }}>
                                             <FlatList
                                                 nestedScrollEnabled
-                                                data={products}
+                                                data={productsByObject}
                                                 renderItem={({ item }) => {
                                                     return (
                                                         <ProductCustom
-                                                            image={item.images[0]}
-                                                            title={item.name}
-                                                            salePrice={item.price}
-                                                            unit={item.unit}
-                                                            specifications={item.specifications}
+                                                            data={item}
                                                             addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                                            onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
+                                                            onPress={() => { navigation.navigate('productDetailScreen' as never, { medicineId: item.id }) }}
                                                         />
                                                     )
                                                 }}
@@ -756,7 +467,7 @@ export const HomeScreen = () => {
                                         <View style={{ marginVertical: 20 }}>
                                             <FlatList
                                                 nestedScrollEnabled
-                                                data={sugg}
+                                                data={tagGroupSuggestions.tags}
                                                 scrollEnabled={true}
                                                 horizontal={true}
                                                 renderItem={
@@ -772,21 +483,17 @@ export const HomeScreen = () => {
 
                                                 }
                                                 keyExtractor={
-                                                    (item) => item.id
+                                                    (item) => item.id.toString()
                                                 }
                                             />
                                         </View>
                                         <View style={{ marginVertical: 20 }}>
                                             <FlatList
-                                                data={products}
+                                                data={sugg}
                                                 renderItem={({ item }) => {
                                                     return (
                                                         <ProductCustom
-                                                            image={item.images[0]}
-                                                            title={item.name}
-                                                            salePrice={item.price}
-                                                            unit={item.unit}
-                                                            specifications={item.specifications}
+                                                            data={item}
                                                             addToCart={() => { setProductChoose(item); setModalVisible(true); }}
                                                             onPress={() => { navigation.navigate('productDetailScreen' as never, { medicineId: 17 }) }}
                                                         />

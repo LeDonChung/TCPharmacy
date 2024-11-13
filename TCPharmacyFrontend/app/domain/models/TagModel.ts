@@ -1,10 +1,15 @@
+import { MedicineModel } from "./MedicineModel";
+
 export class TagModel {
     id: number;
     title: string;
     des: string;
-    constructor(id: number, title: string, des: string) {
-        this.id = id;
-        this.title = title;
-        this.des = des;
+    medicines: MedicineModel[] ;
+
+    constructor(id?: number, title?: string, des?: string, medicines?: MedicineModel[]) {
+        this.id = id || 0;
+        this.title = title || "";
+        this.des = des || "";
+        this.medicines = medicines || [];
     }
 }

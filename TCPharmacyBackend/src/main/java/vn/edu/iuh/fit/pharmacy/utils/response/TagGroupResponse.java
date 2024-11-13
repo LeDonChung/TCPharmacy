@@ -2,22 +2,21 @@ package vn.edu.iuh.fit.pharmacy.utils.response;
 
 import jakarta.persistence.*;
 import lombok.*;
-import vn.edu.iuh.fit.pharmacy.POJOs.TagGroup;
+import vn.edu.iuh.fit.pharmacy.POJOs.Tag;
 
-import java.util.List;
-
+import java.util.Collection;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class TagResponse {
+public class TagGroupResponse {
     private Long id;
 
-    private String title;
+    private String groupName;
 
     private String des;
 
-    private List<MedicineResponse> medicines;
+    private Collection<TagResponse> tags;
 }

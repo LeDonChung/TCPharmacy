@@ -46,7 +46,7 @@ const CategorySlice = createSlice({
             state.value.draw = state.value.categories.filter(value => value.level === 1);
             state.value.draw.unshift(
                 new CategoryModel(999, "", "Thông báo", 1, "", 0, []),
-                new CategoryModel(997, "", "Điểm thưởng", 1, "", 0, [])
+                new CategoryModel(998, "", "Điểm thưởng", 1, "", 0, [])
             );
         },
         setCategoryLevel1(state) {

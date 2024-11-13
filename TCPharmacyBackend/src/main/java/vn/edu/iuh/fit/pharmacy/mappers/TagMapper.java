@@ -6,5 +6,6 @@ import vn.edu.iuh.fit.pharmacy.utils.response.TagResponse;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TagMapper {
+    @Mapping(target = "medicines", ignore = true)
     TagResponse toDto(Tag tag);
 }

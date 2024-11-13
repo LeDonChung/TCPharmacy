@@ -21,9 +21,21 @@ const getAllProducts: any = createAsyncThunk('medicines/getAllProducts', async (
     }
 });
 
+const getProductsRelated: any = createAsyncThunk('medicines/getProductsRelated', async (tagIds, { rejectWithValue }) => {
+    try {
+
+        console.log("tagIds", tagIds);
+        const response = await axiosInstance.post(`/medicines/getByTags`, tagIds );
+        return response.data;
+    } catch (error: any) {
+        throw rejectWithValue(error.response.data);
+    }
+});
+
 const initialState: {
     product: MedicineModel,
     products: MedicineModel[]
+    relatedProducts: MedicineModel[]
 } = {
     product: {
         id: 0,
@@ -46,8 +58,11 @@ const initialState: {
         tags: [],
         category: {id: 0, fullPathSlug: "", title: "", level: 0, icon: "", parent: 0, children: []},
     },
-    products: []
+    products: [],
+    relatedProducts: []
 };
+
+
 
 const productSlice = createSlice({
     name: 'product',
@@ -70,9 +85,13 @@ const productSlice = createSlice({
         builder.addCase(getProductById.rejected, (state, action) => {
             console.log("extraReducers", action.payload);
         });
+
+        builder.addCase(getProductsRelated.fulfilled, (state, action) => {
+            state.value.relatedProducts = action.payload;
+        });
     }
 });
 
 export const { setProduct, setProducts } = productSlice.actions;
-export { getProductById, getAllProducts };
+export { getProductById, getAllProducts, getProductsRelated };
 export default productSlice.reducer;

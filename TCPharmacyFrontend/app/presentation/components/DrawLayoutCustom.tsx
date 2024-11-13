@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useDispatch, useSelector } from "react-redux"
 import { Store, store } from "../redux/store"
 import { setDraw } from "../redux/slice/CategorySlice"
+import { showToast } from "../../api/AppUtils"
 
 const screenWidth = Dimensions.get('window').width;
 type DrawScreenLayoutProps = {
@@ -36,7 +37,7 @@ export const DrawScreenLayout = (props: DrawScreenLayoutProps) => {
         return expandedSections.includes(sectionId);
     };
 
-    const menus = useSelector((state: Store) => state.categories.value.draw);  
+    const menus = useSelector((state: Store) => state.categories.value.draw);
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -45,25 +46,40 @@ export const DrawScreenLayout = (props: DrawScreenLayoutProps) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <SectionList
                 sections={menus.map((item) => {
-                    return { data: item.children, title: item.title, id: item.id, hasChildren: item.children.length }
+                    return { data: item.children, title: item.title, id: item.id, hasChildren: item.children.length, category: item }
                 })}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => {
                     if (isSectionExpanded(item.parent.toString())) {
                         return (
-                            <TouchableOpacity onPress={() => {console.log("Go to", item.fullPathSlug)}} style={{ padding: 10, marginHorizontal: 15, marginVertical: 1, backgroundColor: '#ECF0FB', borderTopLeftRadius: 10, borderTopRightRadius: 10 }} >
+                            <TouchableOpacity onPress={() => { console.log("Go to", item.fullPathSlug); navigation.navigate('productScreen' as never, { category: item }) }} style={{ padding: 10, marginHorizontal: 15, marginVertical: 1, backgroundColor: '#ECF0FB', borderTopLeftRadius: 10, borderTopRightRadius: 10 }} >
                                 <Text style={[GlobalStyles.textStyle, { paddingVertical: 10 }]}>{item.title}</Text>
                             </TouchableOpacity>
                         )
                     }
                     return null;
                 }}
-                renderSectionHeader={({ section: { id, title, hasChildren } }) => (
-                    <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 20, paddingHorizontal: 15 }} onPress={() => toggleSection(id.toString())}>
-                        <Text style={[GlobalStyles.textStyle, { color: hasChildren > 0 && isSectionExpanded(id.toString()) ? Colors.primary : '#000', fontWeight: 'bold' }]}>{title}</Text>
-                        {hasChildren > 0 && <IconAnt name={isSectionExpanded(id.toString()) ? 'down' : 'right'} size={20} />}
-                    </TouchableOpacity>
+                renderSectionHeader={({ section: { id, title, hasChildren, category } }) => (
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 20, paddingHorizontal: 15 }} >
+                        <TouchableOpacity onPress={
+                            () => {
+                                if(id !== 999 && id !== 998){
+                                    navigation.navigate('productScreen' as never, { category: category })
+                                } else {
+                                    showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển");
+                                }
+                            }
+                        } style={{flex: 1}}>
+                            <Text style={[GlobalStyles.textStyle, { color: hasChildren > 0 && isSectionExpanded(id.toString()) ? Colors.primary : '#000', fontWeight: 'bold' }]} >{title}</Text>
+                        </TouchableOpacity>
+                        {hasChildren > 0 &&
+                            <TouchableOpacity onPress={() => toggleSection(id.toString())}>
+                                <IconAnt name={isSectionExpanded(id.toString()) ? "up" : "down"} size={20} color={isSectionExpanded(id.toString()) ? Colors.primary : '#000'} />
+                            </TouchableOpacity>
+
+                        }
+                    </View>
                 )}
                 ListHeaderComponent={() => (
                     <View style={{ backgroundColor: '#fff' }}>
