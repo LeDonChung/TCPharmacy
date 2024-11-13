@@ -1,10 +1,7 @@
 package vn.edu.iuh.fit.pharmacy.POJOs;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -14,6 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class PointHistory {
     @Id
     @Column(name = "point_history_id")
@@ -24,7 +22,8 @@ public class PointHistory {
 
     private int pointsBalance;
 
-    private int changeType;
+    @Enumerated(EnumType.STRING)
+    private ChangeTypePoint changeType;
 
     private Timestamp createdAt;
 

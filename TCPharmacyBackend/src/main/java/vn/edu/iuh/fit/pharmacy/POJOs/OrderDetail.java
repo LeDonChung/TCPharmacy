@@ -1,10 +1,7 @@
 package vn.edu.iuh.fit.pharmacy.POJOs;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,6 +9,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "orders_details")
 @Entity
+@Builder
 public class OrderDetail {
 
     @EmbeddedId
@@ -26,8 +24,10 @@ public class OrderDetail {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("medicineId")
     @JoinColumn(name = "medicine_id")
     private Medicine medicine;
+
+    private double discount;
 }

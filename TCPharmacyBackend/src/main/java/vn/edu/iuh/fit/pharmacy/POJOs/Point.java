@@ -1,10 +1,7 @@
 package vn.edu.iuh.fit.pharmacy.POJOs;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -16,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Point {
     @Id
     @Column(name = "point_id")
@@ -28,7 +26,7 @@ public class Point {
 
     private Rank rank;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
