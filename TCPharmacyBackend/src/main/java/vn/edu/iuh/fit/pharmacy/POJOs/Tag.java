@@ -3,6 +3,8 @@ package vn.edu.iuh.fit.pharmacy.POJOs;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Collection;
+
 @Entity
 @Table(name = "tags")
 @NoArgsConstructor
@@ -24,4 +26,7 @@ public class Tag {
     @ManyToOne
     @JoinColumn(name = "tag_group_id")
     private TagGroup tagGroup;
+
+    @ManyToMany(mappedBy = "tags")
+    private Collection<Medicine> medicines;
 }

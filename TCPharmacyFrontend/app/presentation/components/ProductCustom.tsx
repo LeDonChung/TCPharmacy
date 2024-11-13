@@ -3,32 +3,27 @@ import React from "react"
 import { GlobalStyles } from "../styles/GlobalStyles"
 import { Colors } from "../styles/Colors"
 import { ButtonCustom } from "./ButtonCustom"
+import { MedicineModel } from "../../domain/models/MedicineModel"
+import { PriceUtils } from "../../domain/utils/PriceUtils"
 type ProductCustomProps = {
     onPress: () => void,
     addToCart: () => void,
-    title: string,
-    salePrice: number,
-    specifications: string,
-    image: any,
-    unit: string
+    data: MedicineModel
 }
 export const ProductCustom = (props: ProductCustomProps) => {
-    const formatPrice = (price: number) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
     return (
         <TouchableOpacity onPress={props.onPress} style={[styles.container]}>
-            <Image style={styles.image} source={props.image} />
+            <Image style={styles.image} source={{uri: props.data.primaryImage}} />
             <View>
                 <Text numberOfLines={2} style={[GlobalStyles.textStyle, styles.textStyleTitle]}>
-                    {props.title}
+                    {props.data.name}
                 </Text>
                 <Text style={[GlobalStyles.textStyle, styles.textStylePrice]}>
-                    {formatPrice(props.salePrice)}
-                    <Text> / {props.unit}</Text>
+                    {PriceUtils.formatPrice(PriceUtils.calculateSalePrice(props.data.price, props.data.discount))}
+                    <Text> / {props.data.init}</Text>
                 </Text>
                 <View style={[styles.boxStyleUnit]}>
-                    <Text style={[GlobalStyles.textStyle, styles.textStyleUnit]}>{props.specifications}</Text>
+                    <Text style={[GlobalStyles.textStyle, styles.textStyleUnit]}>{props.data.specifications}</Text>
                 </View>
             </View>
             <ButtonCustom

@@ -5,6 +5,7 @@ import UserSlice from "./slice/UserSlice";
 import BannerSlice from "./slice/BannerSlice";
 import BrandSlice from "./slice/BrandSlice";
 import ProductSlice from "./slice/ProductSlice";
+import TagGroupSlice from "./slice/TagGroupSlice";
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
         banner: BannerSlice,
         brand: BrandSlice,
         product: ProductSlice,
+        tagGroup: TagGroupSlice
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

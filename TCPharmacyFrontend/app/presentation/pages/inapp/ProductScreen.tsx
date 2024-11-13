@@ -277,18 +277,6 @@ export const ProductScreen = () => {
             dispatch(setCategoryLevel2());
             dispatch(setCategoryLevel3());
             setSelectedLevel(categoryChoose.level);
-
-            // // Ensure the children array has an even number of items by adding placeholders if needed
-            // if (categoryChoose.children.length % 2 !== 0) {
-            //     setCategoryChoose({
-            //         ...categoryChoose,
-            //         children: [
-            //             ...categoryChoose.children,
-            //             new CategoryModel(999, "", "Thông báo", 1, "", 0, []),
-            //             new CategoryModel(997, "", "Điểm thưởng", 1, "", 0, [])
-            //         ]
-            //     });
-            // }
         }
         init();
     }, [navigation])
@@ -432,18 +420,10 @@ export const ProductScreen = () => {
                                     renderItem={({ item }) => {
                                         return (
                                             <View style={{ marginVertical: 10 }}>
-                                                <ProductCustom
-                                                    image={item.images[0]}
-                                                    title={item.name}
-                                                    salePrice={item.price}
-                                                    unit={item.unit}
-                                                    specifications={item.specifications}
-                                                    addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                                    onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
-                                                />
+                                                
                                             </View>
                                         )
-                                    }}
+                                    }} 
                                     keyExtractor={(item) => item.id + ''}
                                     horizontal={false}
                                     numColumns={2}

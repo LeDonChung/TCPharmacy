@@ -14,208 +14,18 @@ import PagerView from "react-native-pager-view";
 import { GlobalStyles } from "../../styles/GlobalStyles";
 import IconI from "react-native-vector-icons/Ionicons"
 import { useDispatch, useSelector } from "react-redux";
-import { CartModel } from "../../../domain/models/CartModel";
 import { Store } from "../../redux/store";
 import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom";
 import { ProductCustom } from "../../components/ProductCustom";
 import { FlatList } from "react-native";
 import { ButtonCustom } from "../../components/ButtonCustom";
-import { MedicineModel } from "../../../domain/models/MedicineModel";
-import { BrandModel } from "../../../domain/models/BrandModel";
-import { CategoryModel } from "../../../domain/models/CategoryModel";
-import { getProductById } from "../../redux/slice/ProductSlice";
-import RenderHTML from "react-native-render-html";
+import { getProductById, getProductsRelated, setProduct } from "../../redux/slice/ProductSlice";
 import HTMLView from "react-native-htmlview";
 import { ModalCustom } from "../../components/ModalCustom";
+import { MedicineModel } from "../../../domain/models/MedicineModel";
+import { PriceUtils } from "../../../domain/utils/PriceUtils";
+import { PoitUtils } from "../../../domain/utils/PointUtils";
 
-const productsInit: ProductModel[] = [
-    {
-        id: 1,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-        ],
-        price: 300000,
-        unit: 'Hộp',
-        specifications: 'Hộp 60 viên',
-        category: 'Vitamin',
-        desShort: 'Bột điện giải vị chanh dây Kamizol giúp cung cấp năng lượng và chất điện giải cho cơ thể.',
-        name: 'Bột điện giải vị chanh dây Kamizol Sports Drink Powder 25g (5 gói)',
-        brand: 'Kamizol',
-        star: 4.5,
-        reviews: 100,
-        discount: 20,
-        des: ''
-    },
-    {
-        id: 2,
-        images: [
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 250000,
-        unit: 'Chai',
-        specifications: 'Chai 500ml',
-        category: 'Thực phẩm chức năng',
-        desShort: 'Nước uống bổ sung Collagen vị dâu Berry giúp da căng mịn và giảm nếp nhăn.',
-        name: 'Nước uống bổ sung Collagen Berry Drink 500ml',
-        brand: 'Berry Collagen',
-        star: 4.7,
-        reviews: 220,
-        discount: 15,
-        des: ''
-    },
-    {
-        id: 3,
-        images: [
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 180000,
-        unit: 'Tuýp',
-        specifications: 'Tuýp 100g',
-        category: 'Chăm sóc da',
-        desShort: 'Kem dưỡng ẩm Vitamin E cung cấp độ ẩm và phục hồi da khô ráp.',
-        name: 'Kem dưỡng ẩm Vitamin E Moisturizing Cream 100g',
-        brand: 'Natural Care',
-        star: 4.3,
-        reviews: 150,
-        discount: 10,
-        des: ''
-    },
-    {
-        id: 4,
-        images: [
-            require('./../../../../assets/products/4.webp'),
-            require('./../../../../assets/products/2.webp'),
-        ],
-        price: 120000,
-        unit: 'Lọ',
-        specifications: 'Lọ 30 viên',
-        category: 'Vitamin',
-        desShort: 'Viên uống bổ sung vitamin D3 giúp hỗ trợ sức khỏe xương và tăng cường miễn dịch.',
-        name: 'Viên uống bổ sung vitamin D3 30 viên',
-        brand: 'Health Plus',
-        star: 4.6,
-        reviews: 180,
-        discount: 5,
-        des: ''
-    },
-    {
-        id: 5,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/3.webp'),
-            require('./../../../../assets/products/4.webp'),
-        ],
-        price: 400000,
-        unit: 'Hộp',
-        specifications: 'Hộp 120 viên',
-        category: 'Dược mỹ phẩm',
-        desShort: 'Viên uống trắng da Beauty Skin giúp cải thiện độ sáng da và giảm sạm nám.',
-        name: 'Viên uống trắng da Beauty Skin Complex 120 viên',
-        brand: 'BeautyPro',
-        star: 4.8,
-        reviews: 300,
-        discount: 25,
-        des: ''
-    },
-    {
-        id: 6,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/4.webp'),
-        ],
-        price: 150000,
-        unit: 'Lọ',
-        specifications: 'Lọ 50 viên',
-        category: 'Chăm sóc sức khỏe',
-        desShort: 'Viên bổ sung Omega-3 giúp hỗ trợ sức khỏe tim mạch và mắt.',
-        name: 'Viên dầu cá Omega-3 50 viên',
-        brand: 'Heart Health',
-        star: 4.4,
-        reviews: 120,
-        discount: 10,
-        des: ''
-    },
-    {
-        id: 7,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-        ],
-        price: 210000,
-        unit: 'Tuýp',
-        specifications: 'Tuýp 150ml',
-        category: 'Chăm sóc da',
-        desShort: 'Gel rửa mặt Gentle Cleanser làm sạch sâu và duy trì độ ẩm cho da.',
-        name: 'Gel rửa mặt Gentle Cleanser 150ml',
-        brand: 'PureSkin',
-        star: 4.2,
-        reviews: 75,
-        discount: 5,
-        des: ''
-    },
-    {
-        id: 8,
-        images: [
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 320000,
-        unit: 'Lọ',
-        specifications: 'Lọ 90 viên',
-        category: 'Vitamin',
-        desShort: 'Viên bổ sung vitamin tổng hợp cho nam giới, giúp tăng cường sức khỏe và sinh lực.',
-        name: 'Vitamin tổng hợp cho nam 90 viên',
-        brand: 'Men’s Health',
-        star: 4.6,
-        reviews: 200,
-        discount: 20,
-        des: ''
-    },
-    {
-        id: 9,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-        ],
-        price: 190000,
-        unit: 'Gói',
-        specifications: 'Gói 30g',
-        category: 'Thực phẩm chức năng',
-        desShort: 'Bột protein vị vani giúp cung cấp năng lượng và protein cho cơ thể.',
-        name: 'Bột protein vị vani 30g',
-        brand: 'FitPro',
-        star: 4.1,
-        reviews: 80,
-        discount: 15,
-        des: ''
-    },
-    {
-        id: 10,
-        images: [
-            require('./../../../../assets/products/1.webp'),
-            require('./../../../../assets/products/2.webp'),
-            require('./../../../../assets/products/3.webp'),
-        ],
-        price: 500000,
-        unit: 'Hộp',
-        specifications: 'Hộp 100 viên',
-        category: 'Dược mỹ phẩm',
-        desShort: 'Viên uống chống lão hóa với chiết xuất thiên nhiên, giúp duy trì vẻ tươi trẻ cho làn da.',
-        name: 'Viên uống chống lão hóa 100 viên',
-        brand: 'Youthful',
-        star: 4.9,
-        reviews: 320,
-        discount: 30,
-        des: ''
-    }
-];
-
-type Props = {
-    product: ProductModel
-}
 export const ProductDetailScreen = () => {
     const route = useRoute()
 
@@ -225,27 +35,27 @@ export const ProductDetailScreen = () => {
 
     const navigation = useNavigation();
 
-    const formatPrice = (price: number) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [productChoose, setProductChoose] = useState(productsInit[0]);
+    const [productChoose, setProductChoose] = useState();
 
     const cart = useSelector((state: Store) => state.cart.value);
 
-    const [products, setProducts] = useState(productsInit);
-
     const product = useSelector((state: Store) => state.product.value.product);
-
-    const { width } = useWindowDimensions();
 
     const [showDetail, setShowDetail] = useState(false);
 
     const dispatch = useDispatch();
+
+    const productRelated = useSelector((state: Store) => state.product.value.relatedProducts);
     useEffect(() => {
-        dispatch(getProductById(medicineId));
-    }, [])
+        const init = async () => {
+            await dispatch(getProductById(medicineId));
+            const tagsId = product.tags.map((tag) => tag.id);
+            await dispatch(getProductsRelated(tagsId ));
+        } 
+        init();
+    }, []) 
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
@@ -291,11 +101,11 @@ export const ProductDetailScreen = () => {
                             <Text style={[GlobalStyles.textStyle]}>{product.reviews} bình luận</Text>
                         </View>
                         <View>
-                            <Text style={[GlobalStyles.textStyle, { color: Colors.primary, fontSize: 20, fontWeight: 'bold' }]}>{formatPrice(product.price)} / <Text style={{ fontWeight: 'normal' }}>{product.init}</Text></Text>
+                            <Text style={[GlobalStyles.textStyle, { color: Colors.primary, fontSize: 20, fontWeight: 'bold' }]}>{PriceUtils.formatPrice(PriceUtils.calculateSalePrice(product.price, product.discount))} / <Text style={{ fontWeight: 'normal' }}>{product.init}</Text></Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
                             <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
-                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', marginHorizontal: 10 }]}> <Text style={{ color: 'orange', fontWeight: 'bold' }}>+175 điểm thưởng</Text> </Text>
+                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', marginHorizontal: 10 }]}> <Text style={{ color: 'orange', fontWeight: 'bold' }}>{PoitUtils.calculatePoints(PriceUtils.calculateSalePrice(product.price, product.discount))}</Text> </Text>
                             <IconI name="information-circle-sharp" size={22} color={Colors.textDecription} />
                         </View>
                         <View>
@@ -352,17 +162,15 @@ export const ProductDetailScreen = () => {
                     <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Sản phẩm liên quan</Text>
                     <View style={{ marginVertical: 20 }}>
                         <FlatList
-                            data={products}
+                            data={productRelated}
                             renderItem={({ item }) => {
                                 return (
                                     <ProductCustom
-                                        image={item.images[0]}
-                                        title={item.name}
-                                        salePrice={item.price}
-                                        unit={item.unit}
-                                        specifications={item.specifications}
+                                        data={item}
                                         addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                        onPress={() => { navigation.navigate('productDetailScreen' as never, { product: item }) }}
+                                        onPress={() => {  
+                                            navigation.push('productDetailScreen', { medicineId: item.id });
+                                        }}  
                                     />
                                 )
                             }}

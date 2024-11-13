@@ -10,9 +10,11 @@ import { useDispatch } from "react-redux"
 import { addProductToCart } from "../redux/slice/CartSlice"
 import { CartDetailModel } from "../../domain/models/CartDetailModel"
 import { useNavigation } from "@react-navigation/native"
+import { MedicineModel } from "../../domain/models/MedicineModel"
+import { PriceUtils } from "../../domain/utils/PriceUtils"
 
 type ChooseProductToCartProps = {
-    productChoose: any,
+    productChoose: MedicineModel,
     visible: boolean,
     setModalVisible: (value: boolean) => void;
 }
@@ -41,9 +43,7 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
     }, [quantity])
 
 
-    const formatPrice = (price: number) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
+    
     useEffect(() => {
         dispatchReducer({ type: 'reset' });
     }, [props.productChoose])
@@ -60,13 +60,13 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                     </View>
                     <View style={{ flex: 1, marginVertical: 20 }}>
                         <View style={{ flexDirection: 'row', width: '100%' }}>
-                            <Image source={props.productChoose.images[0]} resizeMode="center" style={{ width: 100, height: 100, borderWidth: 1, borderColor: '#BDC2C7', borderRadius: 10, padding: 5 }} />
+                            <Image source={{uri: props.productChoose.primaryImage}} resizeMode="center" style={{ width: 100, height: 100, borderWidth: 1, borderColor: '#BDC2C7', borderRadius: 10, padding: 5 }} />
                             <View style={{ flex: 1, marginLeft: 10, justifyContent: 'space-around' }}>
                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15 }]} numberOfLines={2}>{props.productChoose.name}</Text>
                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 14, color: Colors.primary }]}>
-                                    {formatPrice(props.productChoose.price)}
+                                    {PriceUtils.formatPrice(PriceUtils.calculateSalePrice(props.productChoose.price, props.productChoose.discount))}
                                     <Text style={{ fontWeight: 'medium' }}>
-                                        {' / ' + props.productChoose.unit}
+                                        {' / ' + props.productChoose.init}
                                     </Text>
                                 </Text>
                             </View>
@@ -76,7 +76,7 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                             <TouchableOpacity
                                 onPress={() => { }}
                                 style={{ borderWidth: 1, borderColor: Colors.primary, borderRadius: 20, width: 90 }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: '#3A4CB0', padding: 10, textAlign: 'center' }]}>{props.productChoose.unit}</Text>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: '#3A4CB0', padding: 10, textAlign: 'center' }]}>{props.productChoose.init}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{ marginVertical: 5 }}>
@@ -99,11 +99,11 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                         </View>
                         <View style={{ marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#464A56', marginVertical: 10 }]}>Tạm tính</Text>
-                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#000', marginVertical: 10 }]}>{formatPrice(price)}đ</Text>
+                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#000', marginVertical: 10 }]}>{PriceUtils.formatPrice(PriceUtils.calculateSalePrice(props.productChoose.price, props.productChoose.discount))}đ</Text>
                         </View>
                         <View style={{ marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#464A56', marginVertical: 10 }]}>Tiết kiệm được</Text>
-                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#000', marginVertical: 10 }]}>0đ</Text>
+                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15, color: '#000', marginVertical: 10 }]}>{PriceUtils.formatPrice(props.productChoose.price - PriceUtils.calculateSalePrice(props.productChoose.price, props.productChoose.discount))}đ</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <ButtonCustom title="Thêm vào giỏ" onPress={() => {
