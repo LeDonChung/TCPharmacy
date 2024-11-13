@@ -53,5 +53,15 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(MedicineException.class)
+    public ResponseEntity<ErrorDetail> handlerMedicineException(MedicineException ex, WebRequest req) {
+        ErrorDetail errorDetail = ErrorDetail.builder()
+                .error(ex.getMessage())
+                .message(req.getDescription(false))
+                .timeStamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(errorDetail, HttpStatus.BAD_REQUEST);
+    }
+
 
 }
