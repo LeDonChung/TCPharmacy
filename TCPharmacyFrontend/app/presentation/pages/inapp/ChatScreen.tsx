@@ -45,6 +45,7 @@ export const ChatScreen = () => {
         // setMessages(messageList);
     }, []);
 
+   
     const sendMessage = () => {
         if (message.trim() === "") {
             return;
