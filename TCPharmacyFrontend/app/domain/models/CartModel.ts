@@ -1,3 +1,4 @@
+import { PoitUtils } from "../utils/PointUtils";
 import { PriceUtils } from "../utils/PriceUtils";
 import { AddressModel } from "./AddressModel";
 import { AddressType } from "./AddressType";
@@ -21,7 +22,7 @@ export class CartModel {
     cartItems: CartDetailModel[] = [];
 
     
-    constructor(point?: number, usePoint?: boolean, feeShip?: number, exportInvoice?: boolean, user?: number, address?: AddressModel, cartItems?: CartDetailModel[], customer?: string, note?: string) {
+    constructor(point?: number, usePoint?: boolean, feeShip?: number, exportInvoice?: boolean, user?: number, address?: AddressModel, cartItems?: CartDetailModel[], note?: string) {
         this.point = point || 0;
         this.usePoint = usePoint || false;
         this.feeShip = feeShip || 0;
@@ -29,12 +30,13 @@ export class CartModel {
         this.user = user || 0;
         this.address = address || new AddressModel();
         this.cartItems = cartItems || [];
-        this.customer = customer || "";
         this.note = note || "";
     }
 
     public totalPrices(): number {
-        return this.cartItems.filter((value) => value.isChoose).reduce((total, item) => total + PriceUtils.calculateSalePrice(item.price, item.discount) * item.quantity, 0);
+        return this.cartItems.filter((value) => value.isChoose).reduce((total, item) => total + PriceUtils.calculateSalePrice(item.price, item.discount) * item.quantity, 0) - (this.usePoint ? Number(
+            PoitUtils.calculatePoints(this.cartItems.filter((value) => value.isChoose).reduce((total, item) => total + PriceUtils.calculateSalePrice(item.price, item.discount) * item.quantity, 0) - this.feeShip)
+        ) : 0);
     }
 
 }

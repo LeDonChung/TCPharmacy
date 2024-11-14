@@ -1,6 +1,6 @@
-import { Dimensions, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions } from "react-native"
+import { Dimensions, Image, ImageSourcePropType, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions } from "react-native"
 import { View } from "react-native"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductModel } from "../../../domain/models/ProductModel";
@@ -47,15 +47,26 @@ export const ProductDetailScreen = () => {
 
     const dispatch = useDispatch();
 
+
     const productRelated = useSelector((state: Store) => state.product.value.relatedProducts);
-    useEffect(() => {
-        const init = async () => {
-            await dispatch(getProductById(medicineId));
-            const tagsId = product.tags.map((tag) => tag.id);
-            await dispatch(getProductsRelated(tagsId ));
-        } 
+
+    const init = async () => {
+        await dispatch(getProductById(medicineId));
+        const tagsId = product.tags.map((tag) => tag.id);
+        await dispatch(getProductsRelated(tagsId));
+    }
+
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
         init();
-    }, []) 
+    }, []);
+
+    useEffect(() => {
+        init();
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
@@ -68,7 +79,11 @@ export const ProductDetailScreen = () => {
                     </View>
                 </View>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+            >
 
                 <View>
                     <View style={{ height: 300, marginVertical: 20 }}>
@@ -168,9 +183,9 @@ export const ProductDetailScreen = () => {
                                     <ProductCustom
                                         data={item}
                                         addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                        onPress={() => {  
+                                        onPress={() => {
                                             navigation.push('productDetailScreen', { medicineId: item.id });
-                                        }}  
+                                        }}
                                     />
                                 )
                             }}
@@ -213,7 +228,7 @@ export const ProductDetailScreen = () => {
                     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={true}>
                         <HTMLView value={product.des} textComponentProps={{ style: GlobalStyles.textStyle }} />
                     </ScrollView>
-                } 
+                }
                 modalVisible={showDetail}
                 setModalVisible={setShowDetail}
             />
