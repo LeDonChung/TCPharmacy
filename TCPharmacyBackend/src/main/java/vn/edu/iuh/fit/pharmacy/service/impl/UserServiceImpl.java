@@ -3,6 +3,8 @@ package vn.edu.iuh.fit.pharmacy.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import vn.edu.iuh.fit.pharmacy.POJOs.Point;
+import vn.edu.iuh.fit.pharmacy.POJOs.Rank;
 import vn.edu.iuh.fit.pharmacy.POJOs.Role;
 import vn.edu.iuh.fit.pharmacy.POJOs.User;
 import vn.edu.iuh.fit.pharmacy.exceptions.JwtException;
@@ -15,6 +17,8 @@ import vn.edu.iuh.fit.pharmacy.utils.RoleConstraints;
 import vn.edu.iuh.fit.pharmacy.utils.request.UserRegisterRequest;
 import vn.edu.iuh.fit.pharmacy.utils.response.UserResponse;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -46,6 +50,17 @@ public class UserServiceImpl implements UserService {
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByCode(RoleConstraints.ROLE_PATIENT));
         user.setRoles(roles);
+
+        Point point = user.getPoint();
+        if(point == null) {
+            point = Point.builder()
+                    .currentPoint(0)
+                    .rank(Rank.Silver)
+                    .updateAt(Timestamp.from(Instant.now()))
+                    .user(user)
+                    .build();
+            user.setPoint(point);
+        }
 
         User response = userRepository.save(user);
 

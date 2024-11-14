@@ -1,10 +1,19 @@
+import { MedicineModel } from "./MedicineModel";
+
 export class CartDetailModel {
     quantity: number = 1;
-    product: any;
+    medicine: MedicineModel;
     isChoose: boolean = true;
-    constructor(product: any, quantity: number, isChoose: boolean) {
-        this.quantity = quantity;
-        this.product = product;
-        this.isChoose = isChoose;
+    price: number;
+    discount: number;
+
+    constructor(quantity?: number, medicine?: MedicineModel, isChoose?: boolean, price?: number, discount?: number) {
+        this.quantity = quantity || 1;
+        this.medicine = medicine || new MedicineModel();
+        this.isChoose = isChoose || true;
+        this.price = price || 0;
+        this.discount = discount || 0;
     }
+
+    
 }

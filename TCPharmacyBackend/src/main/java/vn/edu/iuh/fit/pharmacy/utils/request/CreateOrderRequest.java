@@ -30,6 +30,8 @@ public class CreateOrderRequest {
 
     private Long user;
 
+    private String note;
+
     private Collection<OrderDetailRequest> orderDetails = new HashSet<>();
 
     private AddressRequest address;

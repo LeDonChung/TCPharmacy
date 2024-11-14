@@ -7,6 +7,7 @@ import vn.edu.iuh.fit.pharmacy.POJOs.*;
 import vn.edu.iuh.fit.pharmacy.exceptions.MedicineException;
 import vn.edu.iuh.fit.pharmacy.exceptions.OrderException;
 import vn.edu.iuh.fit.pharmacy.exceptions.UserException;
+import vn.edu.iuh.fit.pharmacy.mappers.AddressMapper;
 import vn.edu.iuh.fit.pharmacy.mappers.OrderMapper;
 import vn.edu.iuh.fit.pharmacy.repositories.MedicineRepository;
 import vn.edu.iuh.fit.pharmacy.repositories.OrderRepository;
@@ -34,6 +35,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private MedicineRepository medicineRepository;
 
+    @Autowired
+    private AddressMapper addressMapper;
     @Transactional
     @Override
     public OrderResponse createOrder(CreateOrderRequest request) throws UserException, OrderException, MedicineException {
@@ -99,9 +102,13 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
+
+
         order.setUser(user);
         order.setOrderDate(Timestamp.from(Instant.now()));
         order.setStatus(OrderStatus.PENDING);
+        order.getAddress().setId(null);
+
         order = orderRepository.saveAndFlush(order);
 
 

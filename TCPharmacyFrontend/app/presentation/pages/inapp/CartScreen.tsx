@@ -10,19 +10,16 @@ import IconI from "react-native-vector-icons/Ionicons"
 import { Store } from "../../redux/store"
 import { useDispatch, useSelector } from "react-redux"
 import { ButtonCustom } from "../../components/ButtonCustom"
-import { removeCartDetailFromCart, updateCartDetail } from "../../redux/slice/CartSlice"
+import { removeCartDetailFromCart, setCart, updateCartDetail } from "../../redux/slice/CartSlice"
 import { CartDetailCustom } from "../../components/CartDetailCustom"
+import { PriceUtils } from "../../../domain/utils/PriceUtils"
+import { PoitUtils } from "../../../domain/utils/PointUtils"
 
-export const CartScreen = () => {
+export const CartScreen = () => { 
     const navigation = useNavigation();
     const cart = useSelector((state: Store) => state.cart.value);
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     const dispatch = useDispatch();
     const [selectedAll, setSelectedAll] = useState(true);
-    const formatPrice = (price: number) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
     useEffect(() => {
         navigation.setOptions({
             tabBarStyle: {
@@ -45,6 +42,7 @@ export const CartScreen = () => {
             dispatch(updateCartDetail({ cartDetail: cartDetail }));
         });
     }
+    const userLogin = useSelector((state: Store) => state.user.userLogin);
     return (
         <>
             <SafeAreaView style={{ flex: 1 }}>
@@ -80,7 +78,7 @@ export const CartScreen = () => {
                                         showsHorizontalScrollIndicator={false}
                                         data={cart.cartItems}
                                         scrollEnabled={false}
-                                        keyExtractor={item => item.product.id.toString()}
+                                        keyExtractor={item => item.medicine.id.toString()}
                                         renderItem={({ item, index }) => {
                                             return <View style={{ backgroundColor: '#fff', paddingHorizontal: 15, borderTopWidth: index == 0 ? 0 : 1, borderColor: '#BDC2C7' }}>
                                                 <CartDetailCustom cartDetail={item} isChoose={item.isChoose}
@@ -109,29 +107,29 @@ export const CartScreen = () => {
                                     <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]}>Áp dụng ưu đãi để được giảm giá</Text>
                                     <IconF5 name="chevron-right" size={20} color={Colors.primary} />
                                 </TouchableOpacity>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}> 
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
-                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', marginHorizontal: 10 }]}>Đổi <Text style={{ color: 'orange', fontWeight: 'bold' }}>0</Text> điểm(=0đ)</Text>
-                                        <IconI name="information-circle-sharp" size={22} color={Colors.textDecription} />
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', marginHorizontal: 10 }]}>Đổi <Text style={{ color: 'orange', fontWeight: 'bold' }}>{userLogin.currentPoint}</Text> điểm(={PoitUtils.calculatePrice(userLogin.currentPoint)}đ)</Text>
+                                        <IconI name="information-circle-sharp" size={22} color={Colors.textDecription} /> 
                                     </View>
 
                                     <Switch
                                         style={{ flex: 1, transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }] }}
                                         trackColor={{ false: '#767577', true: '#81b0ff' }}
-                                        thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                                        thumbColor={cart.usePoint ? '#f5dd4b' : '#f4f3f4'}
                                         ios_backgroundColor={Colors.textDecription}
-                                        onValueChange={toggleSwitch}
-                                        value={isEnabled}
+                                        onValueChange={(value) => dispatch(setCart({ ...cart, usePoint: value }))} // Update the onValueChange prop
+                                        value={cart.usePoint}
                                     />
-                                </View>
+                                </View> 
                                 <View style={{ borderTopWidth: 1, borderColor: '#BDC2C7' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 15 }}>
                                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}></Text>
-                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary, fontSize: 20 }]}>{formatPrice(cart.totalPrices())}đ</Text>
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary, fontSize: 20 }]}>{PriceUtils.formatPrice(cart.totalPrices())}đ</Text>
                                     </View>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
-                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}><Text style={{ color: 'orange', fontWeight: 'bold' }}>+1.320</Text> điểm</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}> 
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}><Text style={{ color: 'orange', fontWeight: 'bold' }}>+{PoitUtils.calculatePoints(cart.totalPrices())}</Text> điểm</Text>
                                         <ButtonCustom title="Mua hàng" buttonStyle={{ borderRadius: 50 }} onPress={() => { navigation.navigate('checkoutScreen' as never)  }} />
                                     </View>
                                 </View>

@@ -7,6 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import vn.edu.iuh.fit.pharmacy.POJOs.User;
 import vn.edu.iuh.fit.pharmacy.exceptions.OTPException;
 import vn.edu.iuh.fit.pharmacy.jwt.JwtService;
 import vn.edu.iuh.fit.pharmacy.service.OTPService;
@@ -47,6 +48,9 @@ public class AuthController {
             UserResponse response = userService.register(request);
             response.setPassword("default");
 
+            User user = new User();
+            user.setPhoneNumber(request.getPhoneNumber());
+            user.setPassword(request.getPassword());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -55,7 +59,7 @@ public class AuthController {
             ResponseEntity<BaseResponse<String>> result = restTemplate.exchange(
                     "http://localhost:9090/tc/api/auth/login",
                     HttpMethod.POST,
-                    new HttpEntity<>(response, headers),
+                    new HttpEntity<>(user, headers),
                     new ParameterizedTypeReference<>() {
                     }
             );

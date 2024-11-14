@@ -11,6 +11,7 @@ import { addProductToCart } from "../redux/slice/CartSlice"
 import { CartDetailModel } from "../../domain/models/CartDetailModel"
 import { useNavigation } from "@react-navigation/native"
 import IconI from "react-native-vector-icons/Ionicons"
+import { PriceUtils } from "../../domain/utils/PriceUtils"
 
 type CartDetailCustomProps = {
     cartDetail: CartDetailModel,
@@ -36,10 +37,10 @@ export const CartDetailCustom = (props: CartDetailCustomProps) => {
 
     const navigation = useNavigation();
     const [quantity, dispatchReducer] = useReducer(quantityReducer, props.cartDetail.quantity);
-    const [price, setPrice] = useState(props.cartDetail.product.price);
+    const [price, setPrice] = useState(props.cartDetail.medicine.price);
 
     useEffect(() => {
-        setPrice(props.cartDetail.product.price * quantity);
+        setPrice(props.cartDetail.medicine.price * quantity);
     }, [quantity])
 
      
@@ -71,12 +72,12 @@ export const CartDetailCustom = (props: CartDetailCustomProps) => {
                     <IconI size={24} name="checkmark-circle-sharp" color={Colors.primary} onPress={() => props.setChoose(!props.isChoose)}/>
                     : <IconI size={24} name="checkmark-circle-outline" color={Colors.textDecription} onPress={() => props.setChoose(!props.isChoose)}/>
                 }
-                <Image source={props.cartDetail.product.images[0]} resizeMode="center" style={{ width: 70, height: 70, borderWidth: 1, borderColor: '#BDC2C7', borderRadius: 10, margin: 10 }} />
+                <Image source={{uri: props.cartDetail.medicine.primaryImage}} resizeMode="center" style={{ width: 70, height: 70, borderWidth: 1, borderColor: '#BDC2C7', borderRadius: 10, margin: 10 }} />
                 <View style={{flex: 1}}>
                     <View style={{marginLeft: 10, justifyContent: 'space-around' }}>
-                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15 }]} numberOfLines={2}>{props.cartDetail.product.name}</Text>
+                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 15 }]} numberOfLines={2}>{props.cartDetail.medicine.name}</Text>
                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 14, color: Colors.primary, marginVertical: 10 }]}>
-                            {formatPrice(price)}
+                            {formatPrice(PriceUtils.calculateSalePrice(props.cartDetail.medicine.price, props.cartDetail.medicine.discount))}
                         </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -99,7 +100,7 @@ export const CartDetailCustom = (props: CartDetailCustomProps) => {
                             <TouchableOpacity
                                 onPress={() => { }}
                                 style={{ borderWidth: 1, borderColor: Colors.primary, borderRadius: 20, width: 90, height: 30, justifyContent: 'center' }}>
-                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: '#3A4CB0', textAlign: 'center', fontSize: 14 }]}>{props.cartDetail.product.unit}</Text>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: '#3A4CB0', textAlign: 'center', fontSize: 14 }]}>{props.cartDetail.medicine.init}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
