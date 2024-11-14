@@ -23,6 +23,10 @@ public class AddressRequest {
 
     private String street;
 
+    private String fullName;
+
+    private String phoneNumber;
+
     private AddressType addressType;
 
 }

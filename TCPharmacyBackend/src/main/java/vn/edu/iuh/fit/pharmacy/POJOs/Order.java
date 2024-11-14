@@ -41,6 +41,8 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String note;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Collection<OrderDetail> orderDetails = new HashSet<>();
 

@@ -30,6 +30,8 @@ public class OrderResponse {
 
     private Double feeShip;
 
+    private String note;
+
     private boolean exportInvoice;
 
     private UserResponse user;

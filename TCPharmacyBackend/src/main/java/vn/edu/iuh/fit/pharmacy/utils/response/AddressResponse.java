@@ -20,5 +20,10 @@ public class AddressResponse {
 
     private AddressType addressType;
 
-    private boolean isDefault;
+    private String fullName;
+
+    private String phoneNumber;
+
+
+    private boolean _default;
 }

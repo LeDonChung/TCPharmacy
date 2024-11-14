@@ -10,7 +10,7 @@ const initialState: {
     errorResponse: any,
     loading: boolean
 } = {
-    userLogin: new UserModel(0, '', '', '', new Date(), Gender.Female, ''),
+    userLogin: new UserModel(),
     userRegister: new UserRegisterRequest('', 'default', ['', '', '', '', '', '']),
     errorResponse: null,
     loading: false
@@ -48,11 +48,9 @@ const register: any = createAsyncThunk('userRegister/register', async (
 const findUserLogin: any = createAsyncThunk('userRegister/findUserLogin', async (_, {rejectWithValue}) => {
     try{
         const token = await SecureStore.getItemAsync('token');
-        console.log(token);
         if(token === null){
             throw rejectWithValue('Vui lòng đăng nhập.');
         }
-        console.log("CALL")
         const response = await axiosInstance.get(`/auth/me`);
         return response.data; 
     }catch(error: any){
@@ -106,7 +104,8 @@ const UserSlice = createSlice({
         });
         builder.addCase(findUserLogin.fulfilled, (state, action) => {
             state.loading = false;
-            state.userLogin = action.payload;
+            state.userLogin = action.payload.data;            
+
         });
         builder.addCase(findUserLogin.rejected, (state, action) => {
             state.loading = false;

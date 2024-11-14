@@ -1,5 +1,5 @@
-import { Alert, BackHandler, Image, LogBox, Text, View } from "react-native"
-import React, { useEffect, useRef, useState } from "react"
+import { Alert, BackHandler, Image, LogBox, RefreshControl, Text, View } from "react-native"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
 import { GlobalStyles } from "../../styles/GlobalStyles";
 import { Button } from "react-native";
@@ -15,7 +15,7 @@ import { FlatList } from "react-native";
 import { MenuItem } from "../../components/MenuItem";
 import Carousel from "react-native-snap-carousel";
 import { BannerCustom } from "../../components/BannerCustom";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { PurchasedProduct } from "../../components/PurchasedProductItem";
 import { Dimensions } from "react-native";
@@ -145,6 +145,8 @@ export const HomeScreen = () => {
 
     const navigation = useNavigation();
     
+    const [refreshing, setRefreshing] = useState(false);
+
 
     const drawer = useRef(null);
     const closeDrawer = () => {
@@ -162,7 +164,7 @@ export const HomeScreen = () => {
 
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [productChoose, setProductChoose] = useState();
+    const [productChoose, setProductChoose] = useState(new MedicineModel());
 
     const userLogin = useSelector((state: Store) => state.user.userLogin);
     const dispatch = useDispatch();
@@ -178,26 +180,35 @@ export const HomeScreen = () => {
     const [sugg, setSugg] = useState([] as MedicineModel[]);    
     const [indexSuggestion, setIndexSuggestion] = useState(0);
 
-    useEffect(() => {
-        const init = async () => {
-            try {
-                await dispatch(getAllCategories());
-                await dispatch(getBrandsFavorite());
-                await dispatch(getTagGroups());
-                dispatch(setDraw());
-                dispatch(setOutstanding());
-            } catch (error) {
-                console.error("Initialization error:", error);
-            }
-        };
-    
-        dispatch(findUserLogin())
-            .unwrap()
-            .catch((error: any) => {
-                showToast('error', 'bottom', 'Lỗi', 'Vui lòng đăng nhập.');
-                SecureStore.deleteItemAsync('token');
-                navigation.navigate('authentication' as never);
-            });
+    const init = async () => {
+        try {
+            setRefreshing(true);
+            await dispatch(getAllCategories());
+            await dispatch(getBrandsFavorite());
+            await dispatch(getTagGroups());
+            dispatch(setDraw());
+            dispatch(setOutstanding());
+        } catch (error) {
+            console.error("Initialization error:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            dispatch(findUserLogin())
+                .unwrap()
+                .catch((error) => {
+                    showToast('error', 'bottom', 'Lỗi', 'Vui lòng đăng nhập.');
+                    SecureStore.deleteItemAsync('token');
+                    navigation.navigate('authentication' as never);
+                });
+            init();
+        }, [navigation])
+    );
+
+    const onRefresh = useCallback(() => {
         init();
     }, []);
     
@@ -237,6 +248,10 @@ export const HomeScreen = () => {
                     data={[]}
                     keyExtractor={() => "key"}
                     renderItem={null}
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
                     ListHeaderComponent={
                         <ScrollView
                             showsVerticalScrollIndicator={false}
@@ -282,10 +297,10 @@ export const HomeScreen = () => {
                                             {userLogin.fullName ? userLogin.fullName : 'Khách hàng'}
                                         </Text></Text>
                                         <TouchableOpacity style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10 }} onPress={() => {
-                                            navigation.navigate('bonusNavigation' as never);
+                                            navigation.navigate('bonusNavigation' as never); 
                                         }} >
                                             <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
-                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', marginStart: 10 }]}>494 điểm thưởng</Text>
+                                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', marginStart: 10 }]}>{userLogin.currentPoint} điểm thưởng</Text>
                                         </TouchableOpacity>
                                     </View>
 
@@ -421,6 +436,7 @@ export const HomeScreen = () => {
                                                 nestedScrollEnabled
                                                 data={tagGroupByObject.tags}
                                                 horizontal={true}
+                                                showsHorizontalScrollIndicator={false}
                                                 scrollEnabled={true}
                                                 renderItem={
                                                     ({ item, index }) => {
@@ -469,6 +485,7 @@ export const HomeScreen = () => {
                                                 nestedScrollEnabled
                                                 data={tagGroupSuggestions.tags}
                                                 scrollEnabled={true}
+                                                showsHorizontalScrollIndicator={false}
                                                 horizontal={true}
                                                 renderItem={
                                                     ({ item, index }) => {

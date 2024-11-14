@@ -109,7 +109,13 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                             <ButtonCustom title="Thêm vào giỏ" onPress={() => {
                                 dispatch(addProductToCart(
                                     {
-                                        cartDetail: new CartDetailModel(props.productChoose, quantity, true),
+                                        cartDetail: new CartDetailModel(
+                                            quantity,
+                                            props.productChoose,
+                                            true,
+                                            props.productChoose.price,
+                                            props.productChoose.discount
+                                        ),
                                     }
                                 ))
                                 props.setModalVisible(false);
@@ -119,7 +125,13 @@ export const ChooseProductToCartModalCustom = (props: ChooseProductToCartProps) 
                             <ButtonCustom onPress={() => {
                                 dispatch(addProductToCart(
                                     {
-                                        cartDetail: new CartDetailModel(props.productChoose, quantity, true),
+                                        cartDetail: new CartDetailModel(
+                                            quantity,
+                                            props.productChoose,
+                                            true,
+                                            props.productChoose.price,
+                                            props.productChoose.discount
+                                        ),
                                     }
                                 ))
 

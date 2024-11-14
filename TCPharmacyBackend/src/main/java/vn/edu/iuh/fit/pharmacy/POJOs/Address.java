@@ -26,13 +26,17 @@ public class Address {
 
     private String street;
 
+    private String fullName;
+
+    private String phoneNumber;
+
     @Column(name = "address_type")
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
     private boolean isDefault;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }

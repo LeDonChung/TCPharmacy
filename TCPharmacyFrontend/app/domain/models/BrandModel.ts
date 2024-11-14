@@ -7,10 +7,10 @@ export class BrandModel {
 
     imageProduct: string;
 
-    constructor(id: number, title: string, image: string, imageProduct: string) {
-        this.id = id;
-        this.title = title;
-        this.image = image;
-        this.imageProduct = imageProduct;
+    constructor(id?: number, title?: string, image?: string, imageProduct?: string) {
+        this.id = id || 0;
+        this.title = title || '';
+        this.image = image || '';
+        this.imageProduct = imageProduct || '';
     }
 }

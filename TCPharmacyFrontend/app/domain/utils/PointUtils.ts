@@ -1,7 +1,12 @@
 export class PoitUtils {
-    private static pointsPerVND: number = 0.01;  // Tỷ lệ quy đổi điểm
+    private static pointsPerVND: number = 0.001;  // Tỷ lệ quy đổi điểm
 
     static calculatePoints(price: number): number {
-        return price * PoitUtils.pointsPerVND;
+        // Lấy phần nguyên của giá trị 
+        return Math.floor(price * PoitUtils.pointsPerVND);
+    }
+
+    static calculatePrice(points: number): number {
+        return points;
     }
 }
