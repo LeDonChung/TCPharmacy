@@ -18,11 +18,14 @@ import { ProductModel } from "../../../domain/models/ProductModel"
 import { setCategoryLevel1, setCategoryLevel2, setCategoryLevel3 } from "../../redux/slice/CategorySlice"
 import { CategoryModel } from "../../../domain/models/CategoryModel"
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry"
-import { getProductsByCategoryId } from "../../redux/slice/ProductSlice"
+import { getProductsByCategoryId, getProductsByMedicineName } from "../../redux/slice/ProductSlice"
 import { MedicineModel } from "../../../domain/models/MedicineModel"
+import { ModalCustom } from "../../components/ModalCustom"
+import { TextInput } from "react-native-gesture-handler"
 
 export const ProductScreen = () => {
     const route = useRoute();
+    const dispatch = useDispatch();
     const { category } = route.params as any;
     const navigation = useNavigation();
 
@@ -32,34 +35,12 @@ export const ProductScreen = () => {
 
     const [modalVisible, setModalVisible] = useState(false);
 
-    const dispatch = useDispatch();
     const [selectedLevel, setSelectedLevel] = useState(1);
-
-    const handlerActionBackCategory = () => {
-        const id = categoryChoose.parent;
-        console.log("id", id);
-
-        const level = selectedLevel - 1;
-        if (level === 1) {
-            setSelectedLevel(level);
-            setCategoryChoose(level1.find(value => value.id === id));
-            return;
-        } else if (level == 2) {
-            setSelectedLevel(level);
-            setCategoryChoose(level2.find(value => value.id === id));
-            return;
-        } else if (level == 3) {
-            setSelectedLevel(level);
-            setCategoryChoose(level3.find(value => value.id === id));
-            return;
-        }
-    }
-
-    const [indexSubject, setIndexSubject] = useState(2);
 
     const [categoryChoose, setCategoryChoose] = useState(category);
 
-    const [paging, setPaging] = useState({ categoryId: category.id, page: 0, size: 10 });
+
+    const [categoryPaging, setCategoryPaging] = useState({ categoryId: category.id, page: 0, size: 10 });
 
     const level1 = useSelector((state: Store) => state.categories.value.level1);
 
@@ -69,12 +50,58 @@ export const ProductScreen = () => {
 
     const products = useSelector((state: Store) => state.product.value.products);
 
-    const [productList, setProductList] = useState(products as MedicineModel[]);
+    // const [productList, setProductList] = useState(products as MedicineModel[]);
+
+    const [isSearch, setIsSearch] = useState(false);
+    const [searchText, setSearchText] = useState('');
+
+    const [searchPaging, setSearchPaging] = useState({ medicineName: '', page: 0, size: 10 });
+    const handleClickSearch = () => {
+        if(isSearch === true){
+            if(searchText === ''){
+                setSearchPaging({...searchPaging, medicineName: ''});
+                setIsSearch(false);
+                return;
+            }
+            setSearchPaging({...searchPaging, medicineName: searchText});
+        }else{
+            setIsSearch(true);
+        }            
+    }
+
+    const handlerActionBackCategory = () => {
+        const id = categoryChoose.parent;
+        console.log("id", id);
+
+        const level = selectedLevel - 1;
+        if (level === 1) {
+            setSelectedLevel(level);
+            setCategoryChoose(level1.find(value => value.id === id));
+            setCategoryPaging({ categoryId: id, page: 0, size: 10 });
+            return;
+        } else if (level == 2) {
+            setSelectedLevel(level);
+            setCategoryChoose(level2.find(value => value.id === id));
+            setCategoryPaging({ categoryId: id, page: 0, size: 10 });
+            return;
+        } else if (level == 3) {
+            setSelectedLevel(level);
+            setCategoryChoose(level3.find(value => value.id === id));
+            setCategoryPaging({ categoryId: id, page: 0, size: 10 });
+            return;
+        }
+    }
 
     const handleClickCategory = (item: CategoryModel) => {
         setCategoryChoose(item);
-        setPaging({ ...paging, categoryId: item.id });
-        setIndexSubject(2);
+        setCategoryPaging({ categoryId: item.id, page: 0, size: 10 });
+        setSearchPaging({...searchPaging, medicineName: ''});
+        setIsSearch(false);
+    }
+
+    const findParent = (id: number, level: number) => {
+        const parent = level2.find(value => value.id === id);
+        return parent?.parent;
     }
 
     useEffect(() => {
@@ -82,31 +109,23 @@ export const ProductScreen = () => {
             dispatch(setCategoryLevel1());
             dispatch(setCategoryLevel2());
             dispatch(setCategoryLevel3());
-            dispatch(getProductsByCategoryId(paging));
+            dispatch(getProductsByCategoryId(categoryPaging));
             setSelectedLevel(categoryChoose.level);
-            setProductList(products);
         }
         init();
     }, [navigation, categoryChoose]);
 
-    const filterProductBySubject = () => {
-        const productsFilter = [...products];
-        if (indexSubject === 0) {
-            productsFilter.sort((a, b) => a.price - b.price);
-        } else if (indexSubject === 1) {
-            productsFilter.sort((a, b) => b.price - a.price);
+    const loadProducts = () => {
+        if(isSearch === true && searchPaging.medicineName !== ''){
+            dispatch(getProductsByMedicineName(searchPaging));
+        }else{
+            dispatch(getProductsByCategoryId(categoryPaging));
         }
-        setProductList(productsFilter);
     }
 
     useEffect(() => {
-        filterProductBySubject();
-    }, [products]);
-
-    const findParent = (id: number, level: number) => {
-        const parent = level2.find(value => value.id === id);
-        return parent?.parent;
-    }
+        loadProducts();
+    }, [searchPaging, categoryPaging]);
 
     return (
         <FlatList
@@ -121,11 +140,26 @@ export const ProductScreen = () => {
                         <TouchableOpacity onPress={() => navigation.navigate('home' as never)}>
                             <IconF name="home" size={30} color={Colors.primary} style={{}} />
                         </TouchableOpacity>
-                        <Text style={[GlobalStyles.textStyle, { margin: 'auto', fontWeight: 'bold', fontSize: 18 }]}>{"Tìm kiếm"}</Text>
+                        {
+                            isSearch === true
+                                ? <View style={{ width: 250, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginHorizontal: 'auto' }}>
+                                    <TextInput
+                                        style={{ flex: 1, height: 40, borderColor: 'gray', borderBottomWidth: 1, paddingHorizontal: 10 }}
+                                        onChangeText={(text) => { setSearchText(text) }}
+                                        placeholder="Tìm kiếm sản phẩm"
+                                    />
+                                </View>
+                                :
+                                <Text style={[GlobalStyles.textStyle, { margin: 'auto', fontWeight: 'bold', fontSize: 18 }]}>{"Tìm kiếm"}</Text>
+                        }
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity style={{ marginRight: 20 }}>
-                                <IconFT name="search" size={30} onPress={() => { }} />
+                            <TouchableOpacity style={{ marginRight: 20 }}
+                                onPress={() => { handleClickSearch() }}
+                            >
+                                <IconFT name="search" size={30} />
                             </TouchableOpacity>
+
+
                             <TouchableOpacity style={{ marginRight: 5 }}>
                                 <IconF5 name="shopping-cart" size={24} color={Colors.primary} onPress={() => { navigation.navigate('cart' as never) }} />
                                 <View style={{ backgroundColor: 'orange', alignItems: 'center', justifyContent: 'center', height: 15, width: 15, borderRadius: 50, position: 'absolute', top: -5, right: -5 }}>
@@ -141,7 +175,7 @@ export const ProductScreen = () => {
                                 horizontal={true}
                                 data={level1}
                                 renderItem={({ item }) => {
-                                    return ((selectedLevel == 1 && item.id === categoryChoose.id) || (selectedLevel == 2 && item.id === categoryChoose.parent) || (selectedLevel == 3 && item.id === findParent(categoryChoose.parent, selectedLevel - 1)))
+                                    return ((isSearch === false && selectedLevel == 1 && item.id === categoryChoose.id) || (selectedLevel == 2 && item.id === categoryChoose.parent) || (selectedLevel == 3 && item.id === findParent(categoryChoose.parent, selectedLevel - 1)))
                                         ? <TouchableOpacity style={{ padding: 10, backgroundColor: '#fff', height: 80, width: 120, alignItems: 'center', justifyContent: 'center', borderTopWidth: 2, borderTopColor: Colors.primary }}
                                             onPress={() => {
                                                 handleClickCategory(item);
@@ -173,7 +207,7 @@ export const ProductScreen = () => {
                                 }
                             </View>
                             {
-                                categoryChoose.children && categoryChoose.children.length > 0 &&
+                                categoryChoose.children && categoryChoose.children.length > 0 && isSearch === false &&
                                 <View>
                                     {/**  Start Category Menu */}
                                     <View>
@@ -216,7 +250,7 @@ export const ProductScreen = () => {
                         <View style={{}}>
                             <View style={{ backgroundColor: '#fff' }}>
                                 <Text style={[GlobalStyles.textStyle,
-                                { fontWeight: 'bold', fontSize: 18,paddingHorizontal: 15, backgroundColor: '#fff', marginVertical: 20 }]}>
+                                { fontWeight: 'bold', fontSize: 18, paddingHorizontal: 15, backgroundColor: '#fff', marginVertical: 20 }]}>
                                     Danh sách sản phẩm
                                 </Text>
 
@@ -224,7 +258,7 @@ export const ProductScreen = () => {
                             <View style={{ marginVertical: 20, paddingHorizontal: 15, }}>
                                 <FlatList
                                     nestedScrollEnabled
-                                    data={productList}
+                                    data={products}
 
                                     renderItem={({ item, index }) => {
                                         return (
@@ -251,13 +285,13 @@ export const ProductScreen = () => {
                     </ScrollView>
 
                     {
-                        productList.length % 10 === 0 &&
-                        <TouchableOpacity style={{ 
+                        (products.length % 10 && products.length !== 0) === 0 &&
+                        <TouchableOpacity style={{
                             width: "40%", height: 40, marginHorizontal: 'auto', flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
                             marginBottom: 20
-                             }}
+                        }}
                             onPress={() => {
-                                dispatch(getProductsByCategoryId({ ...paging, size: paging.size + 10 }));
+                                isSearch === true ? setSearchPaging({ ...searchPaging, size: searchPaging.size + 10 }) : setCategoryPaging({ ...categoryPaging, size: categoryPaging.size + 10 });
                             }}>
                             <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription }]}>Xem thêm </Text>
                             <IconFT name="chevrons-down" size={20} color={Colors.textDecription} />

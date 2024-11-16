@@ -35,6 +35,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'net.datafaker:datafaker:2.4.1'
 
+	implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+
 	// https://mvnrepository.com/artifact/org.mapstruct/mapstruct
 	implementation 'org.mapstruct:mapstruct:1.6.2'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'

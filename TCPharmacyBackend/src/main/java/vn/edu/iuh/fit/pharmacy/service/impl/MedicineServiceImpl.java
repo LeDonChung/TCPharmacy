@@ -44,4 +44,10 @@ public class MedicineServiceImpl implements MedicineService {
         List<Medicine> medicines = medicineRepository.findByCategoryId(categoryId, PageRequest.of(page, size)).getContent();
         return medicines.stream().map(medicine -> medicineMapper.toDto(medicine)).toList();
     }
+
+    @Override
+    public List<MedicineResponse> getMedicineByMedicineName(String medicineName, Integer page, Integer size) {
+        List<Medicine> medicines = medicineRepository.findByMedicineName(medicineName, PageRequest.of(page, size)).getContent();
+        return medicines.stream().map(medicine -> medicineMapper.toDto(medicine)).toList();
+    }
 }
