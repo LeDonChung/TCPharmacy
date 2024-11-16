@@ -2,6 +2,7 @@ package vn.edu.iuh.fit.pharmacy.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import vn.edu.iuh.fit.pharmacy.POJOs.Medicine;
 import vn.edu.iuh.fit.pharmacy.exceptions.MedicineException;
@@ -35,6 +36,12 @@ public class MedicineServiceImpl implements MedicineService {
     @Override
     public List<MedicineResponse> getMedicineByTags(List<Long> tagIds) {
         List<Medicine> medicines = medicineRepository.findAllByTagIds(tagIds, PageRequest.of(0, 10)).getContent();
+        return medicines.stream().map(medicine -> medicineMapper.toDto(medicine)).toList();
+    }
+
+    @Override
+    public List<MedicineResponse> getMedicineByCategoryId(Long categoryId, Integer page, Integer size){
+        List<Medicine> medicines = medicineRepository.findByCategoryId(categoryId, PageRequest.of(page, size)).getContent();
         return medicines.stream().map(medicine -> medicineMapper.toDto(medicine)).toList();
     }
 }

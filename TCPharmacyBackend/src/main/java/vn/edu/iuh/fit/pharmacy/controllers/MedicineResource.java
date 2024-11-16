@@ -35,4 +35,14 @@ public class MedicineResource {
                 medicineService.getMedicineByTags(tagIds)
         );
     }
+
+    @GetMapping("/getByCategoryId/{categoryId}")
+    public ResponseEntity<List<MedicineResponse>> getMedicineByCategoryId(@PathVariable Long categoryId,
+
+                                                                         @RequestParam Integer page,
+                                                                          @RequestParam Integer size) throws MedicineException {
+        return ResponseEntity.ok(
+                medicineService.getMedicineByCategoryId(categoryId, page, size)
+        );
+    }
 }

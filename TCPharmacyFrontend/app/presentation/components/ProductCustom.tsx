@@ -8,11 +8,12 @@ import { PriceUtils } from "../../domain/utils/PriceUtils"
 type ProductCustomProps = {
     onPress: () => void,
     addToCart: () => void,
-    data: MedicineModel
+    data: MedicineModel,
+    styleContainer?: any
 }
 export const ProductCustom = (props: ProductCustomProps) => {
     return (
-        <TouchableOpacity onPress={props.onPress} style={[styles.container]}>
+        <TouchableOpacity onPress={props.onPress} style={[styles.container, props.styleContainer]}>
             <Image style={styles.image} source={{uri: props.data.primaryImage}} />
             <View>
                 <Text numberOfLines={2} style={[GlobalStyles.textStyle, styles.textStyleTitle]}>
@@ -30,7 +31,7 @@ export const ProductCustom = (props: ProductCustomProps) => {
                 onPress={props.addToCart}
                 title={"Chọn mua"}
                 textStyle={[GlobalStyles.textStyle, { color: '#fff', fontWeight: 'bold' }]}
-                buttonStyle={{ backgroundColor: Colors.primary, padding: 10, borderRadius: 40, marginTop: 'auto', marginBottom: 10, width: '100%' }}
+                buttonStyle={{ backgroundColor: Colors.primary, padding: 10, borderRadius: 40, marginTop: 'auto', marginBottom: 10, width: '95%' }}
             />
         </TouchableOpacity>
     )
@@ -43,9 +44,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 400,
         width: 150,
-        marginRight: 20,
+        marginHorizontal: 5,
+        marginVertical: 10,
         borderRadius: 10,
-        paddingHorizontal: 5
+        paddingHorizontal: 5,
     },
     textStyleTitle: {
         fontSize: 16,
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
         color: '#464A56',
         fontWeight: 'bold',
         paddingHorizontal: 5,
+        marginHorizontal: 5,
         marginVertical: 5,
     },
     boxStyleUnit: {

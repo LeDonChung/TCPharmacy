@@ -22,4 +22,8 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
     @Query("SELECT m FROM Medicine m JOIN m.tags t WHERE t.id IN :tagIds")
     Page<Medicine> findAllByTagIds(List<Long> tagIds,
                                    Pageable pageable);
+
+    @Query("SELECT m FROM Medicine m WHERE m.category.id = :categoryId")
+    Page<Medicine> findByCategoryId(Long categoryId, Pageable pageable);
+
 }
