@@ -15,7 +15,7 @@ export const MenuItem = (props: MenuItemProps) => {
     return (
         props.icon != null && props.icon !== '' ?
             (
-                <TouchableOpacity style={[props.styleContainer, styles.container,]} onPress={props.onPress}>
+                <TouchableOpacity style={[styles.container,props.styleContainer]} onPress={props.onPress}>
                     {props.icon != null && typeof props.icon === 'string' ?
                         <Image style={[styles.icon, props.styleIcon]} source={{ uri: String(props.icon) }} resizeMode="contain" />
                         :
@@ -37,11 +37,11 @@ export const MenuItem = (props: MenuItemProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        width: "47%",
         alignItems: 'center',
         backgroundColor: '#fff',
         borderRadius: 10,
-
+        marginHorizontal: 'auto'
 
     },
     containerEmpty: {

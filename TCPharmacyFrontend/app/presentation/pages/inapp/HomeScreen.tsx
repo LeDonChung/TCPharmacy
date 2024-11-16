@@ -144,7 +144,7 @@ const policiesInit = [
 export const HomeScreen = () => {
 
     const navigation = useNavigation();
-    
+
     const [refreshing, setRefreshing] = useState(false);
 
 
@@ -176,8 +176,8 @@ export const HomeScreen = () => {
     const [indexSubject, setIndexSubject] = useState(0);
 
     const tagGroupSuggestions = useSelector((state: Store) => state.tagGroup.value.tagGroupSuggestions);
-    
-    const [sugg, setSugg] = useState([] as MedicineModel[]);    
+
+    const [sugg, setSugg] = useState([] as MedicineModel[]);
     const [indexSuggestion, setIndexSuggestion] = useState(0);
 
     const init = async () => {
@@ -211,7 +211,7 @@ export const HomeScreen = () => {
     const onRefresh = useCallback(() => {
         init();
     }, []);
-    
+
     useEffect(() => {
         const checkTokenAndSetProducts = async () => {
             const token = await SecureStore.getItemAsync('token');
@@ -221,7 +221,7 @@ export const HomeScreen = () => {
         };
         checkTokenAndSetProducts();
     }, [indexSubject]);
-    
+
     useEffect(() => {
         const checkTokenAndSetSugg = async () => {
             const token = await SecureStore.getItemAsync('token');
@@ -272,7 +272,7 @@ export const HomeScreen = () => {
                                         <TouchableOpacity onPress={() => showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển")} >
                                             <IconF name="bell" size={34} color={"#fff"} />
                                         </TouchableOpacity>
-                                        
+
                                     </View>
                                     <View style={{ flex: 1, paddingHorizontal: 15 }}>
                                         <TextInput
@@ -297,7 +297,7 @@ export const HomeScreen = () => {
                                             {userLogin.fullName ? userLogin.fullName : 'Khách hàng'}
                                         </Text></Text>
                                         <TouchableOpacity style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10 }} onPress={() => {
-                                            navigation.navigate('bonusNavigation' as never); 
+                                            navigation.navigate('bonusNavigation' as never);
                                         }} >
                                             <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
                                             <Text style={[GlobalStyles.textStyle, { fontWeight: 'medium', marginStart: 10 }]}>{userLogin.currentPoint} điểm thưởng</Text>
@@ -305,31 +305,28 @@ export const HomeScreen = () => {
                                     </View>
 
                                     {/** Start Menu Component */}
-                                    <View style={{ paddingHorizontal: 15, height: 300 }}>
+                                    <View style={{ height: 300 }}>
                                         <FlatList
-                                            nestedScrollEnabled
                                             data={menus}
-                                            scrollEnabled={true}
-                                            renderItem={
-                                                ({ item, index }) => {
-
-                                                    const isFirstColumn = index % 4 === 0;
-                                                    const isLastColumn = (index + 1) % 4 === 0;
-                                                    return (
-                                                        <MenuItem
-                                                            styleContainer={{ marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 110 }}
-                                                            icon={item.icon}
-                                                            title={item.title}
-                                                            onPress={() => showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển")}
-                                                        />
-                                                    )
-                                                }
-
-                                            }
-                                            keyExtractor={
-                                                (item) => item.id
-                                            }
-                                            numColumns={4} 
+                                            renderItem={({ item }) => (
+                                                <View
+                                                    style={{
+                                                        width: "20%", 
+                                                        alignItems: "center",                                                         
+                                                        marginVertical: 10, 
+                                                        marginHorizontal: 'auto'
+                                                    }}
+                                                >
+                                                    <MenuItem
+                                                        styleContainer={{ height: 110, width: "100%" }}
+                                                        icon={item.icon}
+                                                        title={item.title}
+                                                        onPress={() => showToast('info', "bottom", "Thông báo", "Chức năng đang được phát triển")}
+                                                    />
+                                                </View>
+                                            )}
+                                            keyExtractor={(item) => item.id}
+                                            numColumns={4}
                                         />
                                     </View>
                                     {/** End Menu Component */}
@@ -381,7 +378,7 @@ export const HomeScreen = () => {
                                                             styleTitle={{ fontWeight: 'bold', fontSize: 14 }}
                                                             styleContainer={{ padding: 10, flexDirection: 'row', marginLeft: isFirstColumn ? 0 : 10, marginRight: isLastColumn ? 0 : 10, marginVertical: 10, height: 70 }}
                                                             icon={item.icon}
-                                                            title={item.title} 
+                                                            title={item.title}
                                                             onPress={() => { navigation.navigate('productScreen' as never, { category: item }) }}
                                                         />
                                                     )
@@ -414,10 +411,10 @@ export const HomeScreen = () => {
                                     <View style={{ marginHorizontal: 15 }}>
                                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', fontSize: 18, marginTop: 50 }]}>Thương hiệu yêu thích</Text>
                                         <View style={{ marginHorizontal: -15, marginVertical: 20 }}>
-                                            <FlatList 
+                                            <FlatList
                                                 data={brandFavorite}
-                                                renderItem={({item, index}) => {
-                                                    return <BrandCustom index={index} item={item}/>
+                                                renderItem={({ item, index }) => {
+                                                    return <BrandCustom index={index} item={item} />
                                                 }}
                                                 keyExtractor={(item) => item.id.toString()}
                                                 horizontal={true}
@@ -446,7 +443,7 @@ export const HomeScreen = () => {
                                                                 style={{ borderWidth: 1, borderColor: index == indexSubject ? Colors.primary : '#BDC2C7', borderRadius: 20, marginRight: 20 }}>
                                                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', paddingHorizontal: 6, paddingVertical: 10, color: index == indexSubject ? Colors.primary : '#000' }]}>{item.title}</Text>
                                                             </TouchableOpacity>
-                                                        ) 
+                                                        )
                                                     }
 
                                                 }
