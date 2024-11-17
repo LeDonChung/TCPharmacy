@@ -43,6 +43,13 @@ export const CartScreen = () => {
         });
     }
     const userLogin = useSelector((state: Store) => state.user.userLogin);
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+       
+    }, []);
+
     return (
         <>
             <SafeAreaView style={{ flex: 1 }}>
@@ -72,7 +79,11 @@ export const CartScreen = () => {
                                     <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]} >Tiếp tục mua sắm</Text>
                                 </TouchableOpacity>
                             </View>
-                            <ScrollView>
+                            <ScrollView 
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                            }
+                            >
                                 <View style={{ paddingHorizontal: -15, marginBottom: 260 }}>
                                     <FlatList
                                         showsHorizontalScrollIndicator={false}

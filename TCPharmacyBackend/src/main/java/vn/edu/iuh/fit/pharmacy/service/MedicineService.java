@@ -15,4 +15,6 @@ public interface MedicineService {
     List<MedicineResponse> getMedicineByCategoryId(Long categoryId, Integer page, Integer size);
 
     List<MedicineResponse> getMedicineByMedicineName(String medicineName, Integer page, Integer size);
+
+    List<MedicineResponse> getRecommendations(List<Long> medicineIds);
 }

@@ -54,4 +54,11 @@ public class MedicineResource {
                 medicineService.getMedicineByMedicineName(medicineName, page, size)
         );
     }
+
+    @GetMapping("/recommendations/{medicineId}")
+    public ResponseEntity<List<MedicineResponse>> getRecommendations(@PathVariable Long medicineId) {
+        return ResponseEntity.ok(
+                medicineService.getRecommendations(List.of(medicineId))
+        );
+    }
 }

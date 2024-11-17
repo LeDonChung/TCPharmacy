@@ -1,10 +1,7 @@
 package vn.edu.iuh.fit.pharmacy.POJOs;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,6 +9,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "addresses")
 @Entity
+@Builder
 public class Address {
     @Id
     @Column(name = "address_id")

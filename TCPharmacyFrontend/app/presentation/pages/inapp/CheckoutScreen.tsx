@@ -55,7 +55,15 @@ export const CheckoutScreen = () => {
 
     const errorResponse = useSelector((state: Store) => state.order.errorResponse);
 
+    const [pricePoint, setPricePoint] = useState(0);
     
+    useEffect(() => {
+        if (cart.usePoint) {
+            setPricePoint(PoitUtils.calculatePrice(userLogin.currentPoint));
+        } else {
+            setPricePoint(0);
+        }
+    }, [cart.usePoint]);
     const handlerActionCheckout = async () => {
         if (!address.fullName || !address.phoneNumber || !address.street || !address.province || !address.district || !address.ward) {
             showToast('info', 'bottom', 'Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
@@ -86,6 +94,8 @@ export const CheckoutScreen = () => {
             dispatch(setCart(new CartModel()));
             dispatch(setOrder(new OrderModel()));
             showToast('success', 'bottom', 'Thông báo', 'Đặt hàng thành công');
+
+            navigation.navigate('home' as never);
         }
     }
     return (
@@ -243,6 +253,10 @@ export const CheckoutScreen = () => {
                                 )}đ</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 5 }}>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription }]}>Giảm giá tích điểm</Text>
+                                <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: 'orange' }]}>{pricePoint}đ</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 5 }}>
                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.textDecription }]}>Giảm giá voucher</Text>
                                 <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: 'orange' }]}>0đ</Text>
                             </View>
@@ -320,7 +334,7 @@ export const CheckoutScreen = () => {
                                     />
                                 </View>
                             </SafeAreaView>
-                        }
+                        } 
                     />
                 </ScrollView>
                 <View style={{ paddingHorizontal: 15, borderTopLeftRadius: 50, borderTopRightRadius: 50, backgroundColor: '#fff', height: 180, position: 'absolute', bottom: 0, left: 0, right: 0 }}>

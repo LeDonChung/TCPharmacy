@@ -1,16 +1,21 @@
 package vn.edu.iuh.fit.pharmacy;
 
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import vn.edu.iuh.fit.pharmacy.POJOs.*;
 import vn.edu.iuh.fit.pharmacy.api.*;
 import vn.edu.iuh.fit.pharmacy.repositories.*;
+import vn.edu.iuh.fit.pharmacy.utils.RoleConstraints;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -354,8 +359,81 @@ public class RenderTest {
         }
     }
 
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Test
     public void renderUsers() {
+        try {
+            Faker faker = new Faker(Locale.forLanguageTag("vi"));
+            List<User> users = new ArrayList<>();
+            List<Gender> genders = List.of(Gender.values());
+            for (int i = 0; i <= 100; i++) {
+                User user = User.builder().dob(Timestamp.from(faker.date().birthday().toInstant())).gender(genders.get(new Random().nextInt(genders.size()))).fullName(faker.name().fullName()).phoneNumber(faker.phoneNumber().cellPhone()).password(passwordEncoder.encode("default")).verify(true).image("https://scontent.fsgn5-14.fna.fbcdn.net").enabled(true).build();
 
+                // Tạo và thêm Address
+                List<Address> addresses = new ArrayList<>();
+                String fullName = user.getFullName();
+                String phoneNumber = user.getPhoneNumber();
+                if (userRepository.findByUsername(phoneNumber).isPresent()) {
+                    continue;
+                }
+                for (int j = 0; j < 2; j++) {
+                    Address address = Address.builder().user(user).addressType(j == 0 ? AddressType.Home : AddressType.Other).district(faker.address().city()).province(faker.address().state()).street(faker.address().streetAddress()).ward(faker.address().cityName()).isDefault(j == 0).fullName(j == 0 ? fullName : faker.name().fullName()).phoneNumber(j == 0 ? phoneNumber : faker.phoneNumber().cellPhone()).build();
+                    addresses.add(address);
+                }
+                user.setAddresses(addresses);
+
+                // Point
+                Point point = Point.builder().currentPoint(0).rank(Rank.Silver).updateAt(Timestamp.from(Instant.now())).user(user).build();
+                user.setPoint(point);
+                users.add(user);
+                userRepository.saveAndFlush(user);
+
+            }
+
+            Role role = Role.builder().id(1L).code(RoleConstraints.ROLE_PATIENT).name("ROLE_PATIENT").build();
+
+
+            userRepository.findAll().stream().map(user -> {
+                Set<Role> roles = new HashSet<>();
+                roles.add(role);
+                user.setRoles(roles);
+                return user;
+            }).forEach(user -> userRepository.saveAndFlush(user));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    @Test
+    public void setPassword() {
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            user.setPassword(passwordEncoder.encode("default"));
+            userRepository.saveAndFlush(user);
+        }
+    }
+    @Test
+    public void renderLikeMedicine() {
+        List<User> users = userRepository.findAll(PageRequest.of(0, 50)).getContent();
+        List<Medicine> medicines = medicineRepository.findAll();
+        Random random = new Random();
+        for (User user : users) {
+            int likeCount = 3 + random.nextInt(5); // Giữa 3 và 7 sản phẩm yêu thích
+            List<Medicine> likedMedicines = new ArrayList<>();
+            for (int i = 0; i < likeCount; i++) {
+                Medicine medicine = medicines.get(random.nextInt(medicines.size()));
+                if (!likedMedicines.contains(medicine)) {
+                    likedMedicines.add(medicine);
+                }
+            }
+            user.setLikes(likedMedicines);
+            userRepository.saveAndFlush(user);
+        }
+    }
+
 }
