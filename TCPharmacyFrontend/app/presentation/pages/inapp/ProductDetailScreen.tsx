@@ -184,7 +184,7 @@ export const ProductDetailScreen = () => {
                                     <ProductCustom
                                         data={item}
                                         addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                        onPress={() => {
+                                        onPress={() => { 
                                             navigation.push('productDetailScreen', { medicineId: item.id });
                                         }}
                                     />

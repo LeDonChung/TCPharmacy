@@ -61,4 +61,12 @@ public class MedicineResource {
                 medicineService.getRecommendations(List.of(medicineId))
         );
     }
+
+    @GetMapping("/recommendationsByUserId/{userId}")
+    public ResponseEntity<List<MedicineResponse>> getRecommendationsByUserId(@PathVariable Long userId,
+                                                                            @RequestParam Integer top) throws Exception {
+        return ResponseEntity.ok(
+                medicineService.getTopRecommendationByUserId(userId, top)
+        );
+    }
 }

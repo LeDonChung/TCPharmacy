@@ -14,8 +14,11 @@ import { removeCartDetailFromCart, setCart, updateCartDetail } from "../../redux
 import { CartDetailCustom } from "../../components/CartDetailCustom"
 import { PriceUtils } from "../../../domain/utils/PriceUtils"
 import { PoitUtils } from "../../../domain/utils/PointUtils"
+import { getRecommendationsByUserId } from "../../redux/slice/ProductSlice"
+import { ProductCustom } from "../../components/ProductCustom"
+import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom"
 
-export const CartScreen = () => { 
+export const CartScreen = () => {
     const navigation = useNavigation();
     const cart = useSelector((state: Store) => state.cart.value);
     const dispatch = useDispatch();
@@ -47,11 +50,19 @@ export const CartScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
-       
+        dispatch(getRecommendationsByUserId(userLogin.id));
+    }, []);
+    useEffect(() => {
+        dispatch(getRecommendationsByUserId(userLogin.id));
+        console.log(recommendations)
     }, []);
 
+    const recommendations = useSelector((state: Store) => state.product.value.recommendations);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const [productChoose, setProductChoose] = useState();
     return (
-        <>
+        <> 
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ height: 60, backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', paddingHorizontal: 15 }}>
                     <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => { navigation.goBack() }}>
@@ -79,10 +90,10 @@ export const CartScreen = () => {
                                     <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]} >Tiếp tục mua sắm</Text>
                                 </TouchableOpacity>
                             </View>
-                            <ScrollView 
-                            refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                            }
+                            <ScrollView
+                                refreshControl={
+                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                }
                             >
                                 <View style={{ paddingHorizontal: -15, marginBottom: 260 }}>
                                     <FlatList
@@ -110,6 +121,26 @@ export const CartScreen = () => {
                                             </View>
                                         }}
                                     />
+                                    <View style={{ paddingHorizontal: 15, marginVertical: 20 }}>
+                                        <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]}>Gợi ý sản phẩm</Text>
+                                        {recommendations.length > 0 ? (
+                                            <FlatList
+                                                horizontal
+                                                showsHorizontalScrollIndicator={false}
+                                                data={recommendations}
+                                                keyExtractor={(item) => item.id.toString()}
+                                                renderItem={({ item }) => (
+                                                    <ProductCustom
+                                                        data={item}
+                                                        addToCart={() => { setProductChoose(item); setModalVisible(true); }}
+                                                        onPress={() => { navigation.push('productDetailScreen', { medicineId: item.id }); }}
+                                                    />
+                                                )}
+                                            />
+                                        ) : (
+                                            <Text style={[GlobalStyles.textStyle, { color: Colors.textDecription }]}>Chưa có gợi ý sản phẩm</Text>
+                                        )}
+                                    </View>
                                 </View>
 
                             </ScrollView>
@@ -118,11 +149,11 @@ export const CartScreen = () => {
                                     <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary }]}>Áp dụng ưu đãi để được giảm giá</Text>
                                     <IconF5 name="chevron-right" size={20} color={Colors.primary} />
                                 </TouchableOpacity>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}> 
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 15 }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Image source={require('./../../../../assets/icon/ic_point.png')} resizeMode="contain" />
                                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', marginHorizontal: 10 }]}>Đổi <Text style={{ color: 'orange', fontWeight: 'bold' }}>{userLogin.currentPoint}</Text> điểm(={PoitUtils.calculatePrice(userLogin.currentPoint)}đ)</Text>
-                                        <IconI name="information-circle-sharp" size={22} color={Colors.textDecription} /> 
+                                        <IconI name="information-circle-sharp" size={22} color={Colors.textDecription} />
                                     </View>
 
                                     <Switch
@@ -133,25 +164,32 @@ export const CartScreen = () => {
                                         onValueChange={(value) => dispatch(setCart({ ...cart, usePoint: value }))} // Update the onValueChange prop
                                         value={cart.usePoint}
                                     />
-                                </View> 
+                                </View>
+
                                 <View style={{ borderTopWidth: 1, borderColor: '#BDC2C7' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 15 }}>
                                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}></Text>
                                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', color: Colors.primary, fontSize: 20 }]}>{PriceUtils.formatPrice(cart.totalPrices())}đ</Text>
                                     </View>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}> 
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                                         <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold' }]}><Text style={{ color: 'orange', fontWeight: 'bold' }}>+{PoitUtils.calculatePoints(cart.totalPrices())}</Text> điểm</Text>
-                                        <ButtonCustom title="Mua hàng" buttonStyle={{ borderRadius: 50 }} onPress={() => { navigation.navigate('checkoutScreen' as never)  }} />
+                                        <ButtonCustom title="Mua hàng" buttonStyle={{ borderRadius: 50 }} onPress={() => { navigation.navigate('checkoutScreen' as never) }} />
                                     </View>
                                 </View>
                             </View>
                         </View>
                         :
-                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15}}>
-                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold',textAlign: 'center' }]}>Chưa có sản phẩm nào trong giỏ</Text>
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 15 }}>
+                            <Text style={[GlobalStyles.textStyle, { fontWeight: 'bold', textAlign: 'center' }]}>Chưa có sản phẩm nào trong giỏ</Text>
                             <Text style={[GlobalStyles.textStyle, { textAlign: 'center', marginVertical: 20 }]}>Cùng mua sắm hàng ngàn sản phẩm tại nhà thuốc TC Pharmacy nhé!</Text>
-                            <ButtonCustom buttonStyle={{borderRadius: 50}} title="Mua sắm ngay" onPress={() => { navigation.goBack() }} />
+                            <ButtonCustom buttonStyle={{ borderRadius: 50 }} title="Mua sắm ngay" onPress={() => { navigation.goBack() }} />
                         </View>
+                }
+                {
+                    productChoose && <ChooseProductToCartModalCustom
+                        productChoose={productChoose}
+                        visible={modalVisible}
+                        setModalVisible={setModalVisible} />
                 }
             </SafeAreaView >
         </>
