@@ -242,7 +242,7 @@ public class RenderTest {
 
         for (CategoryAPI categoryAPI : result) {
             Category category = categoryRepository.findByFullPathSlug(categoryAPI.getFullPathSlug());
-            if(category != null) {
+            if (category != null) {
                 category.setIcon(categoryAPI.getImage().getUrl());
                 categoryRepository.saveAndFlush(category);
             }
@@ -254,7 +254,9 @@ public class RenderTest {
 
     @Autowired
     private TagRepository tagRepository;
-    @Test public void renderMedicine01() {
+
+    @Test
+    public void renderMedicine01() {
 
         List<Category> categories = categoryRepository.findAll();
         categories = categories.stream().filter(category -> category.getId() > 128).toList();
@@ -338,7 +340,7 @@ public class RenderTest {
 
                         // Price
                         // Unit
-                        if(!medicineAPI.getPrices().isEmpty()) {
+                        if (!medicineAPI.getPrices().isEmpty()) {
                             PriceAPI priceAPI = medicineAPI.getPrices().get(0);
                             medicine.setInit(priceAPI.getMeasureUnitName());
                             medicine.setPrice(priceAPI.getPrice());
@@ -365,6 +367,7 @@ public class RenderTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Test
     public void renderUsers() {
         try {
@@ -417,6 +420,7 @@ public class RenderTest {
             userRepository.saveAndFlush(user);
         }
     }
+
     @Test
     public void renderLikeMedicine() {
         List<User> users = userRepository.findAll(PageRequest.of(0, 50)).getContent();
@@ -434,6 +438,24 @@ public class RenderTest {
             user.setLikes(likedMedicines);
             userRepository.saveAndFlush(user);
         }
+    }
+
+
+    @Test
+    public void renderLikeMedicineById() {
+        User user = userRepository.findById(108L).get();
+        List<Medicine> medicines = medicineRepository.findAll();
+        Random random = new Random();
+        int likeCount = 20 + random.nextInt(30); // Giữa 3 và 7 sản phẩm yêu thích
+        List<Medicine> likedMedicines = new ArrayList<>();
+        for (int i = 0; i < likeCount; i++) {
+            Medicine medicine = medicines.get(random.nextInt(medicines.size()));
+            if (!likedMedicines.contains(medicine)) {
+                likedMedicines.add(medicine);
+            }
+        }
+        user.setLikes(likedMedicines);
+        userRepository.saveAndFlush(user);
     }
 
 }
