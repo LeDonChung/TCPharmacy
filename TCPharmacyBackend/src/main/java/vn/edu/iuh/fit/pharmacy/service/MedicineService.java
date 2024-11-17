@@ -11,4 +11,8 @@ public interface MedicineService {
     List<MedicineResponse> getMedicineByTagId(Long tagId);
 
     List<MedicineResponse> getMedicineByTags(List<Long> tagIds);
+
+    List<MedicineResponse> getMedicineByCategoryId(Long categoryId, Integer page, Integer size);
+
+    List<MedicineResponse> getMedicineByMedicineName(String medicineName, Integer page, Integer size);
 }

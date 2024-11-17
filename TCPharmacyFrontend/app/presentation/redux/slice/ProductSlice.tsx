@@ -31,6 +31,25 @@ const getProductsRelated: any = createAsyncThunk('medicines/getProductsRelated',
         throw rejectWithValue(error.response.data);
     }
 });
+const getProductsByCategoryId: any = createAsyncThunk('medicines/getProductsByCategoryId', async (data: any , { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/medicines/getByCategoryId/${data.categoryId}?page=${data.page}&size=${data.size}`);
+        return response.data;
+    }
+    catch (error: any) {
+        throw rejectWithValue(error.response.data);
+    }
+});
+
+const getProductsByMedicineName: any = createAsyncThunk('medicines/getProductsByMedicineName', async (data: any , { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/medicines/getByMedicineName?medicineName=${data.medicineName}&page=${data.page}&size=${data.size}`);
+        return response.data;
+    }
+    catch (error: any) {
+        throw rejectWithValue(error.response.data);
+    }
+});
 
 const initialState: {
     product: MedicineModel,
@@ -89,9 +108,15 @@ const productSlice = createSlice({
         builder.addCase(getProductsRelated.fulfilled, (state, action) => {
             state.value.relatedProducts = action.payload;
         });
+        builder.addCase(getProductsByCategoryId.fulfilled, (state, action) => {
+            state.value.products = action.payload;
+        });
+        builder.addCase(getProductsByMedicineName.fulfilled, (state, action) => {
+            state.value.products = action.payload;
+        });
     }
 });
 
 export const { setProduct, setProducts } = productSlice.actions;
-export { getProductById, getAllProducts, getProductsRelated };
+export { getProductById, getAllProducts, getProductsRelated , getProductsByCategoryId, getProductsByMedicineName };
 export default productSlice.reducer;

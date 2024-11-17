@@ -35,4 +35,23 @@ public class MedicineResource {
                 medicineService.getMedicineByTags(tagIds)
         );
     }
+
+    @GetMapping("/getByCategoryId/{categoryId}")
+    public ResponseEntity<List<MedicineResponse>> getMedicineByCategoryId(@PathVariable Long categoryId,
+
+                                                                         @RequestParam Integer page,
+                                                                          @RequestParam Integer size) throws MedicineException {
+        return ResponseEntity.ok(
+                medicineService.getMedicineByCategoryId(categoryId, page, size)
+        );
+    }
+
+    @GetMapping("/getByMedicineName")
+    public ResponseEntity<List<MedicineResponse>> getMedicineByMedicineName(@RequestParam String medicineName,
+                                                                            @RequestParam Integer page,
+                                                                            @RequestParam Integer size) throws MedicineException {
+        return ResponseEntity.ok(
+                medicineService.getMedicineByMedicineName(medicineName, page, size)
+        );
+    }
 }
