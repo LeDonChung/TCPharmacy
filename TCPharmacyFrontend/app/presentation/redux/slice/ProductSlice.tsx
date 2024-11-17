@@ -51,6 +51,14 @@ const getProductsByMedicineName: any = createAsyncThunk('medicines/getProductsBy
     }
 });
 
+const getRecommendationsByProductId: any = createAsyncThunk('medicines/getRecommendationsByProductId', async (productId: number, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`/medicines/recommendations/${productId}`);
+        return response.data;
+    } catch (error: any) {
+        throw rejectWithValue(error.response.data);
+    }
+});
 const initialState: {
     product: MedicineModel,
     products: MedicineModel[]
@@ -114,9 +122,12 @@ const productSlice = createSlice({
         builder.addCase(getProductsByMedicineName.fulfilled, (state, action) => {
             state.value.products = action.payload;
         });
+        builder.addCase(getRecommendationsByProductId.fulfilled, (state, action) => {
+            state.value.relatedProducts = action.payload;
+        });
     }
 });
 
 export const { setProduct, setProducts } = productSlice.actions;
-export { getProductById, getAllProducts, getProductsRelated , getProductsByCategoryId, getProductsByMedicineName };
+export { getProductById, getAllProducts, getProductsRelated , getProductsByCategoryId, getProductsByMedicineName, getRecommendationsByProductId };
 export default productSlice.reducer;

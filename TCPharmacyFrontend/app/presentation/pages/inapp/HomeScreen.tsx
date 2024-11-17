@@ -188,6 +188,8 @@ export const HomeScreen = () => {
             await dispatch(getTagGroups());
             dispatch(setDraw());
             dispatch(setOutstanding());
+            setProductsByObject(tagGroupByObject.tags[indexSubject].medicines);
+            setSugg(tagGroupSuggestions.tags[indexSuggestion].medicines);
         } catch (error) {
             console.error("Initialization error:", error);
         } finally {

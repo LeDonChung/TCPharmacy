@@ -19,7 +19,7 @@ import { ChooseProductToCartModalCustom } from "../../components/ChooseProductTo
 import { ProductCustom } from "../../components/ProductCustom";
 import { FlatList } from "react-native";
 import { ButtonCustom } from "../../components/ButtonCustom";
-import { getProductById, getProductsRelated, setProduct } from "../../redux/slice/ProductSlice";
+import { getProductById, getProductsRelated, getRecommendationsByProductId, setProduct } from "../../redux/slice/ProductSlice";
 import HTMLView from "react-native-htmlview";
 import { ModalCustom } from "../../components/ModalCustom";
 import { MedicineModel } from "../../../domain/models/MedicineModel";
@@ -52,6 +52,7 @@ export const ProductDetailScreen = () => {
 
     const init = async () => {
         await dispatch(getProductById(medicineId));
+        await dispatch(getRecommendationsByProductId(medicineId));
         const tagsId = product.tags.map((tag) => tag.id);
         await dispatch(getProductsRelated(tagsId));
     }
