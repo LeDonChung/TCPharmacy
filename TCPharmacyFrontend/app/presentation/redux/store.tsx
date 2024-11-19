@@ -7,6 +7,7 @@ import BrandSlice from "./slice/BrandSlice";
 import ProductSlice from "./slice/ProductSlice";
 import TagGroupSlice from "./slice/TagGroupSlice";
 import OrderSlice from "./slice/OrderSlice";
+import MessageSlice from "./slice/MessageSlice";
 
 export const store = configureStore({
     reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
         brand: BrandSlice,
         product: ProductSlice,
         tagGroup: TagGroupSlice,
-        order: OrderSlice
+        order: OrderSlice,
+        message: MessageSlice
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

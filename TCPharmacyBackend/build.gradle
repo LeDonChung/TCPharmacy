@@ -58,6 +58,9 @@ dependencies {
 	// Apache Commons Math for Cosine Similarity calculation
 	implementation 'org.apache.mahout:mahout-math:0.13.0'
 
+	//Gson
+	implementation 'com.google.code.gson:gson:2.10.1'
+
 // https://mvnrepository.com/artifact/org.apache.mahout/mahout-core
 	implementation 'org.apache.mahout:mahout-core:0.9'
 	implementation 'org.apache.commons:commons-csv:1.8'
