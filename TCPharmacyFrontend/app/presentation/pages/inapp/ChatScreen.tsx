@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../styles/Colors";
 import IconF5 from "react-native-vector-icons/FontAwesome5";
@@ -11,52 +11,52 @@ import { TextInput } from "react-native-paper";
 import IconF from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 
-const messageList = [{
-    id: 1,
-    message: "Xin chào",
-    isMe: true
-},
-{
-    id: 2,
-    message: "Chào bạn",
-    isMe: false
-},
-{
-    id: 3,
-    message: "Bạn cần tư vấn gì không?",
-    isMe: false
-},
-{
-    id: 4,
-    message: "Bên mình có bán kẹo ngậm không đường không ạ, nếu có cho em xin giá ạ",
-    isMe: true
-},
-{
-    id: 5,
-    message: "Vui lòng đợi một vài phút để ad kiểm tra giúp bạn nhé.",
-    isMe: false
-}]
+import { getMessages, sendMessage } from "../../redux/slice/MessageSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { MessageRequest } from "../../../domain/models/request/MessageRequest";
+import { findUserLogin } from "../../redux/slice/UserSlice";
+import { MessageModel } from "../../../domain/models/MessageModel";
+import { Store } from "../../redux/store";
+
+const dataSendMessage = {
+    userId: 0,
+    messageRequest: new MessageRequest("")
+}
 
 export const ChatScreen = () => {
     const navigation = useNavigation();
-    const [message, setMessage] = useState("");
-    const [messages, setMessages] = useState(messageList);
+    const dispatch = useDispatch();
+    const user = useSelector((state: Store) => state.user.userLogin);
+    const messages = useSelector((state: Store) => state.message.messages);
+    const [messageText, setMessageText] = useState("");
+    const [request, setRequest] = useState(dataSendMessage);
+    const mess = useSelector((state: Store) => state.message.message);
+
     useEffect(() => {
-        // setMessages(messageList);
+        const init = async () => {
+            await dispatch(findUserLogin())
+            await dispatch(getMessages(user.id));
+            setRequest({ ...request, userId: user.id });
+        }
+        init();
     }, []);
 
-   
-    const sendMessage = () => {
-        if (message.trim() === "") {
+    const sendMessageToTC = async () => {
+        if (messageText.trim() === "") {
             return;
+        } 
+
+        const messageNew = new MessageRequest(messageText);
+        // messages.push(new MessageModel(messageText, "user"));
+        setRequest({ ...request, messageRequest: messageNew });
+        await dispatch(sendMessage(request));
+        if (mess != null) {            
+            // messages.push(mess)
+            await dispatch(getMessages(user.id));
+            setMessageText("");
         }
-        const newMessage = {
-            id: messages.length + 1,
-            message: message,
-            isMe: true
-        }
-        setMessages([...messages, newMessage]);
-        setMessage("");
+
+        
     }
     // Lấy ngày, tháng, và năm hiện tại
     const getCurrentDate = () => {
@@ -80,20 +80,38 @@ export const ChatScreen = () => {
             </View>
 
             <View style={{ width: "100%", height: 690 }}>
-                    <ScrollView>
+                {/* <ScrollView>
                     <Text style={[GlobalStyles.textStyle, { textAlign: 'center', marginVertical: 10 }]}>{getCurrentDate()}</Text>
                         {messages.map((item, index) => {
+                            console.log("Item: ", item);
+                            
                             return (
-
-                                <View key={item.id} style={{ flexDirection: item.isMe ? 'row-reverse' : 'row', marginHorizontal: 10, marginVertical: 10 }}>
-                                    <View style={{ backgroundColor: item.isMe ? Colors.primary : "#fff", padding: 10, borderRadius: 10 }}>
-                                        <Text style={[GlobalStyles.textStyle, { color: item.isMe ? Colors.secondary : Colors.textDecription }]}>{item.message}</Text>
+                                <View key={index} style={{ flexDirection: item.role === "user" ? 'row-reverse' : 'row', marginHorizontal: 10, marginVertical: 10 }}>
+                                    <View style={{ backgroundColor: item.role === "user" ? Colors.primary : "#fff", padding: 10, borderRadius: 10 }}>
+                                        <Text style={[GlobalStyles.textStyle, { color: item.role === "user" ? Colors.secondary : Colors.textDecription }]}>{item.content}</Text>
                                     </View>
                                 </View>
                             )
                         })}
-                    </ScrollView>
-                </View>
+                    </ScrollView> */}
+
+                {
+                    messages && messages.length > 0 ? (
+                        <FlatList
+                            data={messages}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({ item }) =>
+                                <View style={{ flexDirection: item.role === "user" ? 'row-reverse' : 'row', marginHorizontal: 10, marginVertical: 10 }}>
+                                    <View style={{ backgroundColor: item.role === "user" ? Colors.primary : "#fff", padding: 10, borderRadius: 10 }}>
+                                        <Text style={[GlobalStyles.textStyle, { color: item.role === "user" ? Colors.secondary : Colors.textDecription }]}>{item.content}</Text>
+                                    </View>
+                                </View>}
+                        />
+                    ) : (
+                        <Text>Loading messages...</Text>
+                    )
+                }
+            </View>
 
             <View style={{
                 height: 80, width: '100%', position: "absolute",
@@ -104,8 +122,8 @@ export const ChatScreen = () => {
                     <IconF5 name="camera" size={30} style={{ color: "#000" }} />
                 </TouchableOpacity>
                 <TextInput
-                    value={message}
-                    onChangeText={setMessage}
+                    value={messageText}
+                    onChangeText={setMessageText}
                     placeholder="Gửi thắc mắc"
                     placeholderTextColor="gray"
                     style={[GlobalStyles.textStyle, { backgroundColor: '#EBF0F4', width: "70%", height: 60, flexDirection: 'row', alignItems: 'center', borderRadius: 10 }]}
@@ -114,7 +132,7 @@ export const ChatScreen = () => {
 
                 <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15 }}
                     onPress={() => {
-                        sendMessage();
+                        sendMessageToTC();
                     }}>
                     <IconF name="send" size={30} style={{ color: Colors.desciption }} />
                 </TouchableOpacity>

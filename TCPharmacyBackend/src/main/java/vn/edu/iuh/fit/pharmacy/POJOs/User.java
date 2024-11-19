@@ -44,6 +44,9 @@ public class User {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "thread_id")
+    private String thread;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roless", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
