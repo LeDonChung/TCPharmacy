@@ -10,39 +10,7 @@ import { ModalCustom } from "../../../components/ModalCustom";
 import IconAnd from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 import SelectDropdown from "react-native-select-dropdown";
-import Icon from "react-native-vector-icons/AntDesign";
 import { ButtonCustom } from "../../../components/ButtonCustom";
-// Type of province
-// {
-//     "name": "Thành phố Hà Nội",
-//     "code": 1,
-//     "division_type": "thành phố trung ương",
-//     "codename": "thanh_pho_ha_noi",
-//     "phone_code": 24,
-//     "districts": []
-// }
-
-// Type of district
-// "name": "Huyện An Phú",
-// "code": 886,
-// "division_type": "huyện",
-// "codename": "huyen_an_phu",
-// "province_code": 89,
-// "wards": []
-
-
-
-type location = {
-    id: string;
-    name: string;
-    phone: string;
-    address: {
-        province: string;
-        district: string;
-        ward: string;
-        street: string;
-    }
-}
 
 const fetchData = async (url: string) => {
     try {

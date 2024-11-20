@@ -21,12 +21,10 @@ const getMessages: any = createAsyncThunk('message/getMessages', async (userId: 
 });
 
 const initialState: {
-    message: MessageModel, 
     messages: MessageModel[],
     resquest: any,
     errorResponse: any
 } = {
-    message: new MessageModel("", ""),
     messages: [],
     resquest: {
         userId: "",
@@ -38,9 +36,6 @@ const messageSlice = createSlice({
     name: 'message',
     initialState: initialState,
     reducers: {
-        setMessage(state, action) {
-            state.message = action.payload;
-        },
         setMessages(state, action) {
             state.messages = action.payload;
         }
@@ -49,17 +44,15 @@ const messageSlice = createSlice({
 
         builder.addCase(sendMessage.pending, (state, action) => {
             state.errorResponse = initialState.errorResponse;
-            state.message = initialState.message;
         });
 
         builder.addCase(sendMessage.fulfilled, (state, action) => {
-            state.message = action.payload;
+            state.messages = [...state.messages, action.payload];
             state.errorResponse = initialState.errorResponse;
         });
 
         builder.addCase(sendMessage.rejected, (state, action) => {
             state.errorResponse = action.payload;
-            state.message = initialState.message;
         });
 
         builder.addCase(getMessages.pending, (state, action) => {
@@ -74,6 +67,6 @@ const messageSlice = createSlice({
     },
 });
 
-export const { setMessage, setMessages } = messageSlice.actions;
+export const { setMessages } = messageSlice.actions;
 export { sendMessage, getMessages };
 export default messageSlice.reducer;
