@@ -1,8 +1,6 @@
 package vn.edu.iuh.fit.pharmacy.service.impl;
 
 import com.google.gson.Gson;
-import io.github.cdimascio.dotenv.Dotenv;
-import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import vn.edu.iuh.fit.pharmacy.POJOs.OpenAPIKey;
 import vn.edu.iuh.fit.pharmacy.POJOs.User;
 import vn.edu.iuh.fit.pharmacy.api.MessageRequest;
 import vn.edu.iuh.fit.pharmacy.api.MessageRequestOpenAI;
@@ -21,18 +18,13 @@ import vn.edu.iuh.fit.pharmacy.api.MessageResponse;
 import vn.edu.iuh.fit.pharmacy.api.ThreadRunRequest;
 import vn.edu.iuh.fit.pharmacy.repositories.UserRepository;
 import vn.edu.iuh.fit.pharmacy.service.ChatService;
-import vn.edu.iuh.fit.pharmacy.utils.SystemConstraints;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-
-import static vn.edu.iuh.fit.pharmacy.utils.SystemConstraints.ENCRYPTION_PASSWORD;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -48,17 +40,17 @@ public class ChatServiceImpl implements ChatService {
     @Value("${chatgpt.assistant.id}")
     private String CHATGPT_ASSISTANT_ID;
 
+    @Value("${chatgpt.open.api.key}")
+    private String OPEN_API_KEY;
 
     private final Gson gson = new Gson();
 
 
-    @Autowired
-    private OpenAPIKey openAPIKey;
     private HttpHeaders createHeaders() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         headers.add("OpenAI-Beta", "assistants=v2");
-        headers.add("Authorization", "Bearer " + openAPIKey.getKey());
+        headers.add("Authorization", "Bearer " + OPEN_API_KEY);
         return headers;
     }
 
