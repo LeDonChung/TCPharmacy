@@ -46,6 +46,9 @@ public class ChatServiceImpl implements ChatService {
     @Value("${chatgpt.assistant.id}")
     private String CHATGPT_ASSISTANT_ID;
 
+    @Value("${chatgpt.key}")
+    private String CHATGPT_API_KEY;
+
     private final Gson gson = new Gson();
 
     private static String readApiKeyFromFile() throws IOException {
@@ -62,11 +65,7 @@ public class ChatServiceImpl implements ChatService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         headers.add("OpenAI-Beta", "assistants=v2");
-
-        String encryptedApiKeyFromFile = readApiKeyFromFile();
-        String decryptedApiKey = decryptApiKey(encryptedApiKeyFromFile);
-
-        headers.add("Authorization", "Bearer " + decryptedApiKey);
+        headers.add("Authorization", "Bearer " + CHATGPT_API_KEY);
         return headers;
     }
 

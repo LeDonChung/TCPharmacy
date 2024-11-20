@@ -10,6 +10,10 @@ import CarouselItem, { ITEM_WIDTH, SLIDER_WIDTH } from "../../components/Carouse
 import { Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from 'expo-secure-store';
+import { useDispatch, useSelector } from "react-redux";
+import { findUserLogin } from "../../redux/slice/UserSlice";
+import { Store } from "../../redux/store";
+import { showToast } from "../../../api/AppUtils";
 const initCarousels = [
     new CarouselModel('carouse01', 'Đủ thuốc theo đơn bệnh viện', 'Cam kết thuốc tốt, chính hãng & giá tốt', require('./../../../../assets/start/carousel01.png')),
     new CarouselModel('carouse02', 'Giao hàng tận nơi', 'Giao hàng nhanh chóng, tận tâm & đúng hẹn tại tất cả các tỉnh thành trên toàn quốc', require('./../../../../assets/start/carousel01.png')),
@@ -21,12 +25,27 @@ export const StartScreen = () => {
     const isCarousel = useRef<Carousel<CarouselModel> | null>(null)
     const [index, setIndex] = useState(0)
     const navigation = useNavigation();
-
-    useEffect(() => {
-        const token = SecureStore.getItem('token');
-        if(token) {
-            navigation.navigate('inapp' as never);
+    const userError = useSelector((state: Store) => state.user.errorResponse);
+    const dispatch = useDispatch();
+    const checkToken = async () => {
+        try {
+            const token = await SecureStore.getItemAsync('token'); // Lấy token bằng cách sử dụng hàm bất đồng bộ
+            if (token) {
+                dispatch(findUserLogin());
+                if (userError !== null) {
+                    showToast("info", "bottom", "Thông báo", "Vui lòng đăng nhập để tiết tục.");
+                } else {
+                    navigation.navigate('inapp' as never);
+                }
+            } else {
+                showToast("info", "bottom", "Thông báo", "Vui lòng đăng nhập để tiết tục.");
+            }
+        } catch (error) {
+            console.error('Failed to get token', error);
         }
+    };
+    useEffect(() => {
+        checkToken();
     }, []);
     return (
         <View style={[GlobalStyles.container, styles.container]}>
@@ -68,7 +87,7 @@ export const StartScreen = () => {
                         isCarousel.current.snapToNext();
                     }
                 }}/>
-                <ButtonCustom buttonStyle={[styles.buttonStyle, {backgroundColor: '#fff'}]} textStyle={{color: '#000'}} title="Bỏ qua" onPress={() => navigation.reset({index: 0, routes: [{ name: 'inapp' as never }]})}/>
+                <ButtonCustom buttonStyle={[styles.buttonStyle, {backgroundColor: '#fff'}]} textStyle={{color: '#000'}} title="Bỏ qua" onPress={() => checkToken()}/>
             </View>
         </View>
     );
