@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.pharmacy.service.impl;
 
 import com.google.gson.Gson;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import vn.edu.iuh.fit.pharmacy.POJOs.OpenAPIKey;
 import vn.edu.iuh.fit.pharmacy.POJOs.User;
 import vn.edu.iuh.fit.pharmacy.api.MessageRequest;
 import vn.edu.iuh.fit.pharmacy.api.MessageRequestOpenAI;
@@ -46,26 +48,17 @@ public class ChatServiceImpl implements ChatService {
     @Value("${chatgpt.assistant.id}")
     private String CHATGPT_ASSISTANT_ID;
 
-    @Value("${chatgpt.key}")
-    private String CHATGPT_API_KEY;
 
     private final Gson gson = new Gson();
 
-    private static String readApiKeyFromFile() throws IOException {
-        return new String(Files.readAllBytes(Paths.get("src/main/resources/ai.bat")));
-    }
 
-    private static String decryptApiKey(String encryptedApiKey) {
-        BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
-        textEncryptor.setPassword(ENCRYPTION_PASSWORD);
-        return textEncryptor.decrypt(encryptedApiKey);
-    }
-
+    @Autowired
+    private OpenAPIKey openAPIKey;
     private HttpHeaders createHeaders() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         headers.add("OpenAI-Beta", "assistants=v2");
-        headers.add("Authorization", "Bearer " + CHATGPT_API_KEY);
+        headers.add("Authorization", "Bearer " + openAPIKey.getKey());
         return headers;
     }
 
