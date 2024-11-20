@@ -19,6 +19,9 @@ import vn.edu.iuh.fit.pharmacy.api.ThreadRunRequest;
 import vn.edu.iuh.fit.pharmacy.repositories.UserRepository;
 import vn.edu.iuh.fit.pharmacy.service.ChatService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,17 +44,19 @@ public class ChatServiceImpl implements ChatService {
 
     private final Gson gson = new Gson();
 
-    private final String CHATGPT_KEY = "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";
+    private static String readApiKeyFromFile() throws IOException {
+        return new String(Files.readAllBytes(Paths.get("src/main/resources/ai.bat")));
+    }
 
-    private HttpHeaders createHeaders() {
+    private HttpHeaders createHeaders() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         headers.add("OpenAI-Beta", "assistants=v2");
-        headers.add("Authorization", "Bearer " + CHATGPT_KEY);
+        headers.add("Authorization", "Bearer " + readApiKeyFromFile());
         return headers;
     }
 
-    public Map<String, Object> createThread() {
+    public Map<String, Object> createThread() throws IOException {
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                 CHATGPT_THREADS_URL,
                 HttpMethod.POST,
@@ -63,7 +68,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Async
-    public CompletableFuture<Map<String, Object>> runThreadToAssistant(String threadId) {
+    public CompletableFuture<Map<String, Object>> runThreadToAssistant(String threadId) throws IOException {
         List<Map<String, Object>> tools = List.of(
                 Map.of("type", "code_interpreter"),
                 Map.of("type", "file_search")
@@ -80,7 +85,7 @@ public class ChatServiceImpl implements ChatService {
         return CompletableFuture.completedFuture(response.getBody());
     }
 
-    public MessageResponse getMessageLast(String threadId) {
+    public MessageResponse getMessageLast(String threadId) throws IOException {
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                 CHATGPT_THREADS_URL + "/" + threadId + "/messages?order=desc&limit=1",
                 HttpMethod.GET,
@@ -115,7 +120,7 @@ public class ChatServiceImpl implements ChatService {
                 .build();
     }
 
-    public Map<String, Object> retrieveRunForThread(String threadId, String runId) {
+    public Map<String, Object> retrieveRunForThread(String threadId, String runId) throws IOException {
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                 CHATGPT_THREADS_URL + "/" + threadId + "/runs/" + runId,
                 HttpMethod.GET,
@@ -146,7 +151,7 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
-    private String createNewThreadForUser(User user) {
+    private String createNewThreadForUser(User user) throws IOException {
         Map<String, Object> threadResponse = createThread();
         String threadId = (String) threadResponse.get("id");
         if (threadId == null) throw new RuntimeException("Cannot create thread");
@@ -155,7 +160,7 @@ public class ChatServiceImpl implements ChatService {
         return threadId;
     }
 
-    private void sendUserMessage(String threadId, MessageRequest message) {
+    private void sendUserMessage(String threadId, MessageRequest message) throws IOException {
         MessageRequestOpenAI messageRequest = MessageRequestOpenAI
                 .builder()
                 .role("user")
@@ -171,7 +176,7 @@ public class ChatServiceImpl implements ChatService {
         );
     }
 
-    private MessageResponse awaitRunCompletion(String threadId, String runId) throws InterruptedException {
+    private MessageResponse awaitRunCompletion(String threadId, String runId) throws InterruptedException, IOException {
         int loopCount = 0;
         while (loopCount < 30) {
             Map<String, Object> runStatus = retrieveRunForThread(threadId, runId);
@@ -185,7 +190,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<MessageResponse> getMessages(Long userId) {
+    public List<MessageResponse> getMessages(Long userId) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         String threadId = user.getThread();
@@ -195,7 +200,7 @@ public class ChatServiceImpl implements ChatService {
         return getMessages(threadId);
     }
 
-    public List<MessageResponse> getMessages(String threadId) {
+    public List<MessageResponse> getMessages(String threadId) throws IOException {
         List<MessageResponse> responses = new ArrayList<>();
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                 CHATGPT_THREADS_URL + "/" + threadId + "/messages?order=asc&limit=100",

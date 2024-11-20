@@ -7,6 +7,7 @@ import vn.edu.iuh.fit.pharmacy.api.MessageRequest;
 import vn.edu.iuh.fit.pharmacy.api.MessageResponse;
 import vn.edu.iuh.fit.pharmacy.service.ChatService;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class ChatController {
     @GetMapping("/{userId}")
     public ResponseEntity<List<MessageResponse>> getMessages(
             @PathVariable Long userId
-    ) {
+    ) throws IOException {
         return ResponseEntity.ok(
                 chatService.getMessages(userId)
         );
