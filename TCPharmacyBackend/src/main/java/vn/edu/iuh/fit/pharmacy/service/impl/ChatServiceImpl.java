@@ -1,6 +1,7 @@
 package vn.edu.iuh.fit.pharmacy.service.impl;
 
 import com.google.gson.Gson;
+import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,6 +19,7 @@ import vn.edu.iuh.fit.pharmacy.api.MessageResponse;
 import vn.edu.iuh.fit.pharmacy.api.ThreadRunRequest;
 import vn.edu.iuh.fit.pharmacy.repositories.UserRepository;
 import vn.edu.iuh.fit.pharmacy.service.ChatService;
+import vn.edu.iuh.fit.pharmacy.utils.SystemConstraints;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+
+import static vn.edu.iuh.fit.pharmacy.utils.SystemConstraints.ENCRYPTION_PASSWORD;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -48,11 +52,21 @@ public class ChatServiceImpl implements ChatService {
         return new String(Files.readAllBytes(Paths.get("src/main/resources/ai.bat")));
     }
 
+    private static String decryptApiKey(String encryptedApiKey) {
+        BasicTextEncryptor textEncryptor = new BasicTextEncryptor();
+        textEncryptor.setPassword(ENCRYPTION_PASSWORD);
+        return textEncryptor.decrypt(encryptedApiKey);
+    }
+
     private HttpHeaders createHeaders() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         headers.add("OpenAI-Beta", "assistants=v2");
-        headers.add("Authorization", "Bearer " + readApiKeyFromFile());
+
+        String encryptedApiKeyFromFile = readApiKeyFromFile();
+        String decryptedApiKey = decryptApiKey(encryptedApiKeyFromFile);
+
+        headers.add("Authorization", "Bearer " + decryptedApiKey);
         return headers;
     }
 
