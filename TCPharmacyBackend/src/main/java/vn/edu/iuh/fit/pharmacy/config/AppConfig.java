@@ -1,6 +1,5 @@
 package vn.edu.iuh.fit.pharmacy.config;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,14 +16,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
-import vn.edu.iuh.fit.pharmacy.POJOs.OpenAPIKey;
 import vn.edu.iuh.fit.pharmacy.config.filter.CustomAuthenticationProvider;
 import vn.edu.iuh.fit.pharmacy.config.filter.JwtTokenAuthenticationFilter;
 import vn.edu.iuh.fit.pharmacy.config.filter.JwtUsernamePasswordAuthenticationFilter;
 import vn.edu.iuh.fit.pharmacy.exceptions.CustomAccessDeniedHandler;
 import vn.edu.iuh.fit.pharmacy.jwt.JwtConfig;
 import vn.edu.iuh.fit.pharmacy.jwt.JwtService;
-import vn.edu.iuh.fit.pharmacy.jwt.impl.JwtServiceImpl;
 import vn.edu.iuh.fit.pharmacy.service.security.UserDetailsServiceCustom;
 
 import java.util.Arrays;
@@ -44,13 +41,6 @@ public class AppConfig {
 
     @Autowired
     JwtService jwtService;
-
-    @Bean
-    public OpenAPIKey getApiKey() {
-        Dotenv dotenv = Dotenv.load();
-        return OpenAPIKey.builder().key(dotenv.get("OPENAI_API_KEY"))
-                .build();
-    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

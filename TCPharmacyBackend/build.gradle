@@ -23,6 +23,17 @@ repositories {
 	mavenCentral()
 }
 
+
+tasks.named('jar') {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named('bootJar') {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	mainClass.set('vn.edu.iuh.fit.pharmacy.TcPharmacyBackendApplication')
+}
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
