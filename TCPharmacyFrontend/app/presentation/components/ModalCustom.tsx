@@ -1,4 +1,4 @@
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { Modal, Pressable, StyleSheet, View, ScrollView } from "react-native";
 import { Image, Text } from "react-native";
 import { ButtonCustom } from "./ButtonCustom";
 import { Colors } from "./../styles/Colors";
@@ -21,14 +21,8 @@ type ModalCustomProps = {
 }
 
 export const ModalCustom = (props: ModalCustomProps) => {
-    const clonedContent = React.cloneElement(props.content, {
-        setModalVisible: true,
-        modalVisible: props.modalVisible
-    });
-    const handleContentPress = (event: React.SyntheticEvent) => {
-        // Prevent the background press event from triggering
-        event.stopPropagation();
-    }
+    const clonedContent = props.content;
+
     return (
         <Modal
             animationType="slide"
@@ -38,32 +32,40 @@ export const ModalCustom = (props: ModalCustomProps) => {
                 props.setModalVisible(false);
             }}
         >
-            <Pressable style={styles.centeredView} onPress={() => props.setModalVisible(false)}>
-                <View 
-                    onStartShouldSetResponder={() => true} 
-                    style={[styles.modalView, props.style]}>
-                    {clonedContent} 
+            {/* Nền mờ nhấn để đóng modal */}
+            <View style={styles.centeredView}>
+                <Pressable style={styles.overlay} onPress={() => props.setModalVisible(false)} />
+                <View style={[styles.modalContainer, props.style]}>
+                    <ScrollView
+                        contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+                        showsVerticalScrollIndicator={true}
+                    >
+                        <View style={styles.modalView}>
+                            {clonedContent}
+                        </View>
+                    </ScrollView>
                 </View>
-            </Pressable >
+            </View>
         </Modal>
-    )
-}
-
+    );
+};
 
 const styles = StyleSheet.create({
-
     centeredView: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Màu nền mờ
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Nền mờ
     },
-    modalView: {
-        width: 300,
+    overlay: {
+        ...StyleSheet.absoluteFillObject, // Bao phủ toàn bộ màn hình để có thể nhấn vào bất kỳ đâu và đóng modal
+    },
+    modalContainer: {
+        maxHeight: '80%',
+        width: '90%',
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 10,
-        alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -71,11 +73,14 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 5,
+    },
+    modalView: {
+        alignItems: 'center',
     },
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
         fontSize: 18,
     },
-})
+});

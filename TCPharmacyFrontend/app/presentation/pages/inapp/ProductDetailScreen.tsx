@@ -184,7 +184,7 @@ export const ProductDetailScreen = () => {
                                     <ProductCustom
                                         data={item}
                                         addToCart={() => { setProductChoose(item); setModalVisible(true); }}
-                                        onPress={() => { 
+                                        onPress={() => {
                                             navigation.push('productDetailScreen', { medicineId: item.id });
                                         }}
                                     />
@@ -224,9 +224,12 @@ export const ProductDetailScreen = () => {
                 />
             </View>
             <ModalCustom
-                style={{ flex: 1, margin: 30 }} // Flex style
+                style={{ maxHeight: '80%', width: '90%', margin: 30 }} 
                 content={
-                    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={true}>
+                    <ScrollView
+                        contentContainerStyle={{ paddingBottom: 20 }} 
+                        showsVerticalScrollIndicator={true}
+                    >
                         <HTMLView value={product.des} textComponentProps={{ style: GlobalStyles.textStyle }} />
                     </ScrollView>
                 }
