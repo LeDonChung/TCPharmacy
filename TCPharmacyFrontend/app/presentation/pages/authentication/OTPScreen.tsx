@@ -53,6 +53,7 @@ export const OTPScreen = () => {
             try {
                 await dispatch(register(userRegister)).unwrap(); // unwrap để lấy kết quả hoặc lỗi
                 navigation.navigate('inapp' as never);
+                setUsertRegister(new UserRegisterRequest('', '', ['', '', '', '', '', ''])); // reset lại thông tin đăng ký
             } catch (error) {
                 showToast('error', 'bottom', 'Lỗi', errorRespone?.error || error?.message || 'Đăng ký không thành công.');
             } finally {

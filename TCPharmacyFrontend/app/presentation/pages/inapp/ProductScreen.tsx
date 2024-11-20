@@ -142,7 +142,7 @@ export const ProductScreen = () => {
                         </TouchableOpacity>
                         {
                             isSearch === true
-                                ? <View style={{ width: 250, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginHorizontal: 'auto' }}>
+                                ? <View style={{ width: 250, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginHorizontal: 'auto', marginLeft: 10 }}>
                                     <TextInput
                                         style={{ flex: 1, height: 40, borderColor: 'gray', borderBottomWidth: 1, paddingHorizontal: 10 }}
                                         onChangeText={(text) => { setSearchText(text) }}
@@ -285,7 +285,7 @@ export const ProductScreen = () => {
                     </ScrollView>
 
                     {
-                        (products.length % 10 && products.length !== 0) === 0 &&
+                        (products.length % 10 === 0 && products.length !== 0) &&
                         <TouchableOpacity style={{
                             width: "40%", height: 40, marginHorizontal: 'auto', flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
                             marginBottom: 20

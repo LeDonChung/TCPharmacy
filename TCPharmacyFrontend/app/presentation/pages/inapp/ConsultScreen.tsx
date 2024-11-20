@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View, Animated } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, Animated, Linking, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../styles/Colors";
 import IconO from "react-native-vector-icons/Octicons";
@@ -24,6 +24,19 @@ export const ConsultScreen = () => {
 
     const dotValues = [useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current];
     const scrollViewRef = useRef(null);
+
+    const handleClickCallHotline = () => {
+        const phoneNumber = 'tel:18006928';
+        Linking.canOpenURL(phoneNumber)
+            .then((supported) => {
+                if (supported) {
+                    Linking.openURL(phoneNumber);
+                } else {
+                    Alert.alert("Thiết bị không hỗ trợ tính năng này");
+                }
+            })
+            .catch((err) => console.error('Error:', err));
+    }
 
     useEffect(() => {
         dispatch(getMessages(user.id));
@@ -76,12 +89,17 @@ export const ConsultScreen = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#ECF0F1" }}>
-            <View style={{ height: 70, width: '100%', backgroundColor: Colors.primary, flexDirection: 'row', alignItems: 'center' }}>
-                <TouchableOpacity style={{ marginHorizontal: 15 }} onPress={() => navigation.goBack()}>
-                    <IconF5 name="chevron-left" size={24} style={{ color: Colors.secondary }} />
-                </TouchableOpacity>
-                <Text style={[GlobalStyles.textStyle, { fontSize: 20, fontWeight: '700', color: Colors.secondary, textAlign: 'center', width: "80%" }]}>Dược sĩ TC Parmacy</Text>
-            </View>
+             <View style={{ height: 70, width: '100%', backgroundColor: Colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: "space-between" }}>
+                    <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => { navigation.goBack() }}>
+                        <IconF5 name="chevron-left" size={25} style={{ color: Colors.secondary }} />
+                    </TouchableOpacity>
+                    <Text style={[GlobalStyles.textStyle, { fontSize: 20, fontWeight: '700', color: Colors.secondary, textAlign: 'center' }]}>
+                        Dược sĩ TC Parmacy
+                    </Text>
+                    <TouchableOpacity style={{ marginHorizontal: 15, justifyContent: "center", alignContent: "center" }} onPress={() => { handleClickCallHotline() }}>
+                        <IconF name="phone" size={25} style={{ color: Colors.secondary }} />
+                    </TouchableOpacity>
+                </View>
 
             <View style={{ width: "100%", marginBottom: 160 }}>
                 {messages && messages.length > 0 ? (
@@ -106,7 +124,7 @@ export const ConsultScreen = () => {
                         )}
                     </ScrollView>
                 ) : (
-                    <Text>Loading messages...</Text>
+                    <Text style={{ textAlign: 'center', marginTop: 20 }}>Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</Text>
                 )}
             </View>
 
