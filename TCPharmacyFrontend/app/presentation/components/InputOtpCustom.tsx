@@ -1,27 +1,49 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { StyleSheet, View, TextInput } from 'react-native';
 import { GlobalStyles } from '../styles/GlobalStyles';
+
 type InputOtpCustomProps = {
     otp: string[],
     setOtp: (otp: string[]) => void
 }
+
 export const InputOtpCustom = (props: InputOtpCustomProps) => {
     let inputs = useRef<any[]>([]).current;
 
     const handlerOtp = (index: number, value: string) => {
-        if(value.length == 2) 
-            value = value[1];
+        // Chỉ giữ lại ký tự cuối cùng nếu người dùng nhập nhiều hơn 1 ký tự
+        if (value.length > 1) {
+            value = value[value.length - 1];
+        }
 
-        const newOtp = [...props.otp]
+        // Cập nhật giá trị OTP
+        const newOtp = [...props.otp];
         newOtp[index] = value;
         props.setOtp(newOtp);
 
-        // Nếu value không rỗng và index < otp.length - 1 thì focus ô tiếp theo
+        // Nếu giá trị nhập vào không rỗng và chưa phải ô cuối cùng, focus vào ô tiếp theo
         if (value.length === 1 && index < props.otp.length - 1) {
-            inputs[index + 1].focus();  // Focus ô tiếp theo
+            inputs[index + 1].focus();
         }
     }
+
+    const handleKeyPress = (e: any, index: number) => {
+        if (e.nativeEvent.key === 'Backspace') {
+            if (props.otp[index] === '' && index > 0) {
+                // Nếu ô hiện tại không có ký tự và nhấn Backspace -> focus về ô trước
+                inputs[index - 1].focus();
+                const newOtp = [...props.otp];
+                newOtp[index - 1] = ''; // Xóa giá trị của ô trước
+                props.setOtp(newOtp);
+            } else if (props.otp[index] !== '') {
+                // Nếu ô hiện tại có ký tự và nhấn Backspace -> xóa ký tự trong ô
+                const newOtp = [...props.otp];
+                newOtp[index] = '';
+                props.setOtp(newOtp);
+            }
+        }
+    }
+
     return (
         <View style={styles.container}>
             {props.otp.map((value, index) => (
@@ -29,16 +51,17 @@ export const InputOtpCustom = (props: InputOtpCustomProps) => {
                     key={index}
                     ref={(ref) => inputs[index] = ref}
                     style={[styles.input, value ? styles.inputActive : styles.inputInactive, GlobalStyles.textStyle]}
-                    maxLength={2} // 1 ký tự số
+                    maxLength={1} // Giới hạn 1 ký tự số
                     keyboardType="numeric"
                     value={value}
                     onChangeText={(value) => handlerOtp(index, value)}
-
+                    onKeyPress={(e) => handleKeyPress(e, index)}
                 />
             ))}
         </View>
-    )
+    );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

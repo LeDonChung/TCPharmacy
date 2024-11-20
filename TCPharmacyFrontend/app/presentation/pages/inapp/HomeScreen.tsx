@@ -2,7 +2,6 @@ import { Alert, BackHandler, Image, LogBox, RefreshControl, Text, View } from "r
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { DrawerLayout, ScrollView } from "react-native-gesture-handler";
 import { GlobalStyles } from "../../styles/GlobalStyles";
-import { Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DrawScreenLayout } from "../../components/DrawLayoutCustom";
 import { LogoCustom } from "../../components/LogoCustom";
@@ -10,10 +9,8 @@ import { Colors } from "../../styles/Colors";
 import IconE from "react-native-vector-icons/Entypo";
 import IconF from "react-native-vector-icons/FontAwesome";
 import IconFE from "react-native-vector-icons/Feather";
-import IconAD from "react-native-vector-icons/AntDesign";
 import { FlatList } from "react-native";
 import { MenuItem } from "../../components/MenuItem";
-import Carousel from "react-native-snap-carousel";
 import { BannerCustom } from "../../components/BannerCustom";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
@@ -22,23 +19,19 @@ import { Dimensions } from "react-native";
 import { CarouselCustom } from "../../components/CarouselCustom";
 import { ButtonCustom } from "../../components/ButtonCustom";
 import { ProductCustom } from "../../components/ProductCustom";
-import { ModalCustom } from "../../components/ModalCustom";
 import { TextInput } from "react-native-paper";
 import { ChooseProductToCartModalCustom } from "../../components/ChooseProductToCartModalCustom";
-import { ProductModel } from "../../../domain/models/ProductModel";
 import { useDispatch, useSelector } from "react-redux";
 import { Store } from "../../redux/store";
 import { getAllCategories, setDraw, setOutstanding } from "../../redux/slice/CategorySlice";
 import { findUserLogin } from "../../redux/slice/UserSlice";
 import * as SecureStore from 'expo-secure-store';
 
-import { getProductById, getAllProducts } from "../../redux/slice/ProductSlice";
 
 import { showToast } from "../../../api/AppUtils";
-import { CategoryModel } from "../../../domain/models/CategoryModel";
 import { BrandCustom } from "../../components/BrandCustom";
 import { getBrandsFavorite } from "../../redux/slice/BrandSlice";
-import { getTagGroupById, getTagGroups } from "../../redux/slice/TagGroupSlice";
+import { getTagGroups } from "../../redux/slice/TagGroupSlice";
 import { MedicineModel } from "../../../domain/models/MedicineModel";
 export const SLIDER_WIDTH = Dimensions.get('window').width;
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 1.0);
@@ -143,10 +136,10 @@ const policiesInit = [
 ]
 export const HomeScreen = () => {
 
+    // Usage example in a component
     const navigation = useNavigation();
 
     const [refreshing, setRefreshing] = useState(false);
-
 
     const drawer = useRef(null);
     const closeDrawer = () => {
@@ -154,13 +147,13 @@ export const HomeScreen = () => {
     }
     const [search, setSearch] = useState<string>('');
 
-    const [productPurchaseds, setProductPurchaseds] = useState(purchasedProducts);
+    const [productPurchaseds] = useState(purchasedProducts);
 
     const menuCategory = useSelector((state: Store) => state.categories.value.outstanding);
 
     const brandFavorite = useSelector((state: Store) => state.brand.brands);
 
-    const [policies, setPolicies] = useState(policiesInit);
+    const [policies] = useState(policiesInit);
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -188,7 +181,7 @@ export const HomeScreen = () => {
             await dispatch(getTagGroups());
             dispatch(setDraw());
             dispatch(setOutstanding());
-            
+
         } catch (error) {
             console.error("Initialization error:", error);
         } finally {
@@ -232,7 +225,6 @@ export const HomeScreen = () => {
         };
         checkTokenAndSetSugg();
     }, [indexSuggestion]);
-
     return (
         <>
             <DrawerLayout
@@ -312,9 +304,9 @@ export const HomeScreen = () => {
                                             renderItem={({ item }) => (
                                                 <View
                                                     style={{
-                                                        width: "20%", 
-                                                        alignItems: "center",                                                         
-                                                        marginVertical: 10, 
+                                                        width: "20%",
+                                                        alignItems: "center",
+                                                        marginVertical: 10,
                                                         marginHorizontal: 'auto'
                                                     }}
                                                 >

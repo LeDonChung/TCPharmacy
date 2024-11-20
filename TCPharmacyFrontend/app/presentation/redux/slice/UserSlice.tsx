@@ -36,7 +36,6 @@ const register: any = createAsyncThunk('userRegister/register', async (
             password: request.password,
             otp: request.otp.join('')
         }
-        console.log("LOGIN REQUEST: ", requestBody);
         const response = await axiosInstance.post(`/auth/register`, requestBody);
 
         return response.data;
@@ -104,12 +103,15 @@ const UserSlice = createSlice({
         });
         builder.addCase(findUserLogin.fulfilled, (state, action) => {
             state.loading = false;
-            state.userLogin = action.payload.data;            
-
+            state.userLogin = action.payload.data;
+            state.errorResponse = null;
+            // Save user login information to SecureStore
+            SecureStore.setItemAsync('userLogin', JSON.stringify(action.payload.data));
         });
         builder.addCase(findUserLogin.rejected, (state, action) => {
             state.loading = false;
             state.errorResponse = action.payload;
+            state.userLogin = initialState.userLogin;
         });
 
     }
