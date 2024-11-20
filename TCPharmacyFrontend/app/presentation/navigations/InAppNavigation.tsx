@@ -5,8 +5,6 @@ import { AccountNavigation } from "./AccountNavigation";
 import { createStackNavigator } from "@react-navigation/stack";
 import { PageNavigation } from "./PageNavigation";
 import { BonusNavigation } from "./BonusNavigation";
-import { ChatScreen } from "../pages/inapp/ChatScreen";
-import { CartScreen } from "../pages/inapp/CartScreen";
 import { CheckoutScreen } from "../pages/inapp/CheckoutScreen";
 import { ProductDetailScreen } from "../pages/inapp/ProductDetailScreen";
 import { ProductScreen } from "../pages/inapp/ProductScreen";
@@ -22,7 +20,6 @@ export const InAppNavigation = () => {
                 <Stack.Screen name="pageNavigation" component={PageNavigation} />
                 <Stack.Screen name="accountNavigation" component={AccountNavigation} />
                 <Stack.Screen name="bonusNavigation" component={BonusNavigation} />
-                <Stack.Screen name="chatScreen" component={ChatScreen} />
                 <Stack.Screen name="checkoutScreen" component={CheckoutScreen} />
                 <Stack.Screen name="productDetailScreen" component={ProductDetailScreen} />
                 <Stack.Screen name="productScreen" component={ProductScreen} />
