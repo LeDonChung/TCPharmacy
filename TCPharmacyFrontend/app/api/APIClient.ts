@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: `https://tcpharmacy-production.up.railway.app/tc/api`,
+    baseURL: `https://tcpharmacy-tcenviroment.up.railway.app/tc/api`,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
