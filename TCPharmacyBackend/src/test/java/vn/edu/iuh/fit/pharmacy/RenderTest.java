@@ -12,8 +12,10 @@ import org.springframework.web.client.RestTemplate;
 import vn.edu.iuh.fit.pharmacy.POJOs.*;
 import vn.edu.iuh.fit.pharmacy.api.*;
 import vn.edu.iuh.fit.pharmacy.repositories.*;
+import vn.edu.iuh.fit.pharmacy.service.RecommendService;
 import vn.edu.iuh.fit.pharmacy.utils.RoleConstraints;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
@@ -423,7 +425,7 @@ public class RenderTest {
 
     @Test
     public void renderLikeMedicine() {
-        List<User> users = userRepository.findAll(PageRequest.of(0, 50)).getContent();
+        List<User> users = userRepository.findAll();
         List<Medicine> medicines = medicineRepository.findAll();
         Random random = new Random();
         for (User user : users) {
@@ -441,21 +443,11 @@ public class RenderTest {
     }
 
 
+    @Autowired
+    private RecommendService recommendService;
     @Test
-    public void renderLikeMedicineById() {
-        User user = userRepository.findById(108L).get();
-        List<Medicine> medicines = medicineRepository.findAll();
-        Random random = new Random();
-        int likeCount = 20 + random.nextInt(30); // Giữa 3 và 7 sản phẩm yêu thích
-        List<Medicine> likedMedicines = new ArrayList<>();
-        for (int i = 0; i < likeCount; i++) {
-            Medicine medicine = medicines.get(random.nextInt(medicines.size()));
-            if (!likedMedicines.contains(medicine)) {
-                likedMedicines.add(medicine);
-            }
-        }
-        user.setLikes(likedMedicines);
-        userRepository.saveAndFlush(user);
+    public void renderLikeMedicineById() throws IOException {
+        recommendService.buildModel();
     }
 
 }
