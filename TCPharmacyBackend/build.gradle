@@ -80,6 +80,8 @@ dependencies {
 
 	implementation 'io.github.cdimascio:java-dotenv:5.2.2'
 
+	implementation 'com.vonage:client:[6.1.0,7.0.0)'
+
 }
 
 tasks.named('test') {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.edu.iuh.fit.pharmacy.exceptions.OTPException;
 import vn.edu.iuh.fit.pharmacy.exceptions.UserException;
 import vn.edu.iuh.fit.pharmacy.service.OTPService;
+import vn.edu.iuh.fit.pharmacy.service.SMSService;
 import vn.edu.iuh.fit.pharmacy.utils.SystemConstraints;
 import vn.edu.iuh.fit.pharmacy.utils.response.BaseResponse;
 
@@ -21,11 +22,15 @@ public class OTPResource {
     @Autowired
     public OTPService otpService;
 
+    @Autowired
+    private SMSService smsService;
+
     @GetMapping("/generate")
     public ResponseEntity<BaseResponse<Object>> generateOTP(@RequestParam("phoneNumber") String phoneNumber) throws UserException {
 
         log.info("Generate OTP for phone number: " + phoneNumber);
-        otpService.generateOTP(phoneNumber);
+        int otp = otpService.generateOTP(phoneNumber);
+        smsService.sendSMS(phoneNumber, String.valueOf(otp));
         BaseResponse<Object> response = BaseResponse
                         .builder()
                         .code(String.valueOf(HttpStatus.OK.value())).success(true).data(SystemConstraints.OTP_GENERATED_SUCCESSFULLY)
