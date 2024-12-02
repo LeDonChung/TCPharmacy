@@ -1,9 +1,7 @@
 package vn.edu.iuh.fit.pharmacy.config;
 
-import com.vonage.client.VonageClient;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,12 +42,6 @@ public class AppConfig {
     @Autowired
     JwtService jwtService;
 
-    @Value("${SMS_API_KEY}")
-    private String SMS_API_KEY;
-
-    @Value("${SMS_API_SECRECT}")
-    private String SMS_API_SECRECT;
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -60,12 +52,6 @@ public class AppConfig {
         return new UserDetailsServiceCustom();
     }
 
-    @Bean
-    public VonageClient vonageClient() {
-        return VonageClient.builder().apiKey(SMS_API_KEY)
-                .apiSecret(SMS_API_SECRECT)
-                .build();
-    }
     @Autowired
     public void configGlobal(final AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(customAuthenticationProvider);

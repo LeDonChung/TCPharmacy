@@ -1,42 +1,54 @@
 package vn.edu.iuh.fit.pharmacy.service.impl;
 
-import com.vonage.client.VonageClient;
-import com.vonage.client.sms.MessageStatus;
-import com.vonage.client.sms.SmsSubmissionResponse;
-import com.vonage.client.sms.messages.TextMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import vn.edu.iuh.fit.pharmacy.service.SMSService;
+
 
 @Service
 @Slf4j
 public class SMSServiceImpl implements SMSService {
     @Autowired
-    private VonageClient client;
+    private RestTemplate restTemplate;
+
+
+    @Value("${SMS_API_KEY}")
+    private String SMS_API_KEY;
+
+
     @Override
     public void sendSMS(String phoneNumber, String txt) {
 
         log.info("Send SMS to {} with message: {}", phoneNumber, txt);
 
-        // 0 - > 84
+        // Chuyển 0 -> +84
         if (phoneNumber.startsWith("0")) {
-            phoneNumber = phoneNumber.replaceFirst("0", "84");
+            phoneNumber = "+84" + phoneNumber.substring(1);
         }
-        // Send SMS
-        TextMessage message = new TextMessage("TC Pharmacy",
-                phoneNumber,
-                txt
-        );
+        // Tạo map dữ liệu cần gửi
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("phone", phoneNumber);
+        map.add("message", txt);
+        map.add("key", SMS_API_KEY);
 
-        SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
+        // Tạo HTTP entity với dữ liệu và header
 
-        if (response.getMessages().get(0).getStatus() == MessageStatus.OK) {
-            log.info("Message sent successfully.");
-        } else {
-            log.error("Message failed with error: {}", response.getMessages().get(0).getErrorText());
-            throw new RuntimeException("Gửi tin nhắn thất bại. Vui lòng thử lại sau.");
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        // Gửi POST request và nhận phản hồi
+        String url = "https://textbelt.com/text";
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+        // In ra kết quả
+        log.info("Response Send SMS: {}", response.getBody());
 
     }
 }
